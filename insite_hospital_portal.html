@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insite — Hospital Internal Portal</title>
+    <!-- Tailwind CSS for modern enterprise styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slateDark: '#0f172a',
+                        slateCard: '#1e293b',
+                        clinicalBlue: '#0284c7',
+                        clinicalTeal: '#0d9488',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Inter for professional legibility -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand & Status -->
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-lg bg-clinicalTeal flex items-center justify-center font-bold text-xl tracking-wider shadow">IN</div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight tracking-tight">Insite</h1>
+                        <span class="text-xs text-slate-400">Hospital Command Center</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-full text-xs border border-slate-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-slate-300 font-medium">All Systems Operational</span>
+                </div>
+            </div>
+
+            <!-- Global Search & Profile -->
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </span>
+                    <input type="text" id="globalSearch" placeholder="Search patient, OR, or app (Ctrl+K)..." class="bg-slate-800 text-sm text-slate-200 placeholder-slate-400 pl-9 pr-4 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-clinicalTeal w-64 lg:w-80 transition">
+                </div>
+                <div class="flex items-center space-x-3 border-l border-slate-700 pl-4">
+                    <div class="text-right hidden lg:block">
+                        <div class="text-sm font-medium leading-tight">Dr. Sarah Alverina</div>
+                        <div class="text-xs text-slate-400">Chief Medical Officer</div>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center font-semibold text-clinicalTeal border border-slate-600">
+                        SA
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Module Switcher / Tab Bar -->
+    <nav class="bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto">
+            <button onclick="switchTab('discharge')" id="btn-discharge" class="tab-btn py-4 px-2 border-b-2 font-medium text-sm border-clinicalBlue text-clinicalBlue flex items-center space-x-2 whitespace-nowrap transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Verifikasi Pasien Pulang</span>
+                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-semibold">12</span>
+            </button>
+            <button onclick="switchTab('surgical')" id="btn-surgical" class="tab-btn py-4 px-2 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center space-x-2 whitespace-nowrap transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <span>Jadwal Operasi</span>
+                <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-semibold">5 Active</span>
+            </button>
+            <button onclick="switchTab('iptv')" id="btn-iptv" class="tab-btn py-4 px-2 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center space-x-2 whitespace-nowrap transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <span>Admin IPTV & Rooms</span>
+                <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-semibold">Live</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= MODULE 1: PATIENT DISCHARGE VERIFICATION ================= -->
+        <div id="content-discharge" class="tab-content active space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">Verifikasi Pasien Pulang (Discharge Verification)</h2>
+                    <p class="text-sm text-slate-500">Review clearance status from pharmacy, billing, and medical records before patient discharge clearance.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="filterDischarge('all')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white shadow-sm filter-btn-d active-f" data-filter="all">All Pending (12)</button>
+                    <button onclick="filterDischarge('ready')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 filter-btn-d" data-filter="ready">Ready to Sign (4)</button>
+                    <button onclick="filterDischarge('revision')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 filter-btn-d" data-filter="revision">Needs Revision (2)</button>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="bg-white shadow-sm rounded-xl border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-600 font-semibold uppercase text-xs tracking-wider">
+                            <tr>
+                                <th class="px-6 py-3.5">Patient Name / RM</th>
+                                <th class="px-6 py-3.5">Ward / Bed</th>
+                                <th class="px-6 py-3.5">Pharmacy Clearance</th>
+                                <th class="px-6 py-3.5">Billing Clearance</th>
+                                <th class="px-6 py-3.5">Medical Summary</th>
+                                <th class="px-6 py-3.5 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white" id="dischargeTableBody">
+                            <tr class="hover:bg-slate-50 transition" data-status="ready">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-900">Budi Santoso, Tn.</div>
+                                    <div class="text-xs text-slate-500 font-mono">RM-992812 • 42 yrs</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-slate-900 font-medium">Anggrek 3B</div>
+                                    <div class="text-xs text-slate-500">VIP Ward</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Verified (Cleared)
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Paid / Settled
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Signed by Dr. Hendra
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right space-x-2">
+                                    <button onclick="openModal('Budi Santoso', 'RM-992812')" class="bg-clinicalTeal text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-teal-700 shadow-sm transition">Approve Discharge</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition" data-status="revision">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-900">Siti Rahma, Ny.</div>
+                                    <div class="text-xs text-slate-500 font-mono">RM-883920 • 35 yrs</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-slate-900 font-medium">Melati 2A</div>
+                                    <div class="text-xs text-slate-500">Class 1</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                        Pending Prescription
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Insurance Verified
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                                        Drafting
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right space-x-2">
+                                    <button onclick="openModal('Siti Rahma', 'RM-883920')" class="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-300 transition">Review Notes</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition" data-status="ready">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-900">Ahmad Fauzi, An.</div>
+                                    <div class="text-xs text-slate-500 font-mono">RM-771239 • 8 yrs</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-slate-900 font-medium">Anak Angsana 1</div>
+                                    <div class="text-xs text-slate-500">Pediatric Wing</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Verified (Cleared)
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Paid / Settled
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Signed by Dr. Maya
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right space-x-2">
+                                    <button onclick="openModal('Ahmad Fauzi', 'RM-771239')" class="bg-clinicalTeal text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-teal-700 shadow-sm transition">Approve Discharge</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition" data-status="revision">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-900">Dewi Lestari, Ny.</div>
+                                    <div class="text-xs text-slate-500 font-mono">RM-665421 • 54 yrs</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-slate-900 font-medium">ICU Bed 04</div>
+                                    <div class="text-xs text-slate-500">Critical Care</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        Hold (Billing Review)
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                        Pending Guarantee Letter
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Signed by Dr. Aris
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right space-x-2">
+                                    <button onclick="openModal('Dewi Lestari', 'RM-665421')" class="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-300 transition">Review Notes</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MODULE 2: SURGICAL SCHEDULE ================= -->
+        <div id="content-surgical" class="tab-content space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">Jadwal Operasi & Okupasi Kamar Bedah (Surgical Theater)</h2>
+                    <p class="text-sm text-slate-500">Real-time schedule of operating theaters, assigned surgeons, and anesthetic status.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="showNotification('Surgical Schedule synchronized with OT-Live.')" class="bg-clinicalBlue text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-sky-700 transition flex items-center space-x-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Book New Theater Slot</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Surgical Grid Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- OR 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <span class="font-bold text-slate-900 flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span>OR Suite 01 (Major)</span>
+                            </span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-semibold">In Progress</span>
+                        </div>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <div>
+                                <span class="text-slate-400 text-xs block">Patient & RM</span>
+                                <span class="font-bold text-slate-800">Hendra Wijaya (RM-552109)</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-xs block">Procedure</span>
+                                <span class="text-slate-700 font-medium">Coronary Artery Bypass Graft (CABG)</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                                <div>
+                                    <span class="text-slate-400 text-xs block">Lead Surgeon</span>
+                                    <span class="text-slate-700 font-semibold text-xs">Dr. Bayu Sp.BTKV</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-xs block">Anesthetist</span>
+                                    <span class="text-slate-700 font-semibold text-xs">Dr. Ratna Sp.An</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                        <span class="text-slate-500">Est. Completion: 14:30</span>
+                        <button onclick="showNotification('Viewing live vital telemetry for OR 1')" class="text-clinicalBlue font-semibold hover:underline">Monitor Vitals →</button>
+                    </div>
+                </div>
+
+                <!-- OR 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <span class="font-bold text-slate-900 flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                <span>OR Suite 02 (Orthopedic)</span>
+                            </span>
+                            <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-semibold">Prep / Anesthesia</span>
+                        </div>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <div>
+                                <span class="text-slate-400 text-xs block">Patient & RM</span>
+                                <span class="font-bold text-slate-800">Maria Ulfa (RM-441092)</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-xs block">Procedure</span>
+                                <span class="text-slate-700 font-medium">Total Knee Replacement (TKR)</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                                <div>
+                                    <span class="text-slate-400 text-xs block">Lead Surgeon</span>
+                                    <span class="text-slate-700 font-semibold text-xs">Dr. Yudi Sp.OT</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-xs block">Anesthetist</span>
+                                    <span class="text-slate-700 font-semibold text-xs">Dr. Joko Sp.An</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                        <span class="text-slate-500">Scheduled Start: 13:00</span>
+                        <button onclick="showNotification('OR 2 Checklist opened')" class="text-clinicalBlue font-semibold hover:underline">Checklist →</button>
+                    </div>
+                </div>
+
+                <!-- OR 3 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <span class="font-bold text-slate-900 flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-slate-300"></span>
+                                <span>OR Suite 03 (Emergency)</span>
+                            </span>
+                            <span class="bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-full font-semibold">Standby / Clean</span>
+                        </div>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <div>
+                                <span class="text-slate-400 text-xs block">Patient & RM</span>
+                                <span class="font-bold text-slate-800 text-slate-400 italic">No scheduled emergency</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-xs block">Procedure</span>
+                                <span class="text-slate-400 italic">Ready for STAT trauma intake</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                                <div>
+                                    <span class="text-slate-400 text-xs block">On-Call Surgeon</span>
+                                    <span class="text-slate-700 font-semibold text-xs">Dr. Eko Sp.B</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-xs block">On-Call Nurse</span>
+                                    <span class="text-slate-700 font-semibold text-xs">Siti N. S.Kep</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                        <span class="text-slate-500">Sterilization: Passed</span>
+                        <button onclick="showNotification('OR 3 status refreshed')" class="text-clinicalBlue font-semibold hover:underline">Details →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MODULE 3: IPTV ADMINISTRATION ================= -->
+        <div id="content-iptv" class="tab-content space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">Admin IPTV & Room Broadcasting</h2>
+                    <p class="text-sm text-slate-500">Manage patient entertainment channels, hospital info feeds, and emergency announcement overrides across all inpatient rooms.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="triggerEmergencyBroadcast()" class="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-sm transition flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                        <span>Emergency Broadcast Override</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- IPTV Controls & Status Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Channel Playlist Panel -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4 lg:col-span-2">
+                    <h3 class="font-bold text-slate-900 text-base">Active Broadcast Playlist & Channels</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded bg-blue-100 text-clinicalBlue flex items-center font-bold justify-center">CH 1</div>
+                                <div>
+                                    <div class="font-semibold text-slate-800 text-sm">Hospital Health Education & Hygiene</div>
+                                    <div class="text-xs text-slate-500">Loop: Continuous 24/7 (Patient Education)</div>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">Broadcasting</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded bg-purple-100 text-purple-700 flex items-center font-bold justify-center">CH 2</div>
+                                <div>
+                                    <div class="font-semibold text-slate-800 text-sm">In-House Relaxation & Meditation Audio</div>
+                                    <div class="text-xs text-slate-500">Loop: Scheduled 08:00 - 21:00</div>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">Broadcasting</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded bg-amber-100 text-amber-700 flex items-center font-bold justify-center">CH 3</div>
+                                <div>
+                                    <div class="font-semibold text-slate-800 text-sm">General Entertainment & Local TV Feed</div>
+                                    <div class="text-xs text-slate-500">Loop: Free Access Stream</div>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">Broadcasting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Target Summary -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base">Terminal Status</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                            <span class="text-slate-600">Total Active Terminals</span>
+                            <span class="font-bold text-slate-900">142 Screens</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                            <span class="text-slate-600">VIP Suites Connected</span>
+                            <span class="font-bold text-emerald-600">28 / 28 Online</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                            <span class="text-slate-600">Inpatient Class Rooms</span>
+                            <span class="font-bold text-emerald-600">114 / 114 Online</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span class="text-slate-600">System Firmware</span>
+                            <span class="font-bold text-slate-700">v4.2.0-stable</span>
+                        </div>
+                    </div>
+                    <button onclick="showNotification('IPTV configuration settings saved successfully.')" class="w-full bg-slate-900 text-white py-2 rounded-lg text-xs font-semibold hover:bg-slate-800 transition">Update Playlist Schedules</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Action Modal -->
+    <div id="actionModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl">
+            <h3 class="font-bold text-lg text-slate-900" id="modalTitle">Discharge Authorization</h3>
+            <p class="text-sm text-slate-600" id="modalDesc">Confirming final clinical clearance and medication handover for patient.</p>
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-1 text-slate-700">
+                <div><strong>Checked by:</strong> Dr. Sarah Alverina (CMO)</div>
+                <div><strong>Timestamp:</strong> <span id="modalTimestamp"></span></div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-300 transition">Cancel</button>
+                <button onclick="confirmAction()" class="px-4 py-2 bg-clinicalTeal text-white rounded-lg text-xs font-semibold hover:bg-teal-700 transition">Confirm Clearance</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="toastMsg">Action completed successfully.</span>
+    </div>
+
+    <script>
+        // Tab Switcher Controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-clinicalBlue', 'text-clinicalBlue');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById('content-' + tabId).classList.add('active');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-clinicalBlue', 'text-clinicalBlue');
+        }
+
+        // Discharge Filter Controller
+        function filterDischarge(status) {
+            document.querySelectorAll('.filter-btn-d').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-300');
+            });
+            event.target.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-300');
+            event.target.classList.add('bg-slate-900', 'text-white');
+
+            const rows = document.querySelectorAll('#dischargeTableBody tr');
+            rows.forEach(row => {
+                if (status === 'all' || row.getAttribute('data-status') === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal Controllers
+        let currentPatient = '';
+        function openModal(name, rm) {
+            currentPatient = name + ' (' + rm + ')';
+            document.getElementById('modalTitle').innerText = 'Discharge Clearance: ' + name;
+            document.getElementById('modalDesc').innerText = 'Verify final sign-off for Medical Record ' + rm + '.';
+            document.getElementById('modalTimestamp').innerText = new Date().toLocaleString('id-ID');
+            document.getElementById('actionModal').classList.remove('hidden');
+            document.getElementById('actionModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('actionModal').classList.remove('flex');
+            document.getElementById('actionModal').classList.add('hidden');
+        }
+
+        function confirmAction() {
+            closeModal();
+            showNotification('Discharge verified and approved for ' + currentPatient);
+        }
+
+        // Emergency Override Trigger
+        function triggerEmergencyBroadcast() {
+            if (confirm('Are you sure you want to trigger an Emergency Broadcast Override across all 142 inpatient screens?')) {
+                showNotification('EMERGENCY BROADCAST OVERRIDE ACTIVATED ACROSS ALL ROOMS');
+            }
+        }
+
+        // Toast Notification System
+        function showNotification(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // Keyboard Shortcut support (Ctrl+K)
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('globalSearch').focus();
+                showNotification('Global Search focused');
+            }
+        });
+    </script>
+</body>
+</html>

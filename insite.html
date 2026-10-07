@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insite - Portal Internal Rumah Sakit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#14233A; --navy-2:#1E3252; --navy-line:#2C4468;
+  --bg:#EDF0F4; --panel:#fff; --line:#D3DAE3; --line-2:#E6EAF0; --row:#F6F8FA;
+  --text:#172033; --muted:#5B6879;
+  --blue:#1F5F9E; --blue-bg:#E3EDF7;
+  --teal:#23766F; --teal-bg:#DDEFEC;
+  --amber:#8F5F0E; --amber-bg:#F8EBCF;
+  --red:#A5362A; --red-bg:#F6DFDB;
+  --grey:#5B6879; --grey-bg:#E4E8ED;
+  --font:'Inter','Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:13px/1.45 var(--font);color:var(--text);background:var(--bg);display:flex;flex-direction:column;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #5AA0E0;outline-offset:1px}
+
+/* Header */
+.top{background:var(--navy);color:#fff;display:flex;align-items:stretch;height:48px;flex:none;padding:0 16px;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px;letter-spacing:.2px;padding-right:20px;border-right:1px solid var(--navy-line)}
+.brand i{width:20px;height:20px;border:2px solid #fff;border-radius:3px;position:relative}
+.brand i::after{content:"";position:absolute;inset:3px;background:#fff;border-radius:1px}
+.brand small{font-weight:400;font-size:12px;color:#9FB2CC}
+.tabs{display:flex;align-items:stretch;gap:2px}
+.tab{background:none;border:0;color:#B7C5DA;padding:0 14px;font-weight:500;border-bottom:3px solid transparent;display:flex;align-items:center;gap:8px}
+.tab:hover{color:#fff;background:var(--navy-2)}
+.tab[aria-selected=true]{color:#fff;border-bottom-color:#6FB3F2;background:var(--navy-2)}
+.tab .n{background:#C98A1B;color:#fff;font-size:11px;font-weight:600;border-radius:9px;padding:0 6px;min-width:18px;text-align:center}
+.spacer{flex:1}
+.gsearch{align-self:center;display:flex;align-items:center;gap:8px;width:280px;height:30px;background:var(--navy-2);border:1px solid var(--navy-line);border-radius:3px;color:#9FB2CC;padding:0 8px;text-align:left}
+.gsearch:hover{border-color:#6B86AD}
+.gsearch span{flex:1}
+kbd{font:500 11px var(--font);border:1px solid var(--navy-line);border-radius:3px;padding:0 5px;color:#B7C5DA}
+.user{display:flex;align-items:center;gap:10px;padding-left:16px;border-left:1px solid var(--navy-line)}
+.user .av{width:28px;height:28px;border-radius:50%;background:#3A5780;display:grid;place-items:center;font-weight:600;font-size:11px}
+.user b{display:block;font-weight:500;line-height:1.2}
+.user small{color:#9FB2CC;font-size:11px;line-height:1.2}
+
+/* Emergency banner */
+.alert{display:none;background:var(--red);color:#fff;padding:8px 16px;align-items:center;gap:16px;flex:none}
+.alert.on{display:flex}
+.alert b{font-weight:600}
+.alert button{margin-left:auto;background:#fff;color:var(--red);border:0;border-radius:3px;padding:4px 12px;font-weight:600}
+
+/* Layout */
+main{flex:1;overflow:auto;padding:16px}
+.mod{display:none;max-width:1500px;margin:0 auto}
+.mod.on{display:block}
+.head{display:flex;align-items:flex-end;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.head h1{font-size:18px;font-weight:600;margin:0}
+.head p{margin:2px 0 0;color:var(--muted)}
+.head .spacer{flex:1}
+.stats{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:3px;margin-bottom:12px;flex-wrap:wrap}
+.stat{padding:8px 16px;border-right:1px solid var(--line-2);min-width:130px}
+.stat:last-child{border:0}
+.stat b{font-size:20px;font-weight:600;display:block;line-height:1.2}
+.stat span{color:var(--muted);font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;margin-bottom:12px}
+.panel>h2{margin:0;padding:10px 12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.panel>h2 .spacer{flex:1}
+.bar{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.inp{height:30px;border:1px solid var(--line);border-radius:3px;padding:0 9px;background:#fff;min-width:240px}
+select.inp{min-width:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:28px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:0 12px;color:var(--muted);font-weight:500}
+.chip:hover{border-color:#9AA9BC}
+.chip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip em{font-style:normal;margin-left:6px;opacity:.8}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:1100px){.grid2{grid-template-columns:1fr}.gsearch{width:44px}.gsearch span,.gsearch kbd,.user div,.brand small{display:none}.tab{padding:0 10px}}
+
+/* Buttons */
+.btn{height:28px;border:1px solid var(--line);background:#fff;border-radius:3px;padding:0 11px;font-weight:500}
+.btn:hover:not(:disabled){background:var(--row);border-color:#9AA9BC}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover:not(:disabled){background:#1A5189;border-color:#1A5189}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn.danger:hover:not(:disabled){background:#8C2C22}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.lg{height:34px;padding:0 16px}
+
+/* Tables */
+.tw{overflow:auto;max-height:560px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line-2);white-space:nowrap}
+thead th{position:sticky;top:0;background:#F1F4F8;font-weight:600;color:#3A4658;border-bottom:1px solid var(--line);z-index:1;font-size:12px}
+th.s{cursor:pointer;user-select:none}
+th.s:hover{background:#E8EDF3}
+th.s::after{content:"";display:inline-block;margin-left:6px;border:4px solid transparent;border-top-color:#B3BDCA;border-bottom:0;vertical-align:middle}
+th[aria-sort=ascending]::after{border-top:0;border-bottom:4px solid var(--navy)}
+th[aria-sort=descending]::after{border-top:4px solid var(--navy)}
+tbody tr:hover{background:var(--row)}
+td.w{white-space:normal;min-width:180px}
+td.r,th.r{text-align:right}
+.mut{color:var(--muted)}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.cnt{padding:7px 12px;color:var(--muted);font-size:12px;border-top:1px solid var(--line-2)}
+
+/* Status */
+.tag{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:3px;font-size:12px;font-weight:500}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.t-ok{background:var(--teal-bg);color:var(--teal)}
+.t-wait{background:var(--amber-bg);color:var(--amber)}
+.t-info{background:var(--blue-bg);color:var(--blue)}
+.t-off{background:var(--grey-bg);color:var(--grey)}
+.t-bad{background:var(--red-bg);color:var(--red)}
+.cl{display:flex;align-items:center;gap:6px}
+.cl::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.cl.ok::before{background:var(--teal)}
+.cl.ok{color:var(--text)}
+.cl:not(.ok){color:var(--amber)}
+.acts{display:flex;gap:6px;justify-content:flex-end}
+
+/* Timeline */
+.tl{overflow-x:auto}
+.tl-in{min-width:980px;position:relative}
+.tl-row{display:grid;grid-template-columns:96px 1fr;border-bottom:1px solid var(--line-2);height:60px}
+.tl-row.hd{height:30px;background:#F1F4F8;border-bottom:1px solid var(--line)}
+.tl-or{padding:8px 12px;border-right:1px solid var(--line);font-weight:600}
+.tl-or small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.tl-hd{font-weight:600;padding:8px 12px;border-right:1px solid var(--line);color:#3A4658;font-size:12px}
+.tl-track{position:relative;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/12 - 1px),var(--line-2) calc(100%/12 - 1px),var(--line-2) calc(100%/12))}
+.tl-hours{display:grid;grid-template-columns:repeat(12,1fr);height:100%}
+.tl-hours span{padding:8px 6px;font-size:12px;font-weight:500;color:#3A4658;border-left:1px solid var(--line-2)}
+.blk{position:absolute;top:6px;bottom:6px;border:0;border-left:4px solid;border-radius:2px;padding:3px 8px;text-align:left;overflow:hidden;line-height:1.3}
+.blk b{display:block;font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.blk span{display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.blk:hover{filter:brightness(.96)}
+.b-sched{background:var(--blue-bg);border-color:#4A86C5;color:#17426F}
+.b-prep{background:var(--amber-bg);border-color:#C98A1B;color:#6B4609}
+.b-prog{background:var(--teal-bg);border-color:#2E9A8F;color:#14504B}
+.b-rec{background:#E7E6F4;border-color:#7A76B8;color:#3A3772}
+.b-done{background:var(--grey-bg);border-color:#9AA5B3;color:#4A5565}
+.now{position:absolute;top:30px;bottom:0;width:2px;background:var(--red);z-index:2;pointer-events:none}
+.now::before{content:attr(data-t);position:absolute;top:-30px;left:-20px;background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:2px 6px;border-radius:2px}
+.legend{display:flex;gap:14px;margin-left:auto;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+/* IPTV */
+.emg{display:flex;align-items:center;gap:16px;padding:12px;border:1px solid #D9B1AA;background:#FBF1EF;border-radius:3px;margin-bottom:12px}
+.emg b{display:block}
+.emg p{margin:0;color:var(--muted)}
+.sw{position:relative;width:34px;height:18px;border:0;border-radius:9px;background:#B3BDCA;padding:0;vertical-align:middle}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .12s}
+.sw[aria-checked=true]{background:var(--teal)}
+.sw[aria-checked=true]::after{left:18px}
+.meter{display:inline-block;width:70px;height:6px;background:var(--line-2);border-radius:3px;vertical-align:middle;margin-right:8px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--teal)}
+
+/* Dialog + toast */
+dialog{border:1px solid var(--line);border-radius:4px;padding:0;width:min(480px,92vw);color:var(--text);box-shadow:0 8px 28px rgba(20,35,58,.28)}
+dialog::backdrop{background:rgba(20,35,58,.5)}
+dialog h3{margin:0;padding:14px 16px;font-size:15px;border-bottom:1px solid var(--line)}
+.dbody{padding:16px;display:grid;gap:12px}
+.dbody label{display:grid;gap:4px;font-weight:500}
+.dbody .inp{width:100%;font-weight:400}
+.dbody textarea.inp{height:76px;padding:7px 9px;resize:vertical}
+.dfoot{padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;background:#F6F8FA}
+#pal{width:min(620px,92vw);margin-top:12vh}
+#pal input{width:100%;height:46px;border:0;border-bottom:1px solid var(--line);padding:0 16px;font-size:15px;outline:0}
+#pal ul{list-style:none;margin:0;padding:4px;max-height:50vh;overflow:auto}
+#pal li button{width:100%;display:flex;gap:12px;align-items:center;border:0;background:none;text-align:left;padding:8px 12px;border-radius:3px}
+#pal li button:hover,#pal li button:focus-visible{background:var(--blue-bg)}
+#pal li .k{width:130px;color:var(--muted);font-size:12px;flex:none}
+#pal li small{margin-left:auto;color:var(--muted)}
+#toast{position:fixed;left:16px;bottom:16px;background:var(--navy);color:#fff;padding:9px 14px;border-radius:3px;display:none;max-width:420px}
+#toast.on{display:block}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><i></i>Insite <small>Portal Internal</small></div>
+  <nav class="tabs" role="tablist" aria-label="Modul">
+    <button class="tab" role="tab" data-mod="discharge" aria-selected="true">Verifikasi Pasien Pulang <span class="n" id="navCount">0</span></button>
+    <button class="tab" role="tab" data-mod="surgery" aria-selected="false">Jadwal Operasi</button>
+    <button class="tab" role="tab" data-mod="iptv" aria-selected="false">Admin IPTV</button>
+  </nav>
+  <div class="spacer"></div>
+  <button class="gsearch" id="openPal" aria-label="Cari di semua modul"><span>Cari pasien, kamar, kanal</span><kbd>Ctrl K</kbd></button>
+  <div class="user"><div class="av">RN</div><div><b>Ratna Nugraha</b><small>Koordinator Pelayanan</small></div></div>
+</header>
+
+<div class="alert" id="alert" role="alert">
+  <b>Siaran darurat aktif</b><span id="alertTxt"></span>
+  <button id="stopEmg">Hentikan siaran darurat</button>
+</div>
+
+<main>
+<!-- MODULE 1 -->
+<section class="mod on" id="discharge">
+  <div class="head">
+    <div><h1>Verifikasi pasien pulang</h1><p>Antrean kelengkapan administrasi sebelum pasien meninggalkan bangsal.</p></div>
+    <div class="spacer"></div>
+  </div>
+  <div class="stats" id="dStats"></div>
+  <div class="panel">
+    <div class="bar">
+      <input class="inp" id="dQ" type="search" placeholder="Cari nama, No. RM, bangsal" aria-label="Cari antrean">
+      <select class="inp" id="dWard" aria-label="Filter bangsal"></select>
+      <div class="chips" id="dChips"></div>
+    </div>
+    <div class="tw"><table id="dT"></table></div>
+    <div class="cnt" id="dCnt"></div>
+  </div>
+</section>
+
+<!-- MODULE 2 -->
+<section class="mod" id="surgery">
+  <div class="head">
+    <div><h1>Jadwal operasi</h1><p>Kamar operasi hari ini, Rabu 7 Oktober 2026.</p></div>
+    <div class="legend">
+      <span><i style="background:#4A86C5"></i>Terjadwal</span><span><i style="background:#C98A1B"></i>Persiapan</span>
+      <span><i style="background:#2E9A8F"></i>Berlangsung</span><span><i style="background:#7A76B8"></i>Pemulihan</span><span><i style="background:#9AA5B3"></i>Selesai</span>
+    </div>
+  </div>
+  <div class="stats" id="sStats"></div>
+  <div class="panel"><h2>Linimasa kamar operasi <span class="spacer"></span><span class="mut" style="font-weight:400">Klik blok untuk menyaring tabel</span></h2><div class="tl" id="tl"></div></div>
+  <div class="panel">
+    <div class="bar">
+      <input class="inp" id="sQ" type="search" placeholder="Cari pasien, prosedur, dokter" aria-label="Cari jadwal operasi">
+      <div class="chips" id="sChips"></div>
+    </div>
+    <div class="tw"><table id="sT"></table></div>
+    <div class="cnt" id="sCnt"></div>
+  </div>
+</section>
+
+<!-- MODULE 3 -->
+<section class="mod" id="iptv">
+  <div class="head"><div><h1>Admin IPTV</h1><p>Kanal hiburan, loop siaran, dan tampilan pengumuman di bangsal.</p></div></div>
+  <div class="emg">
+    <div><b>Siaran darurat</b><p>Menimpa seluruh tampilan pada bangsal yang dipilih sampai dihentikan secara manual.</p></div>
+    <button class="btn danger lg" id="emgBtn" style="margin-left:auto">Siarkan pengumuman darurat</button>
+  </div>
+  <div class="stats" id="iStats"></div>
+  <div class="grid2">
+    <div class="panel"><h2>Daftar kanal <span class="spacer"></span><button class="btn" id="addCh">Tambah kanal</button></h2><div class="tw" style="max-height:340px"><table id="cT"></table></div></div>
+    <div class="panel"><h2>Loop siaran - Rawat inap umum <span class="spacer"></span><select class="inp" id="loopSel" aria-label="Pilih loop"><option>Rawat inap umum</option><option>VIP dan suite</option><option>Ruang tunggu</option></select></h2><div class="tw" style="max-height:340px"><table id="lT"></table></div></div>
+  </div>
+  <div class="panel">
+    <div class="bar"><input class="inp" id="iQ" type="search" placeholder="Cari bangsal atau playlist" aria-label="Cari tampilan"><div class="chips" id="iChips"></div></div>
+    <div class="tw"><table id="iT"></table></div>
+    <div class="cnt" id="iCnt"></div>
+  </div>
+</section>
+</main>
+
+<dialog id="revD">
+  <form method="dialog">
+    <h3>Minta revisi</h3>
+    <div class="dbody">
+      <div id="revWho" class="mut"></div>
+      <label>Bagian yang perlu diperbaiki
+        <select class="inp" id="revItem"><option>Farmasi</option><option>Kasir</option><option>Resume medis</option></select></label>
+      <label>Catatan untuk petugas<textarea class="inp" id="revNote" placeholder="Contoh: Retur obat belum tercatat"></textarea></label>
+    </div>
+    <div class="dfoot"><button class="btn" value="x">Batal</button><button class="btn pri" id="revOk" value="ok">Kirim revisi</button></div>
+  </form>
+</dialog>
+
+<dialog id="emgD">
+  <form method="dialog">
+    <h3>Siarkan pengumuman darurat</h3>
+    <div class="dbody">
+      <label>Jenis<select class="inp" id="emgType"><option>Kode biru</option><option>Evakuasi kebakaran</option><option>Gempa bumi</option><option>Pengumuman lain</option></select></label>
+      <label>Tujuan<select class="inp" id="emgTarget"></select></label>
+      <label>Isi pesan<textarea class="inp" id="emgMsg">Harap tetap tenang dan ikuti arahan petugas rumah sakit.</textarea></label>
+    </div>
+    <div class="dfoot"><button class="btn" value="x">Batal</button><button class="btn danger" id="emgOk" value="ok">Siarkan sekarang</button></div>
+  </form>
+</dialog>
+
+<dialog id="pal"><input id="palQ" placeholder="Cari pasien, nomor RM, prosedur, kanal, bangsal" aria-label="Pencarian global"><ul id="palList"></ul></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+/* Data contoh. Pada implementasi nyata, ganti dengan respons API. */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const hm=s=>{const[a,b]=s.split(':');return +a*60+ +b}, pad=n=>String(n).padStart(2,'0'), fmt=m=>pad(Math.floor(m/60))+':'+pad(m%60);
+const NOW=hm('10:20');
+
+const patients=[
+ {n:'Siti Rahmawati',rm:'RM-204811',w:'Melati',b:'3A',ph:1,bi:1,sm:1,t:'09:40',done:0},
+ {n:'Budi Santoso',rm:'RM-198322',w:'Mawar',b:'12',ph:1,bi:0,sm:1,t:'08:55',done:0},
+ {n:'Dewi Anggraini',rm:'RM-207019',w:'Daisy',b:'5B',ph:0,bi:0,sm:1,t:'10:05',done:0},
+ {n:'Ahmad Fauzi',rm:'RM-201554',w:'Melati',b:'7',ph:1,bi:1,sm:0,t:'09:10',done:0},
+ {n:'Lestari Wulandari',rm:'RM-205730',w:'VIP',b:'VIP-2',ph:1,bi:1,sm:1,t:'10:12',done:0},
+ {n:'Hendra Gunawan',rm:'RM-199874',w:'Mawar',b:'4',ph:1,bi:1,sm:1,t:'07:50',done:1},
+ {n:'Maria Magdalena',rm:'RM-206402',w:'Daisy',b:'2A',ph:1,bi:1,sm:1,t:'08:20',done:1},
+ {n:'Rudi Hartono',rm:'RM-203118',w:'ICU',b:'ICU-6',ph:0,bi:1,sm:0,t:'09:55',done:0},
+ {n:'Nurhayati',rm:'RM-208001',w:'Melati',b:'9',ph:1,bi:0,sm:0,t:'10:15',done:0},
+ {n:'Yohanes Pratama',rm:'RM-202276',w:'Daisy',b:'8B',ph:1,bi:1,sm:1,t:'09:25',done:0}
+];
+const pState=p=>p.done?'done':(p.ph&&p.bi&&p.sm?'ready':'pending');
+
+const cases=[
+ {or:1,s:'07:30',d:150,pt:'Hendra Gunawan',rm:'RM-199874',pr:'Laparoskopi kolesistektomi',sg:'dr. Arif Wicaksono, Sp.B',an:'dr. Maya Lestari, Sp.An',st:'Selesai'},
+ {or:1,s:'10:30',d:90,pt:'Siti Rahmawati',rm:'RM-204811',pr:'Herniorafi inguinal',sg:'dr. Arif Wicaksono, Sp.B',an:'dr. Maya Lestari, Sp.An',st:'Persiapan'},
+ {or:1,s:'13:00',d:120,pt:'Agus Salim',rm:'RM-207770',pr:'Apendektomi',sg:'dr. Arif Wicaksono, Sp.B',an:'dr. Dimas Pratama, Sp.An',st:'Terjadwal'},
+ {or:2,s:'08:00',d:180,pt:'Budi Santoso',rm:'RM-198322',pr:'Total knee replacement',sg:'dr. Bambang Hartono, Sp.OT',an:'dr. Dimas Pratama, Sp.An',st:'Berlangsung'},
+ {or:2,s:'11:30',d:120,pt:'Wahyu Nugroho',rm:'RM-206091',pr:'ORIF femur',sg:'dr. Bambang Hartono, Sp.OT',an:'dr. Maya Lestari, Sp.An',st:'Terjadwal'},
+ {or:2,s:'14:00',d:90,pt:'Fitri Handayani',rm:'RM-208114',pr:'Arthroscopy bahu',sg:'dr. Bambang Hartono, Sp.OT',an:'dr. Dimas Pratama, Sp.An',st:'Terjadwal'},
+ {or:3,s:'07:30',d:90,pt:'Maria Magdalena',rm:'RM-206402',pr:'Histerektomi',sg:'dr. Laila Kusuma, Sp.OG',an:'dr. Rina Sari, Sp.An',st:'Selesai'},
+ {or:3,s:'09:15',d:75,pt:'Ahmad Fauzi',rm:'RM-201554',pr:'Kuretase',sg:'dr. Laila Kusuma, Sp.OG',an:'dr. Rina Sari, Sp.An',st:'Pemulihan'},
+ {or:3,s:'11:00',d:150,pt:'Dewi Lestari',rm:'RM-207312',pr:'Seksio sesarea',sg:'dr. Laila Kusuma, Sp.OG',an:'dr. Rina Sari, Sp.An',st:'Terjadwal'},
+ {or:4,s:'09:00',d:150,pt:'Rudi Hartono',rm:'RM-203118',pr:'Kraniotomi evakuasi hematoma',sg:'dr. Teguh Prakoso, Sp.BS',an:'dr. Maya Lestari, Sp.An',st:'Berlangsung'},
+ {or:4,s:'12:30',d:60,pt:'Siska Amelia',rm:'RM-207955',pr:'Burr hole',sg:'dr. Teguh Prakoso, Sp.BS',an:'dr. Dimas Pratama, Sp.An',st:'Terjadwal'},
+ {or:4,s:'14:30',d:120,pt:'Hasan Basri',rm:'RM-208203',pr:'Laminektomi L4-L5',sg:'dr. Teguh Prakoso, Sp.BS',an:'dr. Rina Sari, Sp.An',st:'Terjadwal'},
+ {or:5,s:'08:30',d:45,pt:'Nurul Aini',rm:'RM-205118',pr:'Fakoemulsifikasi OD',sg:'dr. Yulia Rahman, Sp.M',an:'dr. Rina Sari, Sp.An',st:'Selesai'},
+ {or:5,s:'09:30',d:45,pt:'Kartini',rm:'RM-204490',pr:'Fakoemulsifikasi OS',sg:'dr. Yulia Rahman, Sp.M',an:'dr. Rina Sari, Sp.An',st:'Selesai'},
+ {or:5,s:'10:15',d:60,pt:'Joko Widodo',rm:'RM-206877',pr:'Vitrektomi',sg:'dr. Yulia Rahman, Sp.M',an:'dr. Dimas Pratama, Sp.An',st:'Berlangsung'},
+ {or:5,s:'13:00',d:60,pt:'Sri Wahyuni',rm:'RM-207604',pr:'Pterigium eksisi',sg:'dr. Yulia Rahman, Sp.M',an:'dr. Dimas Pratama, Sp.An',st:'Terjadwal'}
+];
+const sCls={Terjadwal:'b-sched',Persiapan:'b-prep',Berlangsung:'b-prog',Pemulihan:'b-rec',Selesai:'b-done'};
+const sTag={Terjadwal:'t-info',Persiapan:'t-wait',Berlangsung:'t-ok',Pemulihan:'t-info',Selesai:'t-off'};
+
+const channels=[
+ {c:1,nm:'TV Rumah Sakit (informasi)',src:'Server internal',ty:'Informasi',on:1},
+ {c:2,nm:'Edukasi kesehatan',src:'Server internal',ty:'Edukasi',on:1},
+ {c:3,nm:'Berita nasional',src:'Satelit',ty:'Hiburan',on:1},
+ {c:4,nm:'Berita daerah',src:'Satelit',ty:'Hiburan',on:1},
+ {c:5,nm:'Film keluarga',src:'Satelit',ty:'Hiburan',on:1},
+ {c:6,nm:'Anak-anak',src:'Satelit',ty:'Hiburan',on:0},
+ {c:7,nm:'Musik instrumental',src:'Server internal',ty:'Relaksasi',on:1},
+ {c:8,nm:'Doa dan renungan',src:'Server internal',ty:'Relaksasi',on:0}
+];
+const loop=[
+ {t:'06:00 - 07:00',c:'Musik instrumental',m:'Putar terus',st:'Aktif'},
+ {t:'07:00 - 07:15',c:'Edukasi kesehatan',m:'Cuci tangan dan pencegahan infeksi',st:'Aktif'},
+ {t:'07:15 - 09:00',c:'TV Rumah Sakit (informasi)',m:'Jam kunjungan, jadwal dokter',st:'Aktif'},
+ {t:'09:00 - 12:00',c:'Berita nasional',m:'Sisipan pengumuman tiap 30 menit',st:'Aktif'},
+ {t:'12:00 - 13:00',c:'Doa dan renungan',m:'Dinonaktifkan sementara',st:'Nonaktif'},
+ {t:'13:00 - 17:00',c:'Film keluarga',m:'Sisipan pengumuman tiap 30 menit',st:'Aktif'},
+ {t:'17:00 - 21:00',c:'Berita daerah',m:'Jam kunjungan sore',st:'Aktif'},
+ {t:'21:00 - 06:00',c:'Musik instrumental',m:'Volume otomatis rendah',st:'Aktif'}
+];
+const displays=[
+ {w:'Melati',tot:24,on:24,pl:'Rawat inap umum',sync:'10:18'},
+ {w:'Mawar',tot:20,on:19,pl:'Rawat inap umum',sync:'10:18'},
+ {w:'Daisy',tot:18,on:18,pl:'Rawat inap umum',sync:'10:17'},
+ {w:'VIP',tot:10,on:10,pl:'VIP dan suite',sync:'10:19'},
+ {w:'ICU',tot:8,on:6,pl:'Informasi saja',sync:'09:41'},
+ {w:'Anak',tot:14,on:11,pl:'Rawat inap umum',sync:'10:02'},
+ {w:'Poliklinik',tot:12,on:12,pl:'Ruang tunggu',sync:'10:19'},
+ {w:'IGD',tot:6,on:4,pl:'Ruang tunggu',sync:'08:30'}
+];
+const dState=d=>d.on===d.tot?'ok':(d.on/d.tot<0.8?'bad':'part');
+
+/* Generic table: sorting, search, chip filter. */
+function makeTable(cfg){
+  const st={k:cfg.sort||null,dir:1,q:'',chip:'all'};
+  const el=$(cfg.el);
+  function rows(){
+    let r=cfg.rows().filter(x=>(st.chip==='all'||cfg.chip(x)===st.chip)&&(!cfg.extra||cfg.extra(x)));
+    if(st.q){const q=st.q.toLowerCase();r=r.filter(x=>cfg.hay(x).toLowerCase().includes(q))}
+    if(st.k){const c=cfg.cols.find(c=>c.k===st.k);r=[...r].sort((a,b)=>{const A=c.v?c.v(a):a[st.k],B=c.v?c.v(b):b[st.k];
+      return (typeof A==='number'&&typeof B==='number'?A-B:String(A).localeCompare(String(B),'id',{numeric:true}))*st.dir})}
+    return r;
+  }
+  function draw(){
+    const r=rows();
+    el.innerHTML='<thead><tr>'+cfg.cols.map(c=>`<th class="${c.sort===false?'':'s'} ${c.cls||''}" data-k="${c.k}" ${st.k===c.k?`aria-sort="${st.dir>0?'ascending':'descending'}"`:''}>${c.h}</th>`).join('')+'</tr></thead><tbody>'+
+      (r.length?r.map(x=>'<tr>'+cfg.cols.map(c=>`<td class="${c.cls||''}">${c.r?c.r(x):x[c.k]}</td>`).join('')+'</tr>').join(''):`<tr><td colspan="${cfg.cols.length}" class="empty">Tidak ada data yang cocok. Ubah kata kunci atau filter.</td></tr>`)+'</tbody>';
+    if(cfg.cnt)$(cfg.cnt).textContent=`Menampilkan ${r.length} dari ${cfg.rows().length} data`;
+    if(cfg.chips){const all=cfg.rows();$(cfg.chips).innerHTML=cfg.chipDefs.map(([k,l])=>`<button class="chip" data-c="${k}" aria-pressed="${st.chip===k}">${l}<em>${k==='all'?all.length:all.filter(x=>cfg.chip(x)===k).length}</em></button>`).join('')}
+    if(cfg.after)cfg.after();
+  }
+  el.addEventListener('click',e=>{const th=e.target.closest('th.s');if(!th)return;const k=th.dataset.k;st.dir=st.k===k?-st.dir:1;st.k=k;draw()});
+  if(cfg.chips)$(cfg.chips).addEventListener('click',e=>{const b=e.target.closest('.chip');if(b){st.chip=b.dataset.c;draw()}});
+  if(cfg.q)$(cfg.q).addEventListener('input',e=>{st.q=e.target.value;draw()});
+  return {draw,st};
+}
+
+/* Modul 1 */
+const cl=(ok,a,b)=>`<span class="cl ${ok?'ok':''}">${ok?a:b}</span>`;
+const dT=makeTable({el:'#dT',cnt:'#dCnt',q:'#dQ',chips:'#dChips',sort:'t',
+  chipDefs:[['all','Semua'],['pending','Menunggu kelengkapan'],['ready','Siap pulang'],['done','Selesai hari ini']],
+  rows:()=>patients,chip:pState,extra:p=>!$('#dWard').value||p.w===$('#dWard').value,
+  hay:p=>[p.n,p.rm,p.w,p.b].join(' '),
+  cols:[
+   {k:'n',h:'Nama pasien',r:p=>`<b>${p.n}</b>`},
+   {k:'rm',h:'No. RM'},
+   {k:'w',h:'Bangsal / Bed',v:p=>p.w+p.b,r:p=>`${p.w} / ${p.b}`},
+   {k:'ph',h:'Farmasi',r:p=>cl(p.ph,'Selesai','Menunggu')},
+   {k:'bi',h:'Kasir',r:p=>cl(p.bi,'Lunas / dijamin','Menunggu')},
+   {k:'sm',h:'Resume medis',r:p=>cl(p.sm,'Ditandatangani','Belum ditandatangani')},
+   {k:'t',h:'Order pulang',cls:'r'},
+   {k:'x',h:'Aksi',sort:false,cls:'r',r:p=>p.done?'<span class="tag t-ok">Terverifikasi</span>':
+     `<div class="acts"><button class="btn" data-rev="${p.rm}">Minta revisi</button><button class="btn pri" data-ver="${p.rm}" ${pState(p)==='ready'?'':'disabled title="Lengkapi farmasi, kasir, dan resume medis terlebih dahulu"'}>Verifikasi</button></div>`}
+  ],
+  after(){
+    const c=k=>patients.filter(p=>pState(p)===k).length;
+    $('#dStats').innerHTML=`<div class="stat"><b>${patients.length}</b><span>Total antrean hari ini</span></div><div class="stat"><b>${c('pending')}</b><span>Menunggu kelengkapan</span></div><div class="stat"><b>${c('ready')}</b><span>Siap diverifikasi</span></div><div class="stat"><b>${c('done')}</b><span>Selesai hari ini</span></div>`;
+    $('#navCount').textContent=c('pending')+c('ready');
+  }
+});
+$('#dWard').innerHTML='<option value="">Semua bangsal</option>'+[...new Set(patients.map(p=>p.w))].sort().map(w=>`<option>${w}</option>`).join('');
+$('#dWard').addEventListener('change',()=>dT.draw());
+let revTarget=null;
+$('#dT').addEventListener('click',e=>{
+  const v=e.target.closest('[data-ver]'),r=e.target.closest('[data-rev]');
+  if(v){const p=patients.find(x=>x.rm===v.dataset.ver);p.done=1;dT.draw();toast(`${p.n} (${p.rm}) terverifikasi. Pasien dapat dipulangkan.`)}
+  if(r){revTarget=patients.find(x=>x.rm===r.dataset.rev);$('#revWho').textContent=`${revTarget.n} - ${revTarget.rm} - ${revTarget.w} / ${revTarget.b}`;$('#revNote').value='';$('#revD').showModal()}
+});
+$('#revD').addEventListener('close',()=>{if($('#revD').returnValue==='ok'&&revTarget)toast(`Permintaan revisi ${$('#revItem').value.toLowerCase()} dikirim untuk ${revTarget.n}.`)});
+
+/* Modul 2 */
+const sT=makeTable({el:'#sT',cnt:'#sCnt',q:'#sQ',chips:'#sChips',sort:'s',
+  chipDefs:[['all','Semua'],['Terjadwal','Terjadwal'],['Persiapan','Persiapan'],['Berlangsung','Berlangsung'],['Pemulihan','Pemulihan'],['Selesai','Selesai']],
+  rows:()=>cases,chip:c=>c.st,hay:c=>Object.values(c).join(' '),
+  cols:[
+   {k:'or',h:'OK',r:c=>`<b>OK ${c.or}</b>`},
+   {k:'s',h:'Mulai',v:c=>hm(c.s),r:c=>`${c.s} - ${fmt(hm(c.s)+c.d)}`},
+   {k:'pt',h:'Pasien',r:c=>`<b>${c.pt}</b> <span class="mut">${c.rm}</span>`},
+   {k:'pr',h:'Prosedur',cls:'w'},
+   {k:'sg',h:'Operator'},{k:'an',h:'Anestesi'},
+   {k:'d',h:'Estimasi',cls:'r',r:c=>`${c.d} menit`},
+   {k:'st',h:'Status',r:c=>`<span class="tag ${sTag[c.st]}">${c.st}</span>`}
+  ],
+  after(){
+    const c=k=>cases.filter(x=>x.st===k).length;
+    $('#sStats').innerHTML=`<div class="stat"><b>${cases.length}</b><span>Total tindakan</span></div><div class="stat"><b>${c('Berlangsung')}</b><span>Sedang berlangsung</span></div><div class="stat"><b>${c('Persiapan')+c('Pemulihan')}</b><span>Persiapan dan pemulihan</span></div><div class="stat"><b>${c('Terjadwal')}</b><span>Belum dimulai</span></div><div class="stat"><b>${c('Selesai')}</b><span>Selesai</span></div>`;
+  }
+});
+(function timeline(){
+  const S=420,H=720; let h='<div class="tl-in"><div class="tl-row hd"><div class="tl-hd">Ruang</div><div class="tl-hours">'+Array.from({length:12},(_,i)=>`<span>${pad(7+i)}:00</span>`).join('')+'</div></div>';
+  for(let o=1;o<=5;o++){
+    h+=`<div class="tl-row"><div class="tl-or">OK ${o}<small>${cases.filter(c=>c.or===o).length} tindakan</small></div><div class="tl-track">`+
+      cases.filter(c=>c.or===o).map(c=>`<button class="blk ${sCls[c.st]}" style="left:${(hm(c.s)-S)/H*100}%;width:calc(${c.d/H*100}% - 2px)" data-rm="${c.rm}" title="${c.pt} - ${c.pr} (${c.s} - ${fmt(hm(c.s)+c.d)}, ${c.st})"><b>${c.pr}</b><span>${c.pt} - ${c.st}</span></button>`).join('')+'</div></div>';
+  }
+  h+='<div class="now" data-t="'+fmt(NOW)+'" style="left:calc(96px + (100% - 96px) * '+((NOW-S)/H)+')"></div></div>';
+  $('#tl').innerHTML=h;
+  $('#tl').addEventListener('click',e=>{const b=e.target.closest('.blk');if(b){$('#sQ').value=b.dataset.rm;$('#sQ').dispatchEvent(new Event('input'))}});
+})();
+
+/* Modul 3 */
+const cT=makeTable({el:'#cT',sort:'c',rows:()=>channels,chip:()=>'all',hay:c=>c.nm,
+  cols:[{k:'c',h:'No.'},{k:'nm',h:'Nama kanal',r:c=>`<b>${c.nm}</b>`},{k:'src',h:'Sumber'},{k:'ty',h:'Jenis'},
+   {k:'on',h:'Tayang',cls:'r',r:c=>`<button class="sw" role="switch" aria-checked="${!!c.on}" aria-label="Tayangkan ${c.nm}" data-ch="${c.c}"></button>`}]});
+const lT=makeTable({el:'#lT',rows:()=>loop,chip:()=>'all',hay:x=>x.c,
+  cols:[{k:'t',h:'Slot waktu',sort:false},{k:'c',h:'Kanal',sort:false,r:x=>`<b>${x.c}</b>`},{k:'m',h:'Konten',sort:false,cls:'w'},{k:'st',h:'Status',sort:false,r:x=>`<span class="tag ${x.st==='Aktif'?'t-ok':'t-off'}">${x.st}</span>`}]});
+let emg=null;
+const iT=makeTable({el:'#iT',cnt:'#iCnt',q:'#iQ',chips:'#iChips',sort:'w',
+  chipDefs:[['all','Semua bangsal'],['ok','Semua online'],['part','Sebagian offline'],['bad','Perlu pemeriksaan']],
+  rows:()=>displays,chip:dState,hay:d=>d.w+' '+d.pl,
+  cols:[
+   {k:'w',h:'Bangsal',r:d=>`<b>${d.w}</b>`},
+   {k:'tot',h:'Layar',cls:'r'},
+   {k:'on',h:'Online',v:d=>d.on/d.tot,r:d=>`<span class="meter"><i style="width:${d.on/d.tot*100}%"></i></span>${d.on} / ${d.tot}`},
+   {k:'pl',h:'Playlist aktif',r:d=>emg&&(emg.t==='Semua bangsal'||emg.t===d.w)?'<span class="tag t-bad">Siaran darurat</span>':d.pl},
+   {k:'sync',h:'Sinkron terakhir',cls:'r'},
+   {k:'s',h:'Status',v:d=>dState(d),r:d=>({ok:'<span class="tag t-ok">Normal</span>',part:'<span class="tag t-wait">Sebagian offline</span>',bad:'<span class="tag t-bad">Perlu diperiksa</span>'})[dState(d)]}
+  ],
+  after(){
+    const T=displays.reduce((a,d)=>a+d.tot,0),O=displays.reduce((a,d)=>a+d.on,0);
+    $('#iStats').innerHTML=`<div class="stat"><b>${T}</b><span>Total layar terpasang</span></div><div class="stat"><b>${O}</b><span>Online</span></div><div class="stat"><b>${T-O}</b><span>Offline</span></div><div class="stat"><b>${channels.filter(c=>c.on).length} / ${channels.length}</b><span>Kanal tayang</span></div>`;
+  }
+});
+$('#cT').addEventListener('click',e=>{const b=e.target.closest('.sw');if(!b)return;const c=channels.find(x=>x.c==b.dataset.ch);c.on=c.on?0:1;cT.draw();iT.draw();toast(`Kanal ${c.c} ${c.nm} ${c.on?'ditayangkan':'dihentikan'}.`)});
+$('#addCh').addEventListener('click',()=>toast('Formulir tambah kanal akan dihubungkan ke API manajemen kanal.'));
+$('#loopSel').addEventListener('change',e=>{$('#lT').closest('.panel').querySelector('h2').firstChild.textContent='Loop siaran - '+e.target.value+' '});
+$('#emgTarget').innerHTML='<option>Semua bangsal</option>'+displays.map(d=>`<option>${d.w}</option>`).join('');
+$('#emgBtn').addEventListener('click',()=>$('#emgD').showModal());
+$('#emgD').addEventListener('close',()=>{
+  if($('#emgD').returnValue!=='ok')return;
+  emg={ty:$('#emgType').value,t:$('#emgTarget').value};
+  $('#alertTxt').textContent=`${emg.ty} - tujuan: ${emg.t}`;$('#alert').classList.add('on');iT.draw();
+});
+$('#stopEmg').addEventListener('click',()=>{emg=null;$('#alert').classList.remove('on');iT.draw();toast('Siaran darurat dihentikan. Playlist normal dilanjutkan.')});
+
+/* Navigasi modul: seksi hanya disembunyikan, sehingga filter, sort, dan pencarian tetap tersimpan. */
+function go(m){
+  $$('.mod').forEach(s=>s.classList.toggle('on',s.id===m));
+  $$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.mod===m));
+  history.replaceState(null,'','#'+m);
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.mod)));
+if(['discharge','surgery','iptv'].includes(location.hash.slice(1)))go(location.hash.slice(1));
+
+/* Pencarian global (Ctrl+K) */
+const pal=$('#pal');
+function index(){
+  return [
+   ...patients.map(p=>({m:'discharge',k:'Pasien pulang',t:p.n,s:`${p.rm} - ${p.w} / ${p.b}`,q:p.rm})),
+   ...cases.map(c=>({m:'surgery',k:'Jadwal operasi',t:`${c.pt} - ${c.pr}`,s:`OK ${c.or} - ${c.s}`,q:c.rm})),
+   ...channels.map(c=>({m:'iptv',k:'Kanal IPTV',t:c.nm,s:`Kanal ${c.c}`,q:''})),
+   ...displays.map(d=>({m:'iptv',k:'Tampilan bangsal',t:d.w,s:`${d.on}/${d.tot} online`,q:d.w}))
+  ];
+}
+function palDraw(){
+  const q=$('#palQ').value.toLowerCase().trim(),all=index();
+  const r=(q?all.filter(i=>(i.t+i.s+i.k).toLowerCase().includes(q)):all.slice(0,8)).slice(0,30);
+  $('#palList').innerHTML=r.length?r.map((i,n)=>`<li><button data-i="${n}"><span class="k">${i.k}</span>${i.t}<small>${i.s}</small></button></li>`).join(''):'<li class="empty">Tidak ada hasil untuk kata kunci ini.</li>';
+  $('#palList').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=r[b.dataset.i];pal.close();go(i.m);
+    const box={discharge:'#dQ',surgery:'#sQ',iptv:'#iQ'}[i.m];if(i.q&&box){$(box).value=i.q;$(box).dispatchEvent(new Event('input'))}};
+}
+function openPal(){$('#palQ').value='';palDraw();pal.showModal();$('#palQ').focus()}
+$('#openPal').addEventListener('click',openPal);
+$('#palQ').addEventListener('input',palDraw);
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPal()}});
+
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3500)}
+
+[dT,sT,cT,lT,iT].forEach(t=>t.draw());
+</script>
+</body>
+</html>

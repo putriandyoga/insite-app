@@ -1,113 +1,100 @@
 @import "tailwindcss";
+
 @plugin "daisyui";
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Clinical Enterprise Color Palette: Trust, Cleanliness, Readability */
+  --color-primary: #0284c7; /* Sky Blue / Medical Blue yang profesional */
+  --color-primary-content: #ffffff;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --color-secondary: #0ea5e9; /* Light Ocean Secondary */
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #38bdf8; /* Bright Accent */
+  --color-accent-content: #ffffff;
+
+  --color-neutral: #1e293b; /* Slate 800 for strong text/borders */
+  --color-neutral-content: #f8fafc;
+
+  /* Steril, bersih, dan kontras tinggi untuk latar belakang */
+  --color-base-100: #ffffff; /* Pure white canvas */
+  --color-base-200: #f1f5f9; /* Slate 100 untuk background card/sidebar */
+  --color-base-300: #e2e8f0; /* Slate 200 untuk border halus */
+  --color-base-content: #0f172a; /* Slate 900 untuk teks utama (high contrast) */
+
+  --color-info: #3b82f6;
+  --color-success: #10b981; /* Hijau indikator stabil */
+  --color-warning: #f59e0b; /* Kuning peringatan */
+  --color-error: #ef4444; /* Merah darurat/kritis */
+
+  /* Diperkecil agar lebih rapi, profesional, dan padat (Enterprise UI standard) */
+  --radius-box: 0.75rem; /* 12px untuk card (tidak terlalu bulat) */
+  --radius-btn: 0.5rem; /* 8px untuk tombol */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+@plugin "daisyui/theme" {
+  name: "dark";
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
+  /* Dark Mode Profesional untuk Ruang Jaga / Shift Malam */
+  --color-primary: #38bdf8;
+  --color-primary-content: #0f172a;
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  --color-secondary: #0284c7;
+  --color-secondary-content: #f8fafc;
+
+  --color-accent: #0ea5e9;
+  --color-accent-content: #f8fafc;
+
+  --color-neutral: #334155;
+  --color-neutral-content: #f8fafc;
+
+  --color-base-100: #0f172a; /* Slate 900 (Deep dark background) */
+  --color-base-200: #1e293b; /* Slate 800 (Card background) */
+  --color-base-300: #334155; /* Slate 700 (Borders) */
+  --color-base-content: #f8fafc; /* White text */
+
+  --color-info: #60a5fa;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+
+  --radius-box: 0.75rem;
+  --radius-btn: 0.5rem;
 }
 
-body {
-  margin: 0;
+@theme {
+  --font-header: var(--font-header), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-caption: var(--font-caption), sans-serif;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+@utility heading-h1 {
+  @apply text-2xl sm:text-3xl md:text-4xl font-header font-bold tracking-tight leading-tight;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+@utility heading-h2 {
+  @apply text-xl sm:text-2xl md:text-3xl font-header font-semibold tracking-tight leading-snug;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+@utility heading-h3 {
+  @apply text-lg sm:text-xl md:text-2xl font-header font-semibold tracking-tight leading-snug;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+@utility heading-h4 {
+  @apply text-base sm:text-lg text-base-content font-header font-semibold leading-snug;
+}
+
+@utility text-body {
+  @apply text-sm md:text-base font-body text-base-content/90 leading-relaxed;
+}
+
+@utility text-caption {
+  @apply text-[11px] md:text-xs font-caption text-base-content/60 tracking-wide leading-normal;
+}
+
+@utility text-data {
+  @apply text-xs font-caption font-semibold tracking-wider text-base-content/80 font-mono;
 }

@@ -56,15 +56,15 @@ export default function DashboardLayout() {
 
   const moduleSidebar = sidebarMap[lookupKey] ?? [];
   const moduleHeader = headerMap[lookupKey] ?? {
-    title: "Ciputra Mitra Hospital Nexus",
-    subtitle: "Connecting all internal systems",
+    title: "Insite Ciputra Mitra Hospital",
+    // subtitle: "All systems in sight.",
   };
 
   const dynamicSidebar = [...menuItems, ...moduleSidebar];
 
   const toggleTheme = () => {
     const isDark = theme === "dark" || theme.endsWith("-dark");
-    const base = theme.endsWith("-dark") ? theme.replace(/-dark$/, "") : theme;
+    // const base = theme.endsWith("-dark") ? theme.replace(/-dark$/, "") : theme;
 
     // Sesuaikan dengan logic tema modul Anda
     setTheme(isDark ? "light" : "dark");

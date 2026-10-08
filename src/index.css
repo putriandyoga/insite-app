@@ -7,21 +7,21 @@
   default: true;
 
   /* Clinical Enterprise Color Palette: Trust, Cleanliness, Readability */
-  --color-primary: #0284c7; /* Sky Blue / Medical Blue yang profesional */
+  --color-primary: #0284c7; /* Sky Blue / Medical Blue (Utama) */
   --color-primary-content: #ffffff;
 
-  --color-secondary: #0ea5e9; /* Light Ocean Secondary */
+  --color-secondary: #06b6d4; /* Cyan Terang & Segar untuk Aksi Sekunder */
   --color-secondary-content: #ffffff;
 
-  --color-accent: #38bdf8; /* Bright Accent */
+  --color-accent: #6366f1; /* Violet Lembut yang cerah untuk Penyorot */
   --color-accent-content: #ffffff;
 
-  --color-neutral: #1e293b; /* Slate 800 for strong text/borders */
+  --color-neutral: #334155; /* Slate 700 agar teks netral tidak terlalu pekat/gelap mati */
   --color-neutral-content: #f8fafc;
 
   /* Steril, bersih, dan kontras tinggi untuk latar belakang */
   --color-base-100: #ffffff; /* Pure white canvas */
-  --color-base-200: #f1f5f9; /* Slate 100 untuk background card/sidebar */
+  --color-base-200: #f8fafc; /* Slate 50 (Sangat terang dan bersih untuk background card) */
   --color-base-300: #e2e8f0; /* Slate 200 untuk border halus */
   --color-base-content: #0f172a; /* Slate 900 untuk teks utama (high contrast) */
 
@@ -30,8 +30,7 @@
   --color-warning: #f59e0b; /* Kuning peringatan */
   --color-error: #ef4444; /* Merah darurat/kritis */
 
-  /* Diperkecil agar lebih rapi, profesional, dan padat (Enterprise UI standard) */
-  --radius-box: 0.75rem; /* 12px untuk card (tidak terlalu bulat) */
+  --radius-box: 0.75rem; /* 12px untuk card */
   --radius-btn: 0.5rem; /* 8px untuk tombol */
 }
 
@@ -42,13 +41,13 @@
   --color-primary: #38bdf8;
   --color-primary-content: #0f172a;
 
-  --color-secondary: #0284c7;
-  --color-secondary-content: #f8fafc;
+  --color-secondary: #22d3ee; /* Cyan Terang untuk Dark Mode */
+  --color-secondary-content: #0f172a;
 
-  --color-accent: #0ea5e9;
-  --color-accent-content: #f8fafc;
+  --color-accent: #818cf8; /* Violet Terang untuk Dark Mode */
+  --color-accent-content: #0f172a;
 
-  --color-neutral: #334155;
+  --color-neutral: #475569;
   --color-neutral-content: #f8fafc;
 
   --color-base-100: #0f172a; /* Slate 900 (Deep dark background) */
@@ -64,7 +63,6 @@
   --radius-box: 0.75rem;
   --radius-btn: 0.5rem;
 }
-
 @theme {
   --font-header: var(--font-header), sans-serif;
   --font-body: var(--font-body), sans-serif;

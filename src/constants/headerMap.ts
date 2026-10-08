@@ -5,8 +5,8 @@ export interface HeaderContent {
 
 export const headerMap: Record<string, HeaderContent> = {
   dashboard: {
-    title: "Ciputra Mitra Hospital Nexus",
-    subtitle: "Connecting all internal systems",
+    title: "Insite",
+    subtitle: "All systems in sight.",
   },
   inventory: {
     title: "Inventory Module",

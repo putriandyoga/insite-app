@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { showAlert } from "@/components/Swal";
+import { showAlert } from "@/components/Alert";
 
 export function useLogout() {
   const navigate = useNavigate();

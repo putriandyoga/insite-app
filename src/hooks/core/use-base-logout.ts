@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
+import { ApiError } from "@/services/api/apiError";
 import { showAlert } from "@/components/Alert";
 
 interface UseBaseLogoutOptions {
@@ -13,7 +14,7 @@ interface UseBaseLogoutOptions {
 
 export function useBaseLogout({
   logoutFn,
-  redirectTo = "/login",
+  redirectTo = "/",
   successTitle = "Berhasil Keluar",
   successText = "Anda telah keluar dari sistem.",
 }: UseBaseLogoutOptions = {}) {
@@ -21,23 +22,43 @@ export function useBaseLogout({
   const { logout: clearStore } = useAuthStore();
   const [loading, setLoading] = useState(false);
 
-  const handleLogout = async () => {
+  const logout = async () => {
+    const confirmResult = await showAlert({
+      title: "Apakah Anda yakin ingin logout?",
+      text: "Anda akan keluar dari aplikasi dan perlu login kembali untuk mengaksesnya.",
+      icon: "warning",
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: "Keluar",
+      cancelButtonText: "Batal",
+      onClose: () => {},
+    });
+
+    if (!confirmResult) return;
+
     setLoading(true);
     try {
-      // 1. Tembak API logout backend jika disediakan (opsional untuk cookie/token cleanup)
       if (logoutFn) {
         await logoutFn();
       }
     } catch (err: unknown) {
-      // Walaupun API logout gagal (misal network error / token expired),
-      // kita tetap harus membersihkan local session demi keamanan user.
-      console.warn("Gagal menghubungi server saat logout:", err);
+      const errorMessage =
+        err instanceof ApiError
+          ? err.message
+          : "Terjadi kesalahan saat menghubungi server.";
+
+      await showAlert({
+        title: "Gagal Keluar",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "Coba Lagi",
+        showConfirmButton: true,
+      });
+      return;
     } finally {
-      // 2. Bersihkan state Zustand & localStorage
       clearStore();
       setLoading(false);
 
-      // 3. Tampilkan pesan dan arahkan ke halaman login
       await showAlert({
         title: successTitle,
         text: successText,
@@ -49,8 +70,5 @@ export function useBaseLogout({
     }
   };
 
-  return {
-    logout: handleLogout,
-    loading,
-  };
+  return { logout, loading };
 }

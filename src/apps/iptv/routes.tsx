@@ -1,6 +1,13 @@
+import { ModuleLogoutSync } from "@/components/ModuleLogoutSync";
 import PermissionRoute from "@/routes/PermissionRoute";
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
+import { useIptvLogout } from "./hooks/auth/use-logout";
+
+function IptvSyncWrapper() {
+  const { logout } = useIptvLogout();
+  return <ModuleLogoutSync moduleName="iptv" logoutFn={logout} />;
+}
 
 // Lazy loading halaman-halaman modul IPTV secara terpusat & optimal
 // const Dashboard = lazy(() => import("./pages/DashboardPage"));
@@ -25,6 +32,7 @@ const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 
 export const iptvRoutes: RouteObject = {
   path: "iptv",
+  element: <IptvSyncWrapper />,
   children: [
     {
       element: <PermissionRoute />,

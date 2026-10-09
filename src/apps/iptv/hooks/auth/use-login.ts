@@ -55,10 +55,7 @@
 
 //   return { loginUser };
 // }
-import {
-  iptvAuthService,
-  //   type IptvLoginResponse,
-} from "@iptv/services/iptvAuthService";
+import { iptvAuthService } from "@iptv/services/iptvAuthService";
 import { useBaseLogin } from "@/hooks/core/use-base-login";
 
 export function useLogin() {
@@ -68,7 +65,7 @@ export function useLogin() {
     transformUser: (result) => ({
       id: result.user.id,
       email: `${result.user.username}@iptv.local`,
-      token: "COOKIE_SESSION_ACTIVE", // Tidak pakai token JSON, pakai cookie
+      token: "COOKIE_SESSION_ACTIVE",
       role: result.user.role,
       permissions: [],
     }),

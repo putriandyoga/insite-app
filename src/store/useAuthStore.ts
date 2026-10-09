@@ -1,13 +1,13 @@
+// C:\Project\Production\insite-react\src\store\useAuthStore.ts
 import { create } from "zustand";
 import { decrypt, encrypt } from "@/utils/secureStorage";
-// import type { Permission } from "@/services/auth/authService";
 
 export interface UserData {
   id: string;
-  email: string;
+  email?: string;
+  username?: string; // <-- Ditambahkan agar mendukung IPTV / login berbasis username
   token: string;
   role: string;
-  // permissions: Permission[];
   permissions: any[];
 }
 

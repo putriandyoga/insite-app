@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
@@ -6,6 +6,8 @@ import {
   Sun,
   House,
   Menu,
+  LogOut,
+  User,
 } from "lucide-react";
 import { useMemo } from "react";
 import { sidebarMap } from "@/constants/sidebarMap";
@@ -16,14 +18,17 @@ import { useAutoModuleTheme } from "@/hooks/use-automatic-theme";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { SidebarItem } from "@/components/Sidebar";
 import SideMenu from "@/components/SideMenu";
+import { useAuthStore } from "@/store/useAuthStore";
+import { logoutMap } from "@/constants/logoutMap";
 
 export default function DashboardLayout() {
   useAutoModuleTheme();
   //   const { handleLogout } = useLogout();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const location = useLocation();
   const { theme, setTheme } = useThemeStore();
-
+  const { logout: clearStore, user } = useAuthStore();
   // Menggunakan Zustand untuk state UI (Sidebar & Collapse)
   const {
     collapsed,
@@ -68,6 +73,23 @@ export default function DashboardLayout() {
 
     // Sesuaikan dengan logic tema modul Anda
     setTheme(isDark ? "light" : "dark");
+  };
+
+  const handleDynamicLogout = async () => {
+    try {
+      const logoutFn = logoutMap[lookupKey] ?? logoutMap.default;
+      if (logoutFn) {
+        await logoutFn();
+      }
+    } catch (err) {
+      console.warn("Gagal logout dari server:", err);
+    } finally {
+      // Bersihkan state lokal (Zustand & localStorage)
+      clearStore();
+
+      // Langsung arahkan ke halaman utama / portal index
+      navigate("/", { replace: true });
+    }
   };
   return (
     <div className="flex h-screen bg-base-200">
@@ -187,7 +209,37 @@ export default function DashboardLayout() {
                 <Moon size={20} />
               )}
             </button>
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="flex items-center gap-3 p-2 rounded-xl hover:bg-base-200 transition-all cursor-pointer"
+              >
+                <div className="w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-primary/60 flex items-center justify-center text-primary-content shadow-md">
+                  <User size={20} />
+                </div>
+                {user?.username && (
+                  <span className="text-sm font-medium hidden md:inline">
+                    {user.username}
+                  </span>
+                )}
+              </div>
 
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu bg-base-100 rounded-xl z-1 w-52 p-2 shadow-xl border border-base-300 mt-2"
+              >
+                <li>
+                  <button
+                    onClick={handleDynamicLogout}
+                    className="flex items-center gap-2 text-error hover:bg-error hover:text-error-content w-full"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
             {/* <div className="dropdown dropdown-end">
               <div
                 tabIndex={0}

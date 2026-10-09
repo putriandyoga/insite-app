@@ -15,6 +15,7 @@ import PortalLayout from "@/layout/PortalLayout";
 // import { ticketingRoutes } from "@ticketing/routes";
 // import { surveyRoutes } from "@survey/routes";
 // import { queueRoutes } from "@queue/routes";
+import { iptvRoutes } from "@/apps/iptv/routes";
 
 function Loadable<T extends React.ComponentType<any>>(
   Component: React.LazyExoticComponent<T>,
@@ -51,10 +52,10 @@ export const router = createBrowserRouter([
 
   // 2. AREA PROTECTED / SETELAH LOGIN (Menggunakan prefix /app agar rapi dan tidak konflik dengan /)
   {
-    element: <ProtectedRoute />,
+    // element: <ProtectedRoute />,
     children: [
       {
-        element: <PermissionRoute />,
+        // element: <PermissionRoute />,
         children: [
           {
             path: "/app",
@@ -68,6 +69,7 @@ export const router = createBrowserRouter([
               // ticketingRoutes,
               // surveyRoutes,
               // queueRoutes,
+              iptvRoutes,
             ],
           },
         ],

@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import ActionCard from "@/components/ActionCard";
 import type { dashboardCards } from "@/constants/dashboardCardMap";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type DashboardCard = (typeof dashboardCards)[number];
 
@@ -21,6 +22,7 @@ export default function TitleSection({
   delay = 0,
 }: TitleSectionProps) {
   const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   return (
     <motion.section
@@ -42,13 +44,19 @@ export default function TitleSection({
             >
               {title}
             </h2>
-            <p className="text-xs text-base-content/60">{description}</p>
+            {/* Subtitle / description di-hide saat mobile */}
+            {!isMobile && (
+              <p className="text-xs text-base-content/60">{description}</p>
+            )}
           </div>
         </div>
 
-        <span className="rounded-md border border-base-300 bg-base-100 px-2.5 py-1 text-xs font-medium tabular-nums text-base-content/70">
-          {cards.length} modul
-        </span>
+        {/* Badge hitung modul di-hide saat mobile */}
+        {!isMobile && (
+          <span className="rounded-md border border-base-300 bg-base-100 px-2.5 py-1 text-xs font-medium tabular-nums text-base-content/70">
+            {cards.length} modul
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">

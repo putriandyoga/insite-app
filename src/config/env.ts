@@ -1,21 +1,22 @@
-/**
- * Helper to get environment variables.
- * It prioritizes runtime config (window.configs) injected by Docker,
- * and falls back to build-time config (import.meta.env).
- */
-export const getEnv = (key: string, defaultValue: string = ""): string => {
-  // Try runtime config first
-  if (window.configs && window.configs[key]) {
-    return window.configs[key];
+export const getEnv = (key: string, defaultValue = ""): string => {
+  // 1. Runtime config
+  if (typeof window !== "undefined") {
+    const runtimeValue = window.configs?.[key];
+
+    if (runtimeValue !== undefined && runtimeValue !== "") {
+      return runtimeValue;
+    }
   }
 
-  // Try import.meta.env next
+  // 2. Build-time config dari Vite
   const viteKey = key.startsWith("VITE_") ? key : `VITE_${key}`;
-  const viteValue = ((import.meta as any).env as Record<string, any>)[viteKey];
 
-  if (viteValue !== undefined) {
+  const viteValue = import.meta.env[viteKey as keyof ImportMetaEnv];
+
+  if (viteValue !== undefined && viteValue !== "") {
     return String(viteValue);
   }
 
+  // 3. Default value
   return defaultValue;
 };

@@ -34,6 +34,11 @@ function Loadable<T extends React.ComponentType<any>>(
 const PortalPage = Loadable(lazy(() => import("@/pages/PortalPage"))); // Halaman utama (/) berisi card pilihan menu & login
 const DashboardPage = Loadable(lazy(() => import("@/pages/DashboardPage")));
 
+// IPTV Pages
+const IptvLoginPage = Loadable(
+  lazy(() => import("@iptv/pages/auth/LoginPage")),
+);
+
 export const router = createBrowserRouter([
   // 1. AREA GUEST / PUBLIK (Akses awal saat belum login)
   {
@@ -44,6 +49,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/", element: <PortalPage /> },
           { path: "/dashboard", element: <DashboardPage /> }, // Otomatis terbungkus header & footer portal
+          { path: "/app/iptv/login", element: <IptvLoginPage /> },
         ],
       },
       // { path: "/login/antrian", element: <LoginQueuePage /> },

@@ -1,6 +1,6 @@
 import { useTableFilters } from "@/hooks/use-table-filters";
-import { useStationList } from "../../hooks/station/use-station-list";
-import { useStationStore } from "../../store/stationStore";
+import { useStationList } from "@iptv/hooks/station/use-station-list";
+import { useStationStore } from "@iptv/store/stationStore";
 export default function StationPage() {
   // 1. Panggil hook Zustand store di sini
   const stationStore = useStationStore();

@@ -20,8 +20,8 @@ import type { RouteObject } from "react-router-dom";
 // );
 
 // const LogHistoryPage = lazy(() => import("./pages/log-history/LogHistoryPage"));
-
-const StationPage = lazy(() => import("./pages/station/StationPage"));
+// const LoginPage = lazy(() => import("@iptv/pages/auth/LoginPage"));
+const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 
 export const iptvRoutes: RouteObject = {
   path: "iptv",
@@ -29,6 +29,10 @@ export const iptvRoutes: RouteObject = {
     {
       element: <PermissionRoute />,
       children: [
+        // {
+        //   path: "login",
+        //   element: <LoginPage />,
+        // },
         { index: true, element: <StationPage /> },
         {
           path: "dashboard",

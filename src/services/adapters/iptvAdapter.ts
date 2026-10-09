@@ -1,29 +1,26 @@
-import type { CrudAdapter, PaginationResult } from "@/types/common";
+import type {
+  CrudAdapter,
+  PaginatedParams,
+  PaginationResult,
+} from "@/services/types/common";
+import {
+  normalizeList,
+  normalizeDetail,
+} from "@/services/normalizers/responseNormalizer";
+import { normalizePagination } from "@/services/normalizers/paginationNormalizer";
 
 export const iptvAdapter: CrudAdapter = {
-  normalizePagination: <T>(response: any): PaginationResult<T> => {
-    // Response dari IPTV membungkus items & pagination di dalam properti 'data'
-    const resultData = response.data || response;
-    const pagination = resultData.pagination || {};
-
-    return {
-      items: resultData.items || [],
-      total: pagination.total || 0,
-      currentPage: pagination.current_page || 1,
-      lastPage: pagination.last_page || 1,
-      perPage: pagination.per_page || 20,
-      from: pagination.from,
-      to: pagination.to,
-    };
+  normalizePagination<T>(
+    response: unknown,
+    params?: PaginatedParams,
+  ): PaginationResult<T> {
+    return normalizePagination<T>(
+      response,
+      params?.page ?? 1,
+      params?.per_page ?? 10,
+    );
   },
 
-  normalizeList: <T>(response: any): T[] => {
-    const resultData = response.data || response;
-    return resultData.items || resultData || [];
-  },
-
-  normalizeDetail: <T>(response: any): T => {
-    const resultData = response.data || response;
-    return resultData.item || resultData;
-  },
+  normalizeList,
+  normalizeDetail,
 };

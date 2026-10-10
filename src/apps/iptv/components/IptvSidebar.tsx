@@ -1,4 +1,4 @@
-import type { SidebarItem } from "@/components/Sidebar";
+import type { SidebarItem } from "@/components/SidebarItem";
 import {
   LayoutDashboard,
   Tv,

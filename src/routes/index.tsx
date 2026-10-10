@@ -9,6 +9,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import DashboardLayout from "@/layout/DashboardLayout";
 import PortalLayout from "@/layout/PortalLayout";
 import { iptvRoutes } from "@/apps/iptv/routes";
+import { patientVerificationRoutes } from "@/apps/patient-verification/routes";
 
 function Loadable<T extends React.ComponentType<any>>(
   Component: React.LazyExoticComponent<T>,
@@ -32,8 +33,15 @@ const UnauthorizedPage = Loadable(
 // Portal page
 const PortalPage = Loadable(lazy(() => import("@/pages/PortalPage")));
 const DashboardPage = Loadable(lazy(() => import("@/pages/DashboardPage")));
+
+// IPTV page
 const IptvLoginPage = Loadable(
   lazy(() => import("@iptv/pages/auth/LoginPage")),
+);
+
+// Patient verification page
+const PatientVerificationLoginPage = Loadable(
+  lazy(() => import("@patient-verification/pages/auth/LoginPage")),
 );
 
 export const router = createBrowserRouter([
@@ -47,6 +55,10 @@ export const router = createBrowserRouter([
           { path: "/", element: <PortalPage /> },
           { path: "/portal", element: <PortalPage /> },
           { path: "/app/iptv/login", element: <IptvLoginPage /> },
+          {
+            path: "/app/patient-verification/login",
+            element: <PatientVerificationLoginPage />,
+          },
         ],
       },
     ],
@@ -64,7 +76,8 @@ export const router = createBrowserRouter([
             element: <DashboardLayout />,
             children: [
               { index: true, element: <DashboardPage /> },
-              iptvRoutes, // Jalur /app/iptv/station Anda aman di sini
+              iptvRoutes, // Jalur /app/iptv/station
+              patientVerificationRoutes,
             ],
           },
         ],

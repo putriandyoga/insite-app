@@ -1,24 +1,15 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
-import { useMemo } from "react";
 import { headerMap } from "@/constants/headerMap";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAutoModuleTheme } from "@/hooks/use-automatic-theme";
+import { useModuleKey } from "@/hooks/use-module-key";
 
 export default function PortalLayout() {
   useAutoModuleTheme();
   const location = useLocation();
   const { theme, setTheme } = useThemeStore();
-
-  // Parse URL parts secara dinamis untuk lookup header modul portal
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-
-  const lookupKey = useMemo(() => {
-    if (pathSegments[0] === "client" && pathSegments[1]) {
-      return `client-${pathSegments[1]}`;
-    }
-    return pathSegments[0] || "";
-  }, [pathSegments]);
+  const lookupKey = useModuleKey();
 
   const moduleHeader = headerMap[lookupKey] ?? {
     title: "Insite Ciputra Mitra Hospital",

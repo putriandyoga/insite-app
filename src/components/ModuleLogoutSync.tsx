@@ -1,10 +1,10 @@
-// C:\Project\Production\insite-react\src\components\core\ModuleLogoutSync.tsx
+// src/components/core/ModuleLogoutSync.tsx
 import { useEffect } from "react";
 import { useModuleLogoutStore } from "@/store/useModuleLogoutStore";
 
 interface ModuleLogoutSyncProps {
   moduleName: string;
-  logoutFn: () => Promise<unknown>;
+  logoutFn: () => Promise<any>; // <-- Ubah dari unknown menjadi any atau void
 }
 
 export function ModuleLogoutSync({
@@ -20,5 +20,5 @@ export function ModuleLogoutSync({
     };
   }, [moduleName, logoutFn, register, unregister]);
 
-  return null; // Komponen ini hanya mendaftarkan logic di background, tidak merender UI apa pun
+  return null;
 }

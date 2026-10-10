@@ -44,7 +44,11 @@ export function normalizeApiError(error: unknown): ApiError {
     const responseData: unknown = error.response?.data;
     const payload = isRecord(responseData) ? responseData : {};
 
+    // Ambil meta jika ada (untuk struktur backend yang membungkus di dalam meta)
+    const meta = isRecord(payload.meta) ? payload.meta : {};
+
     const message =
+      (typeof meta.message === "string" && meta.message) || // <-- Cek meta.message dulu (untuk Patient Verification)
       (typeof payload.message === "string" && payload.message) ||
       (typeof payload.error === "string" && payload.error) ||
       error.message ||
@@ -52,7 +56,12 @@ export function normalizeApiError(error: unknown): ApiError {
 
     return new ApiError(message, {
       status: error.response?.status,
-      code: typeof payload.code === "string" ? payload.code : error.code,
+      code:
+        typeof meta.code === "number" || typeof meta.code === "string"
+          ? String(meta.code)
+          : typeof payload.code === "string"
+            ? payload.code
+            : error.code,
       errors: payload.errors,
       data: payload.data,
     });

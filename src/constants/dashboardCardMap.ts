@@ -14,7 +14,7 @@ export const dashboardCards = [
     icon: UserCheck,
     title: "Patient Verification",
     description: "Verifikasi data identitas dan status kepesertaan pasien.",
-    path: "/app/patient/verification",
+    path: "/app/patient-verification/login",
   },
 
   // Client-specific dashboard card

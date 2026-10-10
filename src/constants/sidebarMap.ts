@@ -1,3 +1,4 @@
+import { iptvSidebar } from "@/apps/iptv/components/IptvSidebar";
 import type { SidebarItem } from "@/components/Sidebar";
 // import { casesSidebar } from "@/apps/cases/components/IncidentSidebar";
 // import { eventSidebar } from "@/apps/event/components/EventSidebar";
@@ -7,6 +8,8 @@ import type { SidebarItem } from "@/components/Sidebar";
 // import { clientTicketingSidebar } from "@/apps/ticketing/components/client/ClientTicketingSidebar";
 
 export const sidebarMap: Record<string, SidebarItem[]> = {
+  "app/iptv": iptvSidebar,
+  iptv: iptvSidebar,
   // cases: casesSidebar,
   // event: eventSidebar,
   // ticketing: ticketingSidebar,

@@ -7,7 +7,7 @@ export const dashboardCards = [
     title: "IPTV Dashboard",
     description:
       "Kelola siaran, tayangan, dan perangkat IPTV secara real-time.",
-    path: "/app/iptv/dashboard",
+    path: "/app/iptv/login",
   },
   {
     color: "secondary",

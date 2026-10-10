@@ -13,6 +13,15 @@ interface CreateApiClientOptions {
   handleUnauthorized?: boolean;
   tokenStorageKey?: string;
   loginPath?: string;
+  useLocalStorageToken?: boolean;
+  tokenCookieName?: string; // Nama cookie yang menyimpan token
+}
+
+// Helper untuk membaca nilai cookie berdasarkan nama di sisi client
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
 }
 
 export interface ApiClient {
@@ -36,7 +45,9 @@ export function createApiClient(
     withCredentials = false,
     handleUnauthorized = true,
     tokenStorageKey = "user",
-    loginPath = "/login",
+    loginPath = "/",
+    useLocalStorageToken = true,
+    tokenCookieName,
   } = options;
 
   const api = axios.create({
@@ -64,27 +75,38 @@ export function createApiClient(
     }
   };
 
+  // Request Interceptor: Menambahkan Authorization Bearer secara dinamis (Cookie / LocalStorage)
   api.interceptors.request.use((request) => {
     if (typeof window === "undefined") return request;
 
     try {
-      const storedUser = localStorage.getItem(tokenStorageKey);
+      // 1. Jika tokenCookieName diset, ambil token langsung dari Cookie browser
+      if (tokenCookieName) {
+        const cookieToken = getCookie(tokenCookieName);
+        if (cookieToken) {
+          request.headers.set("Authorization", `Bearer ${cookieToken}`);
+        }
+      }
+      // 2. Jika menggunakan localStorage dan diizinkan, ambil dari storage
+      else if (useLocalStorageToken) {
+        const storedUser = localStorage.getItem(tokenStorageKey);
 
-      if (storedUser) {
-        const parsedUser = decrypt<{ token?: string }>(storedUser);
+        if (storedUser) {
+          const parsedUser = decrypt<{ token?: string }>(storedUser);
 
-        if (parsedUser?.token) {
-          request.headers.set("Authorization", `Bearer ${parsedUser.token}`);
+          if (parsedUser?.token) {
+            request.headers.set("Authorization", `Bearer ${parsedUser.token}`);
+          }
         }
       }
     } catch (error) {
-      // Jangan menggagalkan request hanya karena token lokal gagal dibaca.
-      console.warn("Gagal membaca token lokal.", error);
+      console.warn("Gagal membaca token otentikasi.", error);
     }
 
     return request;
   });
 
+  // Response Interceptor: Menangani 401 Unauthorized
   api.interceptors.response.use(
     (response) => response,
     (error: unknown) => {
@@ -100,8 +122,11 @@ export function createApiClient(
           // Storage mungkin tidak tersedia di lingkungan tertentu.
         }
 
-        if (window.location.pathname !== loginPath) {
-          window.location.assign(loginPath);
+        if (
+          window.location.pathname !== "/401" &&
+          window.location.pathname !== loginPath
+        ) {
+          window.location.assign("/401");
         }
       }
 

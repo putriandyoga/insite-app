@@ -4,17 +4,10 @@ import { IndicatorLoading } from "@/components/IndicatorLoading";
 
 // Rute & Layout Pendukung
 import GuestRoute from "./GuestRoute";
-import PermissionRoute from "./PermissionRoute";
+// import PermissionRoute from "./PermissionRoute"; // Dimatikan
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardLayout from "@/layout/DashboardLayout";
 import PortalLayout from "@/layout/PortalLayout";
-
-// Sub-apps (di-uncomment jika sudah siap digunakan)
-// import { casesRoutes } from "@cases/routes";
-// import { eventRoutes } from "@event/routes";
-// import { ticketingRoutes } from "@ticketing/routes";
-// import { surveyRoutes } from "@survey/routes";
-// import { queueRoutes } from "@queue/routes";
 import { iptvRoutes } from "@/apps/iptv/routes";
 
 function Loadable<T extends React.ComponentType<any>>(
@@ -31,16 +24,20 @@ function Loadable<T extends React.ComponentType<any>>(
   };
 }
 
-const PortalPage = Loadable(lazy(() => import("@/pages/PortalPage"))); // Halaman utama (/) berisi card pilihan menu & login
-const DashboardPage = Loadable(lazy(() => import("@/pages/DashboardPage")));
+// Error page
+const UnauthorizedPage = Loadable(
+  lazy(() => import("@/pages/error/UnauthorizedPage")),
+);
 
-// IPTV Pages
+// Portal page
+const PortalPage = Loadable(lazy(() => import("@/pages/PortalPage")));
+const DashboardPage = Loadable(lazy(() => import("@/pages/DashboardPage")));
 const IptvLoginPage = Loadable(
   lazy(() => import("@iptv/pages/auth/LoginPage")),
 );
 
 export const router = createBrowserRouter([
-  // 1. AREA GUEST / PUBLIK (Akses awal saat belum login)
+  // 1. AREA GUEST / PUBLIK
   {
     element: <GuestRoute />,
     children: [
@@ -48,108 +45,31 @@ export const router = createBrowserRouter([
         element: <PortalLayout />,
         children: [
           { path: "/", element: <PortalPage /> },
-          { path: "/dashboard", element: <DashboardPage /> }, // Otomatis terbungkus header & footer portal
+          { path: "/portal", element: <PortalPage /> },
           { path: "/app/iptv/login", element: <IptvLoginPage /> },
         ],
       },
-      // { path: "/login/antrian", element: <LoginQueuePage /> },
     ],
   },
 
-  // 2. AREA PROTECTED / SETELAH LOGIN (Menggunakan prefix /app agar rapi dan tidak konflik dengan /)
+  // 2. AREA PROTECTED / SETELAH LOGIN
   {
-    // element: <ProtectedRoute />,
+    element: <ProtectedRoute />, // Pastikan ini aktif agar token terbaca & tidak terlempar
     children: [
       {
-        // element: <PermissionRoute />,
+        // element: <PermissionRoute />, // <-- Dimatikan karena tidak digunakan
         children: [
           {
             path: "/app",
             element: <DashboardLayout />,
             children: [
-              { index: true, element: <DashboardPage /> }, // Ini akan merender ke /app
-
-              // Sub-apps (aktifkan kembali baris di bawah jika modulnya sudah di-import)
-              // casesRoutes,
-              // eventRoutes,
-              // ticketingRoutes,
-              // surveyRoutes,
-              // queueRoutes,
-              iptvRoutes,
+              { index: true, element: <DashboardPage /> },
+              iptvRoutes, // Jalur /app/iptv/station Anda aman di sini
             ],
           },
         ],
       },
     ],
   },
-  // { path: "*", element: <NotFoundPage /> },
+  { path: "/401", element: <UnauthorizedPage /> },
 ]);
-// import { createBrowserRouter } from "react-router-dom";
-// import { lazy, Suspense } from "react";
-// import { IndicatorLoading } from "@/components/IndicatorLoading";
-
-// // Rute & Layout Pendukung
-// import GuestRoute from "./GuestRoute";
-// import PermissionRoute from "./PermissionRoute";
-// import ProtectedRoute from "./ProtectedRoute";
-// import DashboardLayout from "@/layout/DashboardLayout";
-
-// // Sub-apps (di-uncomment jika sudah siap digunakan)
-// // import { casesRoutes } from "@cases/routes";
-// // import { eventRoutes } from "@event/routes";
-// // import { ticketingRoutes } from "@ticketing/routes";
-// // import { surveyRoutes } from "@survey/routes";
-// // import { queueRoutes } from "@queue/routes";
-
-// function Loadable<T extends React.ComponentType<any>>(
-//   Component: React.LazyExoticComponent<T>,
-// ) {
-//   return function WrappedLoadable(props: React.ComponentProps<T>) {
-//     return (
-//       <Suspense
-//         fallback={<IndicatorLoading fullscreen text="Memuat Halaman..." />}
-//       >
-//         <Component {...props} />
-//       </Suspense>
-//     );
-//   };
-// }
-
-// const DashboardPage = Loadable(lazy(() => import("@/pages/DashboardPage")));
-
-// export const router = createBrowserRouter([
-//   {
-//     element: <GuestRoute />,
-//     children: [
-//       // { path: "/login", element: <LoginPage /> },
-//       // { path: "/login/antrian", element: <LoginQueuePage /> },
-//       { path: "/dashboard", element: <DashboardPage /> },
-//     ],
-//   },
-//   {
-//     element: <ProtectedRoute />,
-//     children: [
-//       {
-//         element: <PermissionRoute />,
-//         children: [
-//           {
-//             path: "/",
-//             element: <DashboardLayout />,
-//             children: [
-//               // { index: true, element: <DashboardPage /> },
-//               { path: "dashboard", element: <DashboardPage /> },
-
-//               // Sub-apps (aktifkan kembali baris di bawah jika modulnya sudah di-import)
-//               // casesRoutes,
-//               // eventRoutes,
-//               // ticketingRoutes,
-//               // surveyRoutes,
-//               // queueRoutes,
-//             ],
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   // { path: "*", element: <NotFoundPage /> },
-// ]);

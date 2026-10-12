@@ -23,6 +23,9 @@ const RoomPage = lazy(() => import("@iptv/pages/master/room/RoomPage"));
 const RoomFormPage = lazy(() => import("@iptv/pages/master/room/RoomFormPage"));
 const BedPage = lazy(() => import("@iptv/pages/master/bed/BedPage"));
 
+// User Page
+const UserPage = lazy(() => import("@iptv/pages/user/UserPage"));
+
 export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
@@ -55,6 +58,13 @@ export const iptvRoutes: RouteObject = {
     {
       path: "bed",
       children: [{ index: true, element: <BedPage /> }],
+    },
+    {
+      path: "user",
+      children: [
+        { index: true, element: <UserPage /> },
+        { path: "create", element: <RoomFormPage /> },
+      ],
     },
     {
       path: "device",

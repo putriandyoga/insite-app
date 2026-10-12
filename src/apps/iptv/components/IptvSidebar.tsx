@@ -58,7 +58,7 @@ export const iptvSidebar: SidebarItem[] = [
   },
   {
     label: "Manajemen User",
-    to: "/app/iptv/users",
+    to: "/app/iptv/user",
     icon: <Users size={20} />,
   },
 ];

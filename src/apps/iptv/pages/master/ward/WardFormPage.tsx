@@ -18,18 +18,25 @@ const WardFormPage = () => {
   return (
     <div className="flex flex-col gap-4 max-w-full">
       {/* Header */}
-      <div>
-        <Breadcrumb
-          items={[
-            { label: "Home", path: "/dashboard" },
-            { label: "Dashboard", path: "/queue/dashboard" },
-            { label: "Ruang Perawatan", path: "/queue/ward" },
-            {
-              label: isEditMode ? "Edit" : "Buat",
-            },
-          ]}
-        />
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full py-1">
+        <div className="overflow-x-auto min-w-0">
+          <Breadcrumb
+            items={[
+              { label: "Home", path: "/" },
+              { label: "Dashboard", path: "/app/iptv/dashboard" },
+              { label: "Ruang Perawatan", path: "/app/iptv/ward" },
+              {
+                label: isEditMode ? "Edit" : "Buat",
+              },
+            ]}
+          />
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="h-8"></div>
+        </div>
       </div>
+
       <FormSection title="Data Ruang Perawatan" icon={Hospital} color="primary">
         <FormInput
           label="Nama"

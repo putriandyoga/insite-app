@@ -106,37 +106,40 @@ body {
   @apply text-xs font-caption font-semibold tracking-wider text-base-content/80 font-mono;
 }
 
-/* 1. DEFAULT GLOBAL: Sembunyikan semua scrollbar (vertikal & horizontal) di seluruh halaman */
-/* 1. DEFAULT GLOBAL: Sembunyikan semua scrollbar */
+/* 1. DEFAULT GLOBAL: Sembunyikan scrollbar vertikal pada halaman utama */
 * {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 *::-webkit-scrollbar {
-  display: none;
+  width: 0px;
+  height: 0px;
 }
 
-/* 2. KELAS KHUSUS HORIZONTAL SCROLL (Hanya aktif di desktop / layar besar, atau sesuai kebutuhan) */
-@media (min-width: 768px) {
-  .custom-horizontal-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: thin;
-    -ms-overflow-style: auto;
-  }
+/* 2. KELAS KHUSUS HORIZONTAL SCROLL (Muncul otomatis saat ada konten melebar / mobile & desktop) */
+.custom-horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
 
-  .custom-horizontal-scroll::-webkit-scrollbar {
-    display: block;
-    height: 6px; /* Ketebalan scrollbar horizontal */
-  }
+.custom-horizontal-scroll::-webkit-scrollbar {
+  display: block;
+  height: 5px;
+}
 
-  .custom-horizontal-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
+.custom-horizontal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  .custom-horizontal-scroll::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-  }
+.custom-horizontal-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.dark .custom-horizontal-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.25);
 }

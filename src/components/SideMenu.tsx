@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import SidebarItemComponent, {
   type SidebarItem,
   type OpenMenusState,
-} from "./Sidebar";
+} from "./SidebarItem";
 import { useAuthStore } from "@/store/useAuthStore";
 import { hasPermission } from "@/utils/hasPermission";
+import { ENABLE_SIDEBAR_PERMISSION } from "@/config/featureFlags"; // <-- Import flag
 
 interface SideMenuProps {
   menuItems: SidebarItem[];
@@ -52,8 +53,20 @@ export default function SideMenu({ menuItems, collapsed }: SideMenuProps) {
     return false;
   };
 
-  // Filter menu berdasarkan permission user (menggunakan useAuthStore)
+  // Filter menu yang fleksibel berdasarkan feature flag
   const filteredMenuItems = useMemo(() => {
+    // Jika fitur permission NONAKTIF, berikan akses penuh ke semua menu
+    if (!ENABLE_SIDEBAR_PERMISSION) {
+      const grantAllAccess = (items: SidebarItem[]): SidebarItem[] =>
+        items.map((item) => ({
+          ...item,
+          hasAccess: true,
+          children: item.children ? grantAllAccess(item.children) : undefined,
+        }));
+      return grantAllAccess(menuItems);
+    }
+
+    // Jika fitur permission AKTIF, jalankan logika penyaringan aslinya
     if (!user) return menuItems.filter((item) => !item.permission);
 
     const filterMenu = (items: SidebarItem[]): SidebarItem[] => {

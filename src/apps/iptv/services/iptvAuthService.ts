@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\services\modules\iptvAuthService.ts
 import { iptvApi } from "@/services/api/endpoints";
 import { normalizeDetail } from "@/services/normalizers/responseNormalizer";
 
@@ -24,6 +23,7 @@ interface IptvSession {
 }
 
 export interface IptvLoginResponse {
+  token: string; // <-- Ditambahkan di sini
   user: IptvUser;
   session: IptvSession;
 }
@@ -36,7 +36,6 @@ export const iptvAuthService = {
       payload,
     );
 
-    // normalizeDetail akan otomatis membuka bungkus envelope { meta, data: { user, session } }
     return normalizeDetail<IptvLoginResponse>(response);
   },
 

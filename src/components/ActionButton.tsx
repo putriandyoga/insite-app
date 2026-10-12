@@ -57,7 +57,7 @@ const ActionButton = ({
 
   const content = (
     <span
-      className={`relative z-10 flex items-center min-w-0 w-full ${
+      className={`relative  flex items-center min-w-0 w-full ${
         iconPosition === "start" ? "justify-start" : "justify-center"
       } gap-2 text-sm font-medium`}
     >

@@ -64,7 +64,7 @@ export function normalizeApiError(error: unknown): ApiError {
     return new ApiError(message, {
       status: error.response?.status,
       code:
-        typeof meta.code === "number"
+        typeof meta.code === "number" || typeof meta.code === "string"
           ? String(meta.code)
           : typeof payload.code === "string"
             ? payload.code

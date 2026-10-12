@@ -105,3 +105,38 @@ body {
 @utility text-data {
   @apply text-xs font-caption font-semibold tracking-wider text-base-content/80 font-mono;
 }
+
+/* 1. DEFAULT GLOBAL: Sembunyikan semua scrollbar (vertikal & horizontal) di seluruh halaman */
+/* 1. DEFAULT GLOBAL: Sembunyikan semua scrollbar */
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* 2. KELAS KHUSUS HORIZONTAL SCROLL (Hanya aktif di desktop / layar besar, atau sesuai kebutuhan) */
+@media (min-width: 768px) {
+  .custom-horizontal-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+  }
+
+  .custom-horizontal-scroll::-webkit-scrollbar {
+    display: block;
+    height: 6px; /* Ketebalan scrollbar horizontal */
+  }
+
+  .custom-horizontal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-horizontal-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+}

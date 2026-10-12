@@ -1,5 +1,5 @@
 import { useBaseList } from "@/hooks/core/use-base-list";
-import type { StationItem } from "@iptv/types/stationTypes";
+import type { StationItem } from "@/apps/iptv/types/stationTypes";
 import type { PaginatedParams } from "@/types/common";
 import { stationService } from "@iptv/services/stationService";
 import { queryKeys } from "@/utils/queryKeys";

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Pasien</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --header-height: 64px;
+        --footer-height: 44px;
+        --primary: #2563eb;
+        --border: #e5e7eb;
+        --background: #f8fafc;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: #1f2937;
+        background: var(--background);
+      }
+
+      /* Header aplikasi selalu terlihat */
+      .app-header {
+        position: fixed;
+        inset: 0 0 auto 0;
+        height: var(--header-height);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        background: white;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .brand {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .user {
+        color: #475569;
+        font-size: 14px;
+      }
+
+      /* Footer aplikasi selalu terlihat */
+      .app-footer {
+        position: fixed;
+        inset: auto 0 0 0;
+        height: var(--footer-height);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        background: white;
+        border-top: 1px solid var(--border);
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      /* Area ini yang discroll */
+      .app-main {
+        position: fixed;
+        top: var(--header-height);
+        bottom: var(--footer-height);
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+
+      .page-content {
+        padding: 24px;
+      }
+
+      .page-title {
+        margin: 0 0 6px;
+        font-size: 24px;
+      }
+
+      .page-description {
+        margin: 0 0 24px;
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      /* Filter ikut menghilang saat scroll */
+      .filter-panel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      input,
+      select {
+        min-width: 180px;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        background: var(--primary);
+        color: white;
+        cursor: pointer;
+      }
+
+      /* Container tabel */
+      .table-container {
+        overflow: visible;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        text-align: left;
+      }
+
+      /* Header tabel menempel saat halaman discroll */
+      thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 14px 16px;
+        background: #f1f5f9;
+        border-bottom: 1px solid #cbd5e1;
+        white-space: nowrap;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      tbody td {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      tbody tr:hover {
+        background: #f8fafc;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #dcfce7;
+        color: #166534;
+        font-size: 12px;
+      }
+
+      .table-info {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px;
+        color: #64748b;
+        font-size: 13px;
+      }
+
+      @media (max-width: 640px) {
+        .page-content {
+          padding: 16px;
+        }
+
+        .filter-panel {
+          flex-direction: column;
+        }
+
+        input,
+        select,
+        button {
+          width: 100%;
+        }
+
+        .table-container {
+          overflow-x: auto;
+        }
+
+        table {
+          min-width: 700px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="app-header">
+      <div class="brand">CMH · Data Pasien</div>
+      <div class="user">Administrator</div>
+    </header>
+
+    <main class="app-main">
+      <div class="page-content">
+        <h1 class="page-title">Data Pasien</h1>
+        <p class="page-description">
+          Kelola dan pantau data pasien rumah sakit.
+        </p>
+
+        <section class="filter-panel">
+          <input type="search" id="search" placeholder="Cari nama pasien..." />
+
+          <select id="statusFilter">
+            <option value="">Semua status</option>
+            <option value="Aktif">Aktif</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+
+          <button type="button" id="reset">Reset Filter</button>
+        </section>
+
+        <section class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>No. Rekam Medis</th>
+                <th>Nama Pasien</th>
+                <th>Poliklinik</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody id="patientRows"></tbody>
+          </table>
+
+          <div class="table-info">
+            <span id="resultCount">Memuat data...</span>
+            <span>Data Pasien</span>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">© 2026 Ciputra Mitra Hospital</footer>
+
+    <script>
+      const patients = Array.from({ length: 60 }, (_, i) => ({
+        no: i + 1,
+        rm: `RM-${String(i + 1).padStart(5, "0")}`,
+        name: [
+          "Andi Saputra",
+          "Siti Rahmawati",
+          "Budi Santoso",
+          "Dewi Anggraini",
+          "Rizky Pratama",
+        ][i % 5],
+        clinic: ["Poli Umum", "Poli Anak", "Poli Gigi", "Poli Penyakit Dalam"][
+          i % 4
+        ],
+        date: "12-10-2026",
+        status: i % 3 === 0 ? "Selesai" : "Aktif",
+      }));
+
+      const rows = document.getElementById("patientRows");
+      const search = document.getElementById("search");
+      const statusFilter = document.getElementById("statusFilter");
+      const resultCount = document.getElementById("resultCount");
+
+      function renderTable() {
+        const keyword = search.value.toLowerCase().trim();
+        const status = statusFilter.value;
+
+        const filtered = patients.filter((patient) => {
+          const matchesSearch =
+            patient.name.toLowerCase().includes(keyword) ||
+            patient.rm.toLowerCase().includes(keyword);
+
+          const matchesStatus = !status || patient.status === status;
+
+          return matchesSearch && matchesStatus;
+        });
+
+        rows.innerHTML = filtered
+          .map(
+            (patient) => `
+        <tr>
+          <td>${patient.no}</td>
+          <td>${patient.rm}</td>
+          <td>${patient.name}</td>
+          <td>${patient.clinic}</td>
+          <td>${patient.date}</td>
+          <td>
+            <span class="status">${patient.status}</span>
+          </td>
+        </tr>
+      `,
+          )
+          .join("");
+
+        resultCount.textContent = `Menampilkan ${filtered.length} dari ${patients.length} data`;
+      }
+
+      search.addEventListener("input", renderTable);
+      statusFilter.addEventListener("change", renderTable);
+
+      document.getElementById("reset").addEventListener("click", () => {
+        search.value = "";
+        statusFilter.value = "";
+        renderTable();
+      });
+
+      renderTable();
+    </script>
+  </body>
+</html>

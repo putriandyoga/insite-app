@@ -4,17 +4,31 @@ import { queryKeys } from "@/utils/queryKeys";
 import type { RoomItem } from "@iptv/types/roomTypes";
 import { roomService } from "@iptv/services/roomService";
 
-export function useRoomList(page = 1, title?: string, perPage = 20) {
-  const params = {
+// Definisikan tipe parameter filter yang didukung oleh backend Room
+export interface RoomFilterParams extends PaginatedParams {
+  title?: string;
+  ward_id?: string;
+  status?: string;
+  per_page?: number;
+}
+
+export function useRoomList(
+  page = 1,
+  filters: Omit<RoomFilterParams, "page"> = {},
+  perPage = 20,
+) {
+  const params: RoomFilterParams = {
     page,
-    title,
     per_page: perPage,
+    ...filters, // Menggabungkan semua filter (title, ward_id, status) di sini
   };
 
-  return useBaseList<RoomItem, PaginatedParams>({
+  return useBaseList<RoomItem, RoomFilterParams>({
     queryKey: queryKeys.room.list(params),
 
-    fetcher: roomService.getPaginated,
+    fetcher: (fetcherParams) => {
+      return roomService.getPaginated(fetcherParams);
+    },
 
     params,
   });

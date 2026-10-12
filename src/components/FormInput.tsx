@@ -370,7 +370,7 @@ const FormInput = ({
             </button>
 
             {selectOpen && (
-              <div className="absolute z-10 mt-2 p-2 w-full bg-base-100 border border-base-300 rounded-lg shadow-md flex flex-col gap-2">
+              <div className="absolute z-99 mt-2 p-2 w-full bg-base-100 border border-base-300 rounded-lg shadow-md flex flex-col gap-2">
                 <input
                   type="text"
                   placeholder="Cari..."
@@ -431,7 +431,7 @@ const FormInput = ({
             />
 
             {open && (
-              <div className="absolute mt-1 w-full bg-base-100 border border-base-300 rounded-lg shadow-2xl z-10 max-h-48 overflow-auto">
+              <div className="absolute mt-1 w-full bg-base-100 border border-base-300 rounded-lg shadow-2xl z-99 max-h-48 overflow-auto">
                 {filtered.length > 0 ? (
                   filtered.map((item, i) => (
                     <div

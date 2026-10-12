@@ -13,16 +13,21 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/iptv-api/, ""),
       },
+      "/patient-api": {
+        target: "http://ok-test.local:2024/api/v1",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/patient-api/, ""),
+      },
     },
   },
 
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@apps": path.resolve(__dirname, "./src/apps"),
-      "@iptv": path.resolve(__dirname, "./src/apps/iptv"),
+      "@": path.resolve(import.meta.dirname, "src"),
+      "@apps": path.resolve(import.meta.dirname, "./src/apps"),
+      "@iptv": path.resolve(import.meta.dirname, "./src/apps/iptv"),
       "@patient-verification": path.resolve(
-        __dirname,
+        import.meta.dirname,
         "./src/apps/patient-verification",
       ),
     },

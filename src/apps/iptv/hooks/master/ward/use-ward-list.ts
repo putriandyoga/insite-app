@@ -4,17 +4,29 @@ import { queryKeys } from "@/utils/queryKeys";
 import type { WardItem } from "@iptv/types/wardTypes";
 import { wardService } from "@iptv/services/wardService";
 
-export function useWardList(page = 1, title?: string, perPage = 20) {
-  const params = {
+export interface WardFilterParams extends PaginatedParams {
+  title?: string;
+  status?: string;
+  per_page?: number;
+}
+
+export function useWardList(
+  page = 1,
+  filters: Omit<WardFilterParams, "page"> = {},
+  perPage = 20,
+) {
+  const params: WardFilterParams = {
     page,
-    title,
     per_page: perPage,
+    ...filters,
   };
 
-  return useBaseList<WardItem, PaginatedParams>({
+  return useBaseList<WardItem, WardFilterParams>({
     queryKey: queryKeys.ward.list(params),
 
-    fetcher: wardService.getPaginated,
+    fetcher: (fetcherParams) => {
+      return wardService.getPaginated(fetcherParams);
+    },
 
     params,
   });

@@ -10,6 +10,7 @@ export interface SidebarItem {
   href?: string;
   permission?: string;
   hasAccess?: boolean;
+  enablePermission?: boolean;
 }
 
 export interface OpenMenusState {
@@ -38,8 +39,8 @@ const SidebarItemComponent = ({
   const itemKey = `${parentKey}-${item.label}`;
   const hasChildren = item.children && item.children.length > 0;
 
-  // Jika tidak punya akses dan bukan parent yang punya anak, langsung return null
-  if (!item.hasAccess && !hasChildren) return null;
+  // Sembunyikan item hanya jika hasAccess secara tegas bernilai false dan tidak punya anak
+  if (item.hasAccess === false && !hasChildren) return null;
 
   const active = isPathActive(item);
   const isOpen = openMenus[itemKey] || active;
@@ -109,7 +110,7 @@ const SidebarItemComponent = ({
         {!collapsed && isOpen && (
           <ul className="ml-2 mt-1 space-y-1 animate-in slide-in-from-top-2 duration-300">
             {item
-              .children!.filter((child) => child.hasAccess)
+              .children!.filter((child) => child.hasAccess !== false)
               .map((child) => (
                 <SidebarItemComponent
                   key={`${itemKey}-${child.label}`}
@@ -129,7 +130,7 @@ const SidebarItemComponent = ({
   }
 
   // 2. RENDER UNTUK EXTERNAL LINK
-  if (item.external && item.hasAccess) {
+  if (item.external) {
     return (
       <li key={itemKey}>
         <a
@@ -151,7 +152,7 @@ const SidebarItemComponent = ({
   }
 
   // 3. RENDER UNTUK INTERNAL ROUTE (NAVLINK) BIASA
-  if (item.hasAccess && item.to) {
+  if (item.to) {
     return (
       <li key={itemKey}>
         <NavLink

@@ -16,7 +16,7 @@ import { useUIStore } from "@/store/useUIStore";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAutoModuleTheme } from "@/hooks/use-automatic-theme";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { SidebarItem } from "@/components/Sidebar";
+import type { SidebarItem } from "@/components/SidebarItem";
 import SideMenu from "@/components/SideMenu";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useBaseGlobalLogout } from "@/hooks/core/use-base-global-logout";
@@ -45,7 +45,7 @@ export default function DashboardLayout() {
     () => [
       {
         label: "Home",
-        to: "/dashboard",
+        to: "/",
         icon: <House size={20} />,
       },
     ],
@@ -223,7 +223,9 @@ export default function DashboardLayout() {
             </div>
           </div>
         </header>
-
+        {/* <main className="flex-1 flex flex-col h-screen overflow-hidden p-4 md:p-6 bg-base-200 relative z-0">
+          <Outlet key={location.pathname} />
+        </main> */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-base-200 relative z-0">
           <Outlet key={location.pathname} />
         </main>

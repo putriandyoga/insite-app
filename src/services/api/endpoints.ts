@@ -3,27 +3,26 @@ import { createApiClient } from "./apiClient";
 
 export const authApi = createApiClient(getEnv("VITE_AUTH_API", "/api/v1"));
 
-export const mcuApi = createApiClient(getEnv("VITE_MCU_API", "/api/mcu"));
-
+export const iptvApi = createApiClient(
+  import.meta.env.DEV ? "/iptv-api" : getEnv("VITE_IPTV_API", ""),
+  {
+    withCredentials: false,
+    useLocalStorageToken: true, // Mengaktifkan pembacaan token dari localStorage
+    tokenStorageKey: "user", // Sesuaikan dengan key storage auth IPTV / aplikasi Anda (misal: "user" atau "auth-storage")
+    loginPath: "/app/iptv/login", // Jalur redirect saat 401 Unauthorized
+  },
+);
+// IPTV with cookies
 // export const iptvApi = createApiClient(
 //   import.meta.env.DEV ? "/iptv-api" : getEnv("VITE_IPTV_API", ""),
 //   {
 //     withCredentials: true,
 //     useLocalStorageToken: false,
-//     tokenCookieName: "pulser_user_session", // <-- Mengambil Bearer token dari cookie ini
-//     loginPath: "/app/iptv/login", // <-- Jika 401, lari ke login IPTV, bukan portal utama
+//     loginPath: "/app/iptv/login",
 //   },
 // );
-export const iptvApi = createApiClient(
-  import.meta.env.DEV ? "/iptv-api" : getEnv("VITE_IPTV_API", ""),
-  {
-    withCredentials: true,
-    useLocalStorageToken: false,
-    loginPath: "/app/iptv/login",
-  },
-);
 
-// --- SISIPKAN KEY AKTIF ANDA DI SINI SEMENTARA ---
+// // --- Interceptor sementara IPTV ---
 // iptvApi.api.interceptors.request.use((request) => {
 //   request.headers.set(
 //     "Authorization",
@@ -31,6 +30,16 @@ export const iptvApi = createApiClient(
 //   );
 //   return request;
 // });
-export const patientApi = createApiClient(
-  getEnv("VITE_PATIENT_API", "/api/patient"),
+
+// --- API PATIENT VERIFICATION ---
+export const patientVerificationApi = createApiClient(
+  import.meta.env.DEV
+    ? "/patient-api"
+    : getEnv("VITE_PATIENT_VERIFICATION_API", ""),
+  {
+    withCredentials: false,
+    useLocalStorageToken: true, // Karena menggunakan token dari respons API (Bearer token)
+    tokenStorageKey: "patient_verification_token", // Kunci penyimpanan token di localStorage
+    loginPath: "/app/patient-verification/login", // Jalur redirect saat 401 Unauthorized
+  },
 );

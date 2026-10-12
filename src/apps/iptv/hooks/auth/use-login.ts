@@ -8,7 +8,7 @@ export function useLogin() {
     transformUser: (result) => ({
       id: result.user.id,
       email: `${result.user.username}`,
-      token: "COOKIE_SESSION_ACTIVE",
+      token: result.token,
       role: result.user.role,
       permissions: [],
     }),

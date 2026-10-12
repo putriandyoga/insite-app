@@ -4,6 +4,7 @@ export const queryKeys = {
   station: createQueryKeys("station"),
   ward: createQueryKeys("ward"),
   room: createQueryKeys("room"),
+  bed: createQueryKeys("bed"),
   // survey: createQueryKeys("survey"),
   // unit: createQueryKeys("unit"),
   // submission: createQueryKeys("submission"),

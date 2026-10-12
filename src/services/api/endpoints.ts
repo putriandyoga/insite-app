@@ -24,13 +24,13 @@ export const iptvApi = createApiClient(
 );
 
 // --- SISIPKAN KEY AKTIF ANDA DI SINI SEMENTARA ---
-iptvApi.api.interceptors.request.use((request) => {
-  request.headers.set(
-    "Authorization",
-    "Bearer whzmuj76Mh1Drf3_PUMigrTT-Lv5pwWvi103zBYdvuM",
-  );
-  return request;
-});
+// iptvApi.api.interceptors.request.use((request) => {
+//   request.headers.set(
+//     "Authorization",
+//     "Bearer whzmuj76Mh1Drf3_PUMigrTT-Lv5pwWvi103zBYdvuM",
+//   );
+//   return request;
+// });
 export const patientApi = createApiClient(
   getEnv("VITE_PATIENT_API", "/api/patient"),
 );

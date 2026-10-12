@@ -21,6 +21,7 @@ const WardPage = lazy(() => import("@iptv/pages/master/ward/WardPage"));
 const WardFormPage = lazy(() => import("@iptv/pages/master/ward/WardFormPage"));
 const RoomPage = lazy(() => import("@iptv/pages/master/room/RoomPage"));
 const RoomFormPage = lazy(() => import("@iptv/pages/master/room/RoomFormPage"));
+const BedPage = lazy(() => import("@iptv/pages/master/bed/BedPage"));
 
 export const iptvRoutes: RouteObject = {
   path: "iptv",
@@ -50,6 +51,10 @@ export const iptvRoutes: RouteObject = {
         { index: true, element: <RoomPage /> },
         { path: "create", element: <RoomFormPage /> },
       ],
+    },
+    {
+      path: "bed",
+      children: [{ index: true, element: <BedPage /> }],
     },
     {
       path: "device",

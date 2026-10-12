@@ -16,6 +16,9 @@ function IptvSyncWrapper() {
 
 const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 
+// Master Page
+const WardPage = lazy(() => import("@iptv/pages/master/ward/WardPage"));
+const WardFormPage = lazy(() => import("@iptv/pages/master/ward/WardFormPage"));
 export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
@@ -29,6 +32,14 @@ export const iptvRoutes: RouteObject = {
     {
       path: "station",
       children: [{ index: true, element: <StationPage /> }],
+    },
+    {
+      path: "ward",
+      children: [
+        { index: true, element: <WardPage /> },
+        { path: "create", element: <WardFormPage /> },
+        // { path: ":wardId/edit", element: <WardFormPage /> },
+      ],
     },
     {
       path: "device",

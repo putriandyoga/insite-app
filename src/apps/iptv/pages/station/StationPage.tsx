@@ -1,12 +1,10 @@
+import ActionButton from "@/components/ActionButton";
+import Breadcrumb from "@/components/Breadcrumb";
 import { useTableFilters } from "@/hooks/use-table-filters";
 import { useStationList } from "@iptv/hooks/station/use-station-list";
-// import { useStationStore } from "@iptv/store/stationStore";
+import { PenBox } from "lucide-react";
 
 const StationPage = () => {
-  // 1. Panggil hook Zustand store
-  // const stationStore = useStationStore();
-
-  // 2. Oper store tersebut ke useTableFilters
   const {
     page,
     searchTitle,
@@ -22,7 +20,7 @@ const StationPage = () => {
     },
     {
       searchKey: "title",
-      storeKey: "station-management-page", // Kunci unik agar state aman saat bolak-balik ke detail
+      storeKey: "station-management-page",
     },
   );
 
@@ -33,7 +31,24 @@ const StationPage = () => {
     isFetching,
   } = useStationList(page, debouncedSearch || undefined);
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex flex-col gap-4 max-w-full">
+      <div className="flex flex-col lg:flex-row justify-between gap-4">
+        <Breadcrumb
+          items={[
+            { label: "Home", path: "/" },
+            { label: "Dashboard", path: "/app/iptv/dashboard" },
+            { label: "Survey" },
+          ]}
+        />
+
+        {/* <div className="h-10"></div> */}
+        {/* <ActionButton
+          to="/survey/question/create"
+          icon={PenBox}
+          label="Buat Survey"
+          color="primary"
+        /> */}
+      </div>
       {/* Header Halaman */}
       <div className="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-300 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

@@ -28,9 +28,9 @@ export const iptvSidebar: SidebarItem[] = [
     label: "Master Lokasi",
     icon: <MapPin size={20} />,
     children: [
-      { label: "Daftar Ward", to: "/app/iptv/location/ward" },
-      { label: "Daftar Room", to: "/app/iptv/location/room" },
-      { label: "Daftar Bed", to: "/app/iptv/location/bed" },
+      { label: "Daftar Ward", to: "/app/iptv/ward" },
+      { label: "Daftar Room", to: "/app/iptv/room" },
+      { label: "Daftar Bed", to: "/app/iptv/bed" },
     ],
   },
   {

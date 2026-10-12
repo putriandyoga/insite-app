@@ -7,6 +7,12 @@ export interface ApiErrorPayload {
   code?: string;
   errors?: unknown;
   data?: unknown;
+  meta?: {
+    message?: string;
+    error?: string;
+    code?: number;
+    status?: string;
+  };
 }
 
 export class ApiError extends Error {
@@ -44,7 +50,12 @@ export function normalizeApiError(error: unknown): ApiError {
     const responseData: unknown = error.response?.data;
     const payload = isRecord(responseData) ? responseData : {};
 
+    // Cek apakah ada objek 'meta' di dalam payload respons API
+    const meta = isRecord(payload.meta) ? payload.meta : {};
+
     const message =
+      (typeof meta.message === "string" && meta.message) ||
+      (typeof meta.error === "string" && meta.error) ||
       (typeof payload.message === "string" && payload.message) ||
       (typeof payload.error === "string" && payload.error) ||
       error.message ||
@@ -52,7 +63,12 @@ export function normalizeApiError(error: unknown): ApiError {
 
     return new ApiError(message, {
       status: error.response?.status,
-      code: typeof payload.code === "string" ? payload.code : error.code,
+      code:
+        typeof meta.code === "number"
+          ? String(meta.code)
+          : typeof payload.code === "string"
+            ? payload.code
+            : error.code,
       errors: payload.errors,
       data: payload.data,
     });

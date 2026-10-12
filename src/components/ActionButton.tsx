@@ -43,7 +43,7 @@ const ActionButton = ({
 
   const baseClasses = [
     "relative overflow-hidden flex items-center justify-center gap-2",
-    "px-3 py-2 rounded-xl transition-all duration-300",
+    "px-3 py-2 rounded-lg transition-all duration-300",
     "hover:-translate-y-0.5 min-w-0 shadow-sm hover:shadow-md cursor-pointer",
     buttonStyle,
     color === "neutral" ? "border border-base-300" : "",
@@ -59,7 +59,7 @@ const ActionButton = ({
     <span
       className={`relative z-10 flex items-center min-w-0 w-full ${
         iconPosition === "start" ? "justify-start" : "justify-center"
-      } gap-2 text-body font-medium`}
+      } gap-2 text-sm font-medium`}
     >
       {loading && isProgress ? (
         loadingLabel ? (

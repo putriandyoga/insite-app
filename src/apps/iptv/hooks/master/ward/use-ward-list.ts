@@ -1,0 +1,20 @@
+import { useBaseList } from "@/hooks/core/use-base-list";
+import type { PaginatedParams } from "@/types/common";
+import { queryKeys } from "@/utils/queryKeys";
+import type { WardItem } from "@iptv/types/wardTypes";
+import { wardService } from "@iptv/services/wardService";
+
+export function useWardList(page = 1, title?: string) {
+  const params = {
+    page,
+    title,
+  };
+
+  return useBaseList<WardItem, PaginatedParams>({
+    queryKey: queryKeys.ward.list(params),
+
+    fetcher: wardService.getPaginated,
+
+    params,
+  });
+}

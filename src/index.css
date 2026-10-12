@@ -1,59 +1,68 @@
 @import "tailwindcss";
 
 @plugin "daisyui";
+@font-face {
+  font-family: "Poppins";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Poppins-Regular.ttf") format("truetype");
+}
 
+body {
+  font-family: "Poppins", sans-serif;
+}
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
 
-  /* Clinical Enterprise Color Palette: Trust, Cleanliness, Readability */
-  --color-primary: #0284c7; /* Sky Blue / Medical Blue (Utama) */
+  /* Pastel Cozy Aesthetic (Dipoles lebih rapi & berkarakter) */
+  --color-primary: #60a5fa; /* Blue 400: Dibuat sedikit lebih tegas agar tombol utama cantik & jelas */
   --color-primary-content: #ffffff;
 
-  --color-secondary: #06b6d4; /* Cyan Terang & Segar untuk Aksi Sekunder */
-  --color-secondary-content: #ffffff;
+  --color-secondary: #4ade80; /* Emerald 400: Mint yang lebih segar dan pop */
+  --color-secondary-content: #1e293b;
 
-  --color-accent: #6366f1; /* Violet Lembut yang cerah untuk Penyorot */
+  --color-accent: #a78bfa; /* Violet 400: Sesuai pilihanmu, sudah sangat cantik */
   --color-accent-content: #ffffff;
 
-  --color-neutral: #334155; /* Slate 700 agar teks netral tidak terlalu pekat/gelap mati */
+  --color-neutral: #475569;
   --color-neutral-content: #f8fafc;
 
-  /* Steril, bersih, dan kontras tinggi untuk latar belakang */
-  --color-base-100: #ffffff; /* Pure white canvas */
-  --color-base-200: #f8fafc; /* Slate 50 (Sangat terang dan bersih untuk background card) */
-  --color-base-300: #e2e8f0; /* Slate 200 untuk border halus */
-  --color-base-content: #0f172a; /* Slate 900 untuk teks utama (high contrast) */
+  --color-base-100: #ffffff;
+  --color-base-200: #f8fafc; /* Diubah sedikit agar transisinya lebih bersih */
+  --color-base-300: #e2e8f0;
+  --color-base-content: #1e293b; /* Slate gelap yang lebih mewah dibanding hitam pekat */
 
-  --color-info: #3b82f6;
-  --color-success: #10b981; /* Hijau indikator stabil */
-  --color-warning: #f59e0b; /* Kuning peringatan */
-  --color-error: #ef4444; /* Merah darurat/kritis */
+  --color-info: #38bdf8;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
 
-  --radius-box: 0.75rem; /* 12px untuk card */
-  --radius-btn: 0.5rem; /* 8px untuk tombol */
+  --radius-box: 0.75rem;
+  --radius-btn: 0.5rem;
 }
 
 @plugin "daisyui/theme" {
   name: "dark";
 
-  /* Dark Mode Profesional untuk Ruang Jaga / Shift Malam */
-  --color-primary: #38bdf8;
+  /* Dark Pastel Cozy (Nyaman di mata untuk penggunaan lama) */
+  --color-primary: #93c5fd; /* Kembali ke pilihan aslimu karena sangat pas untuk mode gelap (soft glowing) */
   --color-primary-content: #0f172a;
 
-  --color-secondary: #22d3ee; /* Cyan Terang untuk Dark Mode */
+  --color-secondary: #86efac; /* Mint pastel yang adem di mode gelap */
   --color-secondary-content: #0f172a;
 
-  --color-accent: #818cf8; /* Violet Terang untuk Dark Mode */
+  --color-accent: #c4b5fd; /* Violet yang sedikit dinaikkan kecerahannya agar kontras di gelap */
   --color-accent-content: #0f172a;
 
-  --color-neutral: #475569;
+  --color-neutral: #334155;
   --color-neutral-content: #f8fafc;
 
-  --color-base-100: #0f172a; /* Slate 900 (Deep dark background) */
-  --color-base-200: #1e293b; /* Slate 800 (Card background) */
-  --color-base-300: #334155; /* Slate 700 (Borders) */
-  --color-base-content: #f8fafc; /* White text */
+  --color-base-100: #111827; /* Gray 900: Dark mode yang tidak terlalu pekat mati, lebih modern */
+  --color-base-200: #1f2937; /* Gray 800: Card background yang pas */
+  --color-base-300: #374151; /* Gray 700: Border tipis yang rapi */
+  --color-base-content: #f3f4f6; /* Teks putih lembut (tidak silau) */
 
   --color-info: #60a5fa;
   --color-success: #34d399;

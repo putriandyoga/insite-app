@@ -2,6 +2,7 @@ import { createQueryKeys } from "./queryKeyFactory";
 
 export const queryKeys = {
   station: createQueryKeys("station"),
+  ward: createQueryKeys("ward"),
   // survey: createQueryKeys("survey"),
   // unit: createQueryKeys("unit"),
   // submission: createQueryKeys("submission"),

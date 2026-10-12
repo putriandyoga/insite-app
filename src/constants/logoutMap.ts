@@ -15,7 +15,7 @@
 //   },
 // };
 // C:\Project\Production\insite-react\src\constants\logoutMap.ts
-import { useIptvLogout } from "@/apps/iptv/hooks/auth/use-logout";
+import { useIptvLogout } from "@iptv/hooks/auth/use-logout";
 import { useBaseLogout } from "@/hooks/core/use-base-logout";
 
 /**

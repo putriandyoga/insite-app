@@ -25,9 +25,7 @@ const WardFormPage = () => {
             { label: "Dashboard", path: "/queue/dashboard" },
             { label: "Ruang Perawatan", path: "/queue/ward" },
             {
-              label: isEditMode
-                ? "Edit Data Ruang Perawatan"
-                : "Buat Data Ruang Perawatan",
+              label: isEditMode ? "Edit" : "Buat",
             },
           ]}
         />
@@ -48,8 +46,8 @@ const WardFormPage = () => {
           onSubmit={handleSubmit}
           saving={saving}
           isEditMode={isEditMode}
-          cancelEditTo={`/queue/ward/${wardId}`}
-          cancelCreateTo="/queue/ward/create"
+          cancelEditTo={`/app/iptv/ward/${wardId}`}
+          cancelCreateTo="/app/iptv/ward"
         />
       </Card>
     </div>

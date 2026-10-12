@@ -19,6 +19,9 @@ const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 // Master Page
 const WardPage = lazy(() => import("@iptv/pages/master/ward/WardPage"));
 const WardFormPage = lazy(() => import("@iptv/pages/master/ward/WardFormPage"));
+const RoomPage = lazy(() => import("@iptv/pages/master/room/RoomPage"));
+const RoomFormPage = lazy(() => import("@iptv/pages/master/room/RoomFormPage"));
+
 export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
@@ -39,6 +42,13 @@ export const iptvRoutes: RouteObject = {
         { index: true, element: <WardPage /> },
         { path: "create", element: <WardFormPage /> },
         // { path: ":wardId/edit", element: <WardFormPage /> },
+      ],
+    },
+    {
+      path: "room",
+      children: [
+        { index: true, element: <RoomPage /> },
+        { path: "create", element: <RoomFormPage /> },
       ],
     },
     {

@@ -54,7 +54,7 @@ const SidebarItemComponent = ({
           style={{ paddingLeft }}
           className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
             active
-              ? "bg-primary/40 text-primary-content font-semibold shadow-sm"
+              ? "bg-primary/80 text-primary-content font-semibold shadow-sm"
               : "hover:bg-base-300/70 hover:shadow-sm"
           }`}
         >

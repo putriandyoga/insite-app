@@ -4,10 +4,11 @@ import { queryKeys } from "@/utils/queryKeys";
 import type { WardItem } from "@iptv/types/wardTypes";
 import { wardService } from "@iptv/services/wardService";
 
-export function useWardList(page = 1, title?: string) {
+export function useWardList(page = 1, title?: string, perPage = 20) {
   const params = {
     page,
     title,
+    per_page: perPage, // Sesuaikan dengan parameter yang diterima backend (bisa per_page atau perPage tergantung API)
   };
 
   return useBaseList<WardItem, PaginatedParams>({

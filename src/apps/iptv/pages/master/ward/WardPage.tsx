@@ -1,4 +1,4 @@
-import { useWardDelete } from "@iptv/hooks/master/ward/use-ward-delete";
+// import { useWardDelete } from "@iptv/hooks/master/ward/use-ward-delete";
 import { useWardList } from "@iptv/hooks/master/ward/use-ward-list";
 import ActionButton from "@/components/ActionButton";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -7,7 +7,8 @@ import DataSection from "@/components/DataSection";
 import Pagination from "@/components/Pagination";
 import TableBase from "@/components/TableBase";
 import { useTableFilters } from "@/hooks/use-table-filters";
-import { PenBox, Pencil, Trash } from "lucide-react";
+import { Archive, PenBox, Pencil } from "lucide-react";
+import { useWardArchive } from "@/apps/iptv/hooks/master/ward/use-ward-archive";
 
 const WardPage = () => {
   const {
@@ -32,7 +33,9 @@ const WardPage = () => {
 
   const { data, loading, error, total, lastPage, perPage, isFetching } =
     useWardList(page, debouncedSearch || undefined);
-  const { handleDelete } = useWardDelete();
+  // const { handleDelete } = useWardDelete();
+  const { archiveWard, loading: isArchiving } = useWardArchive();
+
   return (
     <div className="flex flex-col gap-4 max-w-full">
       <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full">
@@ -41,7 +44,7 @@ const WardPage = () => {
             items={[
               { label: "Home", path: "/" },
               { label: "Dashboard", path: "/app/iptv/dashboard" },
-              { label: "Ward" },
+              { label: "Ruang Perawatan" },
             ]}
           />
         </div>
@@ -124,11 +127,11 @@ const WardPage = () => {
                   className: "max-w-xs",
                 },
                 {
-                  header: "Status Arsip",
+                  header: "Status",
                   render: (row) => (
                     <span
                       className={`badge ${
-                        row.archived ? "badge-error" : "badge-success"
+                        row.archived ? "badge-error" : "badge-primary"
                       } badge-sm`}
                     >
                       {row.archived ? "Arsip" : "Aktif"}
@@ -141,19 +144,30 @@ const WardPage = () => {
 
                   render: (row) => (
                     <div className="inline-flex justify-center gap-2">
+                      {/* Tombol Edit */}
                       <ActionButton
-                        to={`/queue/polyclinic/${row.id}/edit`}
+                        to={`/app/iptv/ward/${row.id}/edit`}
                         icon={Pencil}
                         color="warning"
                         tooltip="Edit Data"
                       />
 
+                      {/* Tombol Arsip */}
                       <ActionButton
+                        onClick={() => archiveWard(row.id)}
+                        icon={Archive}
+                        color="secondary"
+                        tooltip="Arsipkan Ward"
+                        disabled={Boolean(row.archived) || isArchiving}
+                      />
+
+                      {/* Tombol Hapus / Delete */}
+                      {/* <ActionButton
                         onClick={() => handleDelete(row.id)}
                         icon={Trash}
                         color="error"
                         tooltip="Hapus Data"
-                      />
+                      /> */}
                     </div>
                   ),
 

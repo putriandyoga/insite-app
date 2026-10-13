@@ -1,150 +1,158 @@
-import Breadcrumb from "@/components/Breadcrumb";
-import { useTableFilters } from "@/hooks/use-table-filters";
 import { useStationList } from "@iptv/hooks/station/use-station-list";
+import ActionButton from "@/components/ActionButton";
+import Breadcrumb from "@/components/Breadcrumb";
+import Card from "@/components/Card";
+import DataSection from "@/components/DataSection";
+import Pagination from "@/components/Pagination";
+import TableBase from "@/components/TableBase";
+import { useTableFilters } from "@/hooks/use-table-filters";
+import { PenBox } from "lucide-react";
+import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
+import IndicatorFetching from "@/components/IndicatorFetchingData";
+import { formatDateIndoWithTime, formatTimeAgo } from "@/utils/dateFormater";
 
 const StationPage = () => {
-  const {
-    page,
-    searchTitle,
-    debouncedSearch,
-    filters,
-    handleFilterChange,
-    handleSearchChange,
-    resetFilters,
-  } = useTableFilters(
+  const { page, setPage, activeFilters } = useTableFilters(
+    {}, // Initial filters kosong karena tidak ada dropdown filter tambahan
     {
-      status: "",
-      ward_id: "",
-    },
-    {
-      searchKey: "title",
       storeKey: "station-management-page",
     },
   );
+  const { data, loading, error, total, lastPage, perPage, isFetching } =
+    useStationList(page, activeFilters);
 
-  const {
-    data = [],
-    total,
-    loading,
-    isFetching,
-  } = useStationList(page, debouncedSearch || undefined);
   return (
-    <div className="flex flex-col gap-4 max-w-full">
-      <div className="flex flex-col lg:flex-row justify-between gap-4">
-        <Breadcrumb
-          items={[
-            { label: "Home", path: "/" },
-            { label: "Dashboard", path: "/app/iptv/dashboard" },
-            { label: "Survey" },
-          ]}
-        />
+    <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden">
+      <PageTop>
+        <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full py-1">
+          <div className="overflow-x-auto min-w-0">
+            <Breadcrumb
+              items={[
+                { label: "Home", path: "/" },
+                { label: "Dashboard", path: "/app/iptv/dashboard" },
+                { label: "Stastion" },
+              ]}
+            />
+          </div>
 
-        {/* <div className="h-10"></div> */}
-        {/* <ActionButton
-          to="/survey/question/create"
-          icon={PenBox}
-          label="Buat Survey"
-          color="primary"
-        /> */}
-      </div>
-      {/* Header Halaman */}
-      <div className="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-300 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="heading-h2 text-primary">Manajemen Station IPTV</h1>
-          <p className="text-body mt-1">
-            Kelola data station, status, dan pemantauan perangkat IPTV rumah
-            sakit.
-          </p>
+          <div className="flex items-center gap-2">
+            {isFetching && <IndicatorFetching isFetching={isFetching} />}
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <ActionButton
+              to="/app/iptv/station/create"
+              icon={PenBox}
+              label="Tambah Station"
+              color="primary"
+            />
+          </div>
         </div>
-        {isFetching && (
-          <span className="text-caption text-primary animate-pulse">
-            Memperbarui data...
-          </span>
-        )}
-      </div>
+      </PageTop>
 
-      {/* Filter & Search Section */}
-      <div className="bg-base-100 p-4 rounded-2xl shadow-sm border border-base-300 flex flex-wrap gap-4 items-center justify-between">
-        <div className="flex flex-wrap gap-3 items-center flex-1">
-          <input
-            type="text"
-            placeholder="Cari station..."
-            value={searchTitle}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="input input-bordered w-full md:w-72 rounded-xl"
-          />
+      <PageMiddle>
+        <Card className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto md:overflow-hidden h-full">
+          <div className="flex flex-col lg:flex-1 lg:min-h-0 relative rounded-xl border border-base-200 md:overflow-auto">
+            <DataSection
+              loading={loading}
+              error={error}
+              data={data}
+              emptyMessage="Belum Ada Data Station"
+            />
 
-          <select
-            value={filters.status || ""}
-            onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="select select-bordered rounded-xl"
-          >
-            <option value="">Semua Status</option>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="INACTIVE">INACTIVE</option>
-          </select>
-
-          <button onClick={resetFilters} className="btn btn-ghost rounded-xl">
-            Reset
-          </button>
-        </div>
-
-        {total !== undefined && (
-          <div className="text-data text-base-content/70">
-            Total: <span className="font-bold text-base-content">{total}</span>{" "}
-            station
-          </div>
-        )}
-      </div>
-
-      {/* Tabel Data */}
-      <div className="bg-base-100 rounded-2xl shadow-sm border border-base-300 overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center text-body text-base-content/60">
-            Memuat data station...
-          </div>
-        ) : data.length === 0 ? (
-          <div className="p-8 text-center text-body text-base-content/60">
-            Tidak ada data station yang ditemukan.
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr className="border-b border-base-300 text-data uppercase">
-                  <th className="py-4 px-6">Nama</th>
-                  <th className="py-4 px-6">Ward</th>
-                  <th className="py-4 px-6">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((station) => (
-                  <tr
-                    key={station.id}
-                    className="hover:bg-base-200/50 transition-colors"
-                  >
-                    <td className="py-4 px-6 font-medium">{station.name}</td>
-                    <td className="py-4 px-6 text-base-content/80">
-                      {station.ward_name || "-"}
-                    </td>
-                    <td className="py-4 px-6">
+            {!loading && !error && data.length > 0 && (
+              <TableBase
+                columns={[
+                  {
+                    header: "No",
+                    render: (_, index) => (page - 1) * perPage + index + 1,
+                    className: "text-center w-12",
+                  },
+                  {
+                    header: "Ruang Perawatan",
+                    accessor: "ward_name",
+                  },
+                  {
+                    header: "Station",
+                    accessor: "name",
+                  },
+                  {
+                    header: "Status",
+                    render: (row) => (
                       <span
-                        className={`badge badge-sm font-semibold ${
-                          station.status === "ACTIVE"
-                            ? "badge-success text-success-content"
-                            : "badge-error text-error-content"
-                        }`}
+                        className={`badge ${
+                          row.status === "ACTIVE"
+                            ? "badge-primary"
+                            : "badge-error"
+                        } badge-sm`}
                       >
-                        {station.status}
+                        {row.status}
                       </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    ),
+                    className: "text-center",
+                  },
+                  {
+                    header: "Koneksi",
+                    render: (row) => (
+                      <div className="flex flex-col items-center gap-1">
+                        <span
+                          className={`badge ${
+                            row.online ? "badge-success" : "badge-ghost"
+                          } badge-sm gap-1`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              row.online
+                                ? "bg-success-content animate-pulse"
+                                : "bg-base-content/40"
+                            }`}
+                          ></span>
+                          {row.online ? "Online" : "Offline"}
+                        </span>
+                        {row.live && (
+                          <span className="text-caption text-info font-medium uppercase tracking-wider">
+                            Live Active
+                          </span>
+                        )}
+                      </div>
+                    ),
+                    className: "text-center",
+                  },
+                  {
+                    header: "Terakhir Dilihat",
+                    render: (row) => (
+                      <div>
+                        {row.last_seen_at ? (
+                          <div className="flex flex-row justify-between">
+                            {" "}
+                            <div>
+                              {formatDateIndoWithTime(row.last_seen_at)}
+                            </div>
+                            <div>{formatTimeAgo(row.last_seen_at)}</div>
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </div>
+                    ),
+                  },
+                ]}
+                data={data}
+              />
+            )}
           </div>
-        )}
-      </div>
+        </Card>
+      </PageMiddle>
+
+      <PageBottom>
+        <Pagination
+          page={page}
+          lastPage={lastPage}
+          perPage={perPage}
+          total={total}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      </PageBottom>
     </div>
   );
 };

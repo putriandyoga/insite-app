@@ -14,7 +14,11 @@ function IptvSyncWrapper() {
   );
 }
 
+// Station Page
 const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
+const StationFormPage = lazy(
+  () => import("@iptv/pages/station/StationFormPage"),
+);
 
 // Master Page
 const WardPage = lazy(() => import("@iptv/pages/master/ward/WardPage"));
@@ -43,7 +47,10 @@ export const iptvRoutes: RouteObject = {
     },
     {
       path: "station",
-      children: [{ index: true, element: <StationPage /> }],
+      children: [
+        { index: true, element: <StationPage /> },
+        { path: "create", element: <StationFormPage /> },
+      ],
     },
     {
       path: "ward",

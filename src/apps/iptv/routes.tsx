@@ -25,6 +25,11 @@ const BedPage = lazy(() => import("@iptv/pages/master/bed/BedPage"));
 
 // User Page
 const UserPage = lazy(() => import("@iptv/pages/user/UserPage"));
+const UserFormPage = lazy(() => import("@iptv/pages/user/UserFormPage"));
+const UserDetailPage = lazy(() => import("@iptv/pages/user/UserDetailPage"));
+const UserResetPasswordPage = lazy(
+  () => import("@iptv/pages/user/UserResetPasswordPage"),
+);
 
 export const iptvRoutes: RouteObject = {
   path: "iptv",
@@ -63,7 +68,10 @@ export const iptvRoutes: RouteObject = {
       path: "user",
       children: [
         { index: true, element: <UserPage /> },
-        { path: "create", element: <RoomFormPage /> },
+        { path: "create", element: <UserFormPage /> },
+        { path: ":userId", element: <UserDetailPage /> },
+        { path: ":userId/edit", element: <UserFormPage /> },
+        { path: ":userId/reset-password", element: <UserResetPasswordPage /> },
       ],
     },
     {

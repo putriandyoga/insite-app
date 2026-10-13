@@ -8,7 +8,7 @@ import GuestRoute from "./GuestRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardLayout from "@/layout/DashboardLayout";
 import PortalLayout from "@/layout/PortalLayout";
-import { iptvRoutes } from "@/apps/iptv/routes";
+import { iptvRoutes } from "@iptv/routes";
 import { patientVerificationRoutes } from "@/apps/patient-verification/routes";
 
 function Loadable<T extends React.ComponentType<any>>(

@@ -8,9 +8,21 @@ import DataSection from "@/components/DataSection";
 import Pagination from "@/components/Pagination";
 import TableBase from "@/components/TableBase";
 import { useTableFilters } from "@/hooks/use-table-filters";
-import { PenBox, Pencil, Trash } from "lucide-react";
+import {
+  Eye,
+  KeyRound,
+  Lock,
+  PenBox,
+  Pencil,
+  ShieldAlert,
+  Trash,
+  Unlock,
+} from "lucide-react";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
 import { CopyButton } from "@/components/CopyButton";
+import { useUserEnable } from "@iptv/hooks/user/use-user-enable";
+import { useUserDisable } from "@iptv/hooks/user/use-user-disable";
+import { useUserRevokeSessions } from "@iptv/hooks/user/use-user-revoke-sessions";
 
 const UserPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
@@ -28,6 +40,9 @@ const UserPage = () => {
     useUserList(page, activeFilters);
 
   const { handleDelete } = useUserDelete();
+  const { disableUser } = useUserDisable();
+  const { enableUser } = useUserEnable();
+  const { revokeSessions } = useUserRevokeSessions();
 
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden">
@@ -123,12 +138,47 @@ const UserPage = () => {
                     render: (row) => (
                       <div className="inline-flex justify-center gap-2">
                         <ActionButton
-                          to={`/iptv/user/${row.id}/edit`}
+                          to={`/app/iptv/user//${row.id}`}
+                          icon={Eye}
+                          color="info"
+                          tooltip="Lihat Detail"
+                        />
+                        <ActionButton
+                          to={`/app/iptv/user//${row.id}/edit`}
                           icon={Pencil}
                           color="warning"
                           tooltip="Edit Data"
                         />
 
+                        {row.status === "ACTIVE" ? (
+                          <ActionButton
+                            onClick={() => disableUser(row.id)}
+                            icon={Lock}
+                            color="neutral"
+                            tooltip="Nonaktifkan User"
+                          />
+                        ) : (
+                          <ActionButton
+                            onClick={() => enableUser(row.id)}
+                            icon={Unlock}
+                            color="success"
+                            tooltip="Aktifkan User"
+                          />
+                        )}
+
+                        <ActionButton
+                          to={`/app/iptv/user/${row.id}/reset-password`}
+                          icon={KeyRound}
+                          color="success"
+                          tooltip="Reset Password"
+                        />
+
+                        <ActionButton
+                          onClick={() => revokeSessions(row.id)}
+                          icon={ShieldAlert}
+                          color="accent"
+                          tooltip="Cabut Semua Sesi"
+                        />
                         <ActionButton
                           onClick={() => handleDelete(row.id)}
                           icon={Trash}

@@ -8,7 +8,7 @@ import Pagination from "@/components/Pagination";
 import TableBase from "@/components/TableBase";
 import { useTableFilters } from "@/hooks/use-table-filters";
 import { Archive, PenBox, Pencil, RotateCcw } from "lucide-react";
-import { useWardArchive } from "@/apps/iptv/hooks/master/ward/use-ward-archive";
+import { useWardArchive } from "@iptv/hooks/master/ward/use-ward-archive";
 import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
 import FormInput from "@/components/FormInput";

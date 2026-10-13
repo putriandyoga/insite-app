@@ -1,4 +1,4 @@
-import { iptvSidebar } from "@/apps/iptv/components/IptvSidebar";
+import { iptvSidebar } from "@iptv/components/IptvSidebar";
 import type { SidebarItem } from "@/components/SidebarItem";
 // import { casesSidebar } from "@/apps/cases/components/IncidentSidebar";
 // import { eventSidebar } from "@/apps/event/components/EventSidebar";

@@ -1,19 +1,32 @@
 import { useBaseList } from "@/hooks/core/use-base-list";
-import type { StationItem } from "@/apps/iptv/types/stationTypes";
 import type { PaginatedParams } from "@/types/common";
-import { stationService } from "@iptv/services/stationService";
 import { queryKeys } from "@/utils/queryKeys";
+import type { StationItem } from "@iptv/types/stationTypes";
+import { stationService } from "@iptv/services/stationService";
 
-export function useStationList(page = 1, title?: string) {
-  const params = {
+export interface StationFilterParams extends PaginatedParams {
+  title?: string;
+  status?: string;
+  per_page?: number;
+}
+
+export function useStationList(
+  page = 1,
+  filters: Omit<StationFilterParams, "page"> = {},
+  perPage = 20,
+) {
+  const params: StationFilterParams = {
     page,
-    title,
+    per_page: perPage,
+    ...filters,
   };
 
-  return useBaseList<StationItem, PaginatedParams>({
+  return useBaseList<StationItem, StationFilterParams>({
     queryKey: queryKeys.station.list(params),
 
-    fetcher: stationService.getPaginated,
+    fetcher: (fetcherParams) => {
+      return stationService.getPaginated(fetcherParams);
+    },
 
     params,
   });

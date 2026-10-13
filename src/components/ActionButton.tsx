@@ -110,7 +110,7 @@ const ActionButton = ({
 
   const tooltipWrapper = (child: React.ReactNode) => (
     <div
-      className={tooltipText ? "tooltip tooltip-top z-90" : ""}
+      className={tooltipText ? "tooltip tooltip-left" : ""}
       data-tip={tooltipText}
     >
       {child}

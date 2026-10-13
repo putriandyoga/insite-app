@@ -30,7 +30,7 @@ const StationPage = () => {
               items={[
                 { label: "Home", path: "/" },
                 { label: "Dashboard", path: "/app/iptv/dashboard" },
-                { label: "Stastion" },
+                { label: "Station" },
               ]}
             />
           </div>

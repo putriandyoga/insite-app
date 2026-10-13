@@ -38,13 +38,18 @@ export interface AlertOptions {
   redirectUrl?: string;
   onClose?: () => void;
   verifyText?: string;
+
+  input?: "text";
+  inputPlaceholder?: string;
+  inputValidator?: (value: string) => string | void;
+
   extraButtonPath?: string;
   extraButtonText?: string;
   extraButtonOnClick?: () => void;
 }
 
 interface AlertProps extends AlertOptions {
-  onResolve: (result: boolean) => void;
+  onResolve: (result: boolean | string) => void; // Ubah tipe resolve
 }
 
 const ICON_MAP = {
@@ -63,10 +68,14 @@ const Alert = ({
   confirmButtonColor = "primary",
   cancelButtonColor = "neutral",
   verifyText,
+  input,
+  inputPlaceholder,
+  inputValidator,
   ...options
 }: AlertProps) => {
   const [progress, setProgress] = useState(0);
   const [inputValue, setInputValue] = useState("");
+  const [inputError, setInputError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(true);
 
   // Handle timer & progress bar
@@ -90,14 +99,35 @@ const Alert = ({
     return () => cancelAnimationFrame(rafId);
   }, [timer]);
 
+  // const handleClose = (result: boolean) => {
+  //   setIsOpen(false);
+  //   // Beri jeda sedikit agar animasi exit framer-motion sempat berjalan sebelum di-resolve
+  //   setTimeout(() => {
+  //     onResolve(result);
+  //   }, 200);
+  // };
   const handleClose = (result: boolean) => {
+    // Jika menggunakan input teks, lakukan validasi sebelum menutup
+    if (result && input === "text") {
+      if (inputValidator) {
+        const error = inputValidator(inputValue);
+        if (error) {
+          setInputError(error);
+          return; // Batalkan tutup jika validasi gagal
+        }
+      }
+    }
+
     setIsOpen(false);
-    // Beri jeda sedikit agar animasi exit framer-motion sempat berjalan sebelum di-resolve
     setTimeout(() => {
-      onResolve(result);
+      // Jika mode input teks dan sukses dikonfirmasi, kirim nilai input-nya
+      if (result && input === "text") {
+        onResolve(inputValue);
+      } else {
+        onResolve(result);
+      }
     }, 200);
   };
-
   const IconComponent = icon ? ICON_MAP[icon] : null;
   const confirmDisabled = verifyText ? inputValue !== verifyText : false;
 
@@ -242,7 +272,25 @@ const Alert = ({
                 />
               </div>
             )}
-
+            {input === "text" && (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                    if (inputError) setInputError(null);
+                  }}
+                  placeholder={inputPlaceholder || "Masukkan teks..."}
+                  className="w-full p-2.5 border rounded-lg text-base-content bg-base-200/50 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                {inputError && (
+                  <span className="text-xs text-error mt-1 block">
+                    {inputError}
+                  </span>
+                )}
+              </div>
+            )}
             <div className="flex justify-center space-x-4">{buttons}</div>
           </motion.div>
         </motion.div>
@@ -251,7 +299,7 @@ const Alert = ({
   );
 };
 
-export function showAlert(options: AlertOptions): Promise<boolean> {
+export function showAlert(options: AlertOptions): Promise<string | boolean> {
   return new Promise((resolve) => {
     const container = document.createElement("div");
     document.body.appendChild(container);

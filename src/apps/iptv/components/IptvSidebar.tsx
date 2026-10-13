@@ -35,7 +35,7 @@ export const iptvSidebar: SidebarItem[] = [
   },
   {
     label: "Perangkat STB",
-    to: "/app/iptv/device",
+    to: "/app/iptv/stb",
     icon: <Cpu size={20} />,
   },
   {

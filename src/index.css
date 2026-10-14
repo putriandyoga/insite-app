@@ -106,8 +106,7 @@ body {
   @apply text-xs font-caption font-semibold tracking-wider text-base-content/80 font-mono;
 }
 
-/* 1. DEFAULT GLOBAL: Sembunyikan scrollbar vertikal pada halaman utama */
-* {
+/* * {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -117,7 +116,6 @@ body {
   height: 0px;
 }
 
-/* 2. KELAS KHUSUS HORIZONTAL SCROLL (Muncul otomatis saat ada konten melebar / mobile & desktop) */
 .custom-horizontal-scroll {
   overflow-x: auto;
   overflow-y: hidden;
@@ -142,4 +140,4 @@ body {
 
 .dark .custom-horizontal-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.25);
-}
+} */

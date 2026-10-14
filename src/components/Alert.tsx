@@ -9,6 +9,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { getButtonColorClass, type DaisyColor } from "@/utils/color";
+import { CopyButton } from "@/components/CopyButton";
 
 export interface AlertOptions {
   title?: string;
@@ -46,10 +47,13 @@ export interface AlertOptions {
   extraButtonPath?: string;
   extraButtonText?: string;
   extraButtonOnClick?: () => void;
+
+  copyableText?: string;
+  copyLabel?: string;
 }
 
 interface AlertProps extends AlertOptions {
-  onResolve: (result: boolean | string) => void; // Ubah tipe resolve
+  onResolve: (result: boolean | string) => void;
 }
 
 const ICON_MAP = {
@@ -71,6 +75,8 @@ const Alert = ({
   input,
   inputPlaceholder,
   inputValidator,
+  copyableText,
+  copyLabel = "Copy",
   ...options
 }: AlertProps) => {
   const [progress, setProgress] = useState(0);
@@ -99,28 +105,19 @@ const Alert = ({
     return () => cancelAnimationFrame(rafId);
   }, [timer]);
 
-  // const handleClose = (result: boolean) => {
-  //   setIsOpen(false);
-  //   // Beri jeda sedikit agar animasi exit framer-motion sempat berjalan sebelum di-resolve
-  //   setTimeout(() => {
-  //     onResolve(result);
-  //   }, 200);
-  // };
   const handleClose = (result: boolean) => {
-    // Jika menggunakan input teks, lakukan validasi sebelum menutup
     if (result && input === "text") {
       if (inputValidator) {
         const error = inputValidator(inputValue);
         if (error) {
           setInputError(error);
-          return; // Batalkan tutup jika validasi gagal
+          return;
         }
       }
     }
 
     setIsOpen(false);
     setTimeout(() => {
-      // Jika mode input teks dan sukses dikonfirmasi, kirim nilai input-nya
       if (result && input === "text") {
         onResolve(inputValue);
       } else {
@@ -128,6 +125,7 @@ const Alert = ({
       }
     }, 200);
   };
+
   const IconComponent = icon ? ICON_MAP[icon] : null;
   const confirmDisabled = verifyText ? inputValue !== verifyText : false;
 
@@ -238,17 +236,30 @@ const Alert = ({
                 {options.title}
               </h3>
             )}
+
             {options.text && (
               <p className="text-center text-base-content mb-4">
                 {options.text}
               </p>
             )}
+
+            {/* --- FITUR TAMBAHAN: Kotak Khusus Teks + CopyButton --- */}
+            {copyableText && (
+              <div className="flex items-center justify-between bg-base-200/70 border border-base-300 px-4 py-2.5 rounded-xl mb-4">
+                <span className="font-mono font-bold text-base tracking-wider text-primary select-all">
+                  {copyableText}
+                </span>
+                <CopyButton text={copyableText} label={copyLabel} />
+              </div>
+            )}
+
             {options.html && (
               <div
                 className="text-center text-base-content mb-4"
                 dangerouslySetInnerHTML={{ __html: options.html }}
               />
             )}
+
             {verifyText && (
               <input
                 type="text"
@@ -258,6 +269,7 @@ const Alert = ({
                 className="w-full mb-4 p-2 border rounded-lg text-base-content"
               />
             )}
+
             {options.footer && (
               <p className="text-center text-base-content text-sm mb-4">
                 {options.footer}
@@ -272,6 +284,7 @@ const Alert = ({
                 />
               </div>
             )}
+
             {input === "text" && (
               <div className="mb-4">
                 <input
@@ -291,6 +304,7 @@ const Alert = ({
                 )}
               </div>
             )}
+
             <div className="flex justify-center space-x-4">{buttons}</div>
           </motion.div>
         </motion.div>

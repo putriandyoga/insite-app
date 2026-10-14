@@ -9,27 +9,24 @@ import { useTableFilters } from "@/hooks/use-table-filters";
 import {
   Activity,
   ArchiveRestore,
-  Eye,
   KeyRound,
   Link2,
   Link2Off,
+  LockOpen,
   PenBox,
-  Pencil,
   ShieldAlert,
-  Trash2,
 } from "lucide-react";
 import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
 import { formatDateIndoWithTime, formatTimeAgo } from "@/utils/dateFormater";
 import { CopyButton } from "@/components/CopyButton";
 import { showAlert } from "@/components/Alert";
-import { useStbCreateEnrollmentCode } from "../../hooks/stb/use-stb-create-enroll";
-import { useStbDeleteEnrollmentCode } from "../../hooks/stb/use-stb-delete-enroll";
-import { useStbRevoke } from "../../hooks/stb/use-stb-revoke";
-import { useStbRevive } from "../../hooks/stb/use-stb-revive";
-import { useStbRetire } from "../../hooks/stb/use-stb-retire";
-import { useStbUnbindBed } from "../../hooks/stb/use-stb-unbind-bed";
-import { useStbBindBed } from "../../hooks/stb/use-stb-bind-bed";
+import { useStbCreateEnrollmentCode } from "@iptv/hooks/stb/use-stb-create-enroll";
+import { useStbDeleteEnrollmentCode } from "@iptv/hooks/stb/use-stb-delete-enroll";
+import { useStbRevoke } from "@iptv/hooks/stb/use-stb-revoke";
+import { useStbRevive } from "@iptv/hooks/stb/use-stb-revive";
+import { useStbRetire } from "@iptv/hooks/stb/use-stb-retire";
+import { useStbUnbindBed } from "@iptv/hooks/stb/use-stb-unbind-bed";
 
 const StbPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
@@ -48,7 +45,6 @@ const StbPage = () => {
   const { reviveStb } = useStbRevive();
   const { retireStb } = useStbRetire();
 
-  const { bindBed } = useStbBindBed();
   const { unbindBed } = useStbUnbindBed();
 
   // Handler interaktif khusus untuk aksi yang memerlukan input note
@@ -56,7 +52,7 @@ const StbPage = () => {
   const handleRevokeWithNote = async (id: string) => {
     const note = await showAlert({
       title: "Revoke STB",
-      text: "Masukkan catatan/alasan revoke perangkat:",
+      text: "Masukkan alasan revoke perangkat:",
       input: "text",
       inputPlaceholder: "Contoh: Perangkat ditarik sementara",
       showConfirmButton: true,
@@ -91,25 +87,6 @@ const StbPage = () => {
 
     if (typeof note === "string" && note.trim()) {
       await retireStb(id, note);
-    }
-  };
-
-  const handleBindBedModal = async (stbId: string) => {
-    const note = await showAlert({
-      title: "Ikat STB ke Bed",
-      text: "Masukkan ID Bed tujuan:",
-      input: "text",
-      inputPlaceholder: "Masukkan UUID Bed (bed_id)",
-      showCancelButton: true,
-      confirmButtonText: "Ya, Ikat",
-      cancelButtonText: "Batal",
-      inputValidator: (value) => {
-        if (!value.trim()) return "Bed ID wajib diisi!";
-      },
-    });
-
-    if (typeof note === "string" && note.trim()) {
-      await bindBed(stbId, note);
     }
   };
 
@@ -185,16 +162,6 @@ const StbPage = () => {
                             </div>
                           </div>
                         </div>
-                        {/* <div className="flex flex-col">
-                          <span>
-                            {row.note || "-"}{" "}
-                            {row.app_version ? `(v${row.app_version})` : ""}
-                          </span>
-                          <div className="flex flex-row justify-between">
-                            <span>{row.serial}</span>
-                            <CopyButton text={row.serial} iconOnly />
-                          </div>
-                        </div> */}
                       </>
                     ),
                   },
@@ -299,18 +266,22 @@ const StbPage = () => {
                     render: (row) => (
                       <div className="inline-flex justify-center gap-2">
                         {/* Terbitkan Kode Enrollment */}
-                        <ActionButton
-                          onClick={() => createEnrollmentCode(row.id, 24)}
-                          icon={KeyRound}
-                          color="primary"
-                          tooltip="Terbitkan Kode Enrollment"
-                        />
-                        <ActionButton
-                          onClick={() => deleteEnrollmentCode(row.id)}
-                          icon={Trash2} // Gunakan icon sesuai preferensi
-                          color="error"
-                          tooltip="Cabut Kode Enrollment"
-                        />
+                        {row.status === "ENROLLED" ? (
+                          <ActionButton
+                            onClick={() => deleteEnrollmentCode(row.id)}
+                            icon={LockOpen} // Gunakan icon sesuai preferensi
+                            color="error"
+                            tooltip="Cabut Kode Enrollment"
+                          />
+                        ) : (
+                          <ActionButton
+                            onClick={() => createEnrollmentCode(row.id, 24)}
+                            icon={KeyRound}
+                            color="primary"
+                            tooltip="Terbitkan Kode Enrollment"
+                          />
+                        )}
+
                         {/* Tombol Binding / Unbind Bed */}
                         {row.binding ? (
                           <ActionButton
@@ -346,7 +317,7 @@ const StbPage = () => {
                         <ActionButton
                           onClick={() => handleRetireWithNote(row.id)}
                           icon={ArchiveRestore}
-                          color="neutral"
+                          color="warning"
                           tooltip="Retire / Ganti Perangkat"
                         />
                       </div>

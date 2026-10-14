@@ -1,7 +1,7 @@
 import { createCrudService } from "@/services/core/createCrudService";
 import { iptvApi } from "@/services/api/endpoints";
 import { iptvAdapter } from "@/services/adapters/iptvAdapter";
-import type { StbItem } from "../types/stbTyeps";
+import type { EnrollmentCodeResponse, StbItem } from "../types/stbTyeps";
 import { normalizeDetail } from "@/services/normalizers/responseNormalizer";
 
 export const stbService = {
@@ -15,13 +15,13 @@ export const stbService = {
   async createEnrollmentCode(
     id: string,
     ttlHours: number = 24,
-  ): Promise<StbItem> {
+  ): Promise<EnrollmentCodeResponse> {
     const response = await iptvApi.apiRequest<unknown>(
       "POST",
       `/admin/stbs/${id}/enrollment-codes`,
-      { ttl_hours: ttlHours }, // Mengirim body { ttl_hours }
+      { ttl_hours: ttlHours },
     );
-    return normalizeDetail<StbItem>(response);
+    return normalizeDetail<EnrollmentCodeResponse>(response);
   },
 
   async deleteEnrollmentCode(id: string): Promise<StbItem> {

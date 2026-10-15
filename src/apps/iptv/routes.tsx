@@ -38,6 +38,8 @@ const UserResetPasswordPage = lazy(
 // STB Page
 const StbPage = lazy(() => import("@iptv/pages/stb/StbPage"));
 const StbBindPage = lazy(() => import("@iptv/pages/stb/StbBindPage"));
+const StbDetailPage = lazy(() => import("@iptv/pages/stb/StbDetailPage"));
+
 export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
@@ -88,6 +90,7 @@ export const iptvRoutes: RouteObject = {
       path: "stb",
       children: [
         { index: true, element: <StbPage /> },
+        { path: ":stbId", element: <StbDetailPage /> },
         { path: ":stbId/bind", element: <StbBindPage /> },
       ],
     },

@@ -12,16 +12,16 @@ export interface StbItem {
   status: string;
   note: string;
   online: boolean; // Diubah ke boolean karena merepresentasikan status true/false
-  last_seen_at: string | null;
+  last_seen_at: string;
   app_version: string;
   os_version: string;
   last_ip: string;
   created_at: string;
-  revoked_at: string | null;
-  retired_at: string | null;
   ttl_hours: number;
   bed_id: string;
   binding?: BindingInfo | null;
+  revoked_at: string;
+  retired_at: string;
 }
 
 export const defaultStb: StbItem = {

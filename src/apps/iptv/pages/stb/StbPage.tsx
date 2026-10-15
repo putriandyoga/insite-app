@@ -9,6 +9,7 @@ import { useTableFilters } from "@/hooks/use-table-filters";
 import {
   Activity,
   ArchiveRestore,
+  Eye,
   KeyRound,
   Link2,
   Link2Off,
@@ -121,7 +122,7 @@ const StbPage = () => {
 
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto md:overflow-hidden h-full">
-          <div className="flex flex-col lg:flex-1 lg:min-h-0 relative rounded-xl border border-base-200 md:overflow-auto">
+          <div className="flex flex-col lg:flex-1 lg:min-h-0 relative md:overflow-auto gap-4">
             <DataSection
               loading={loading}
               error={error}
@@ -265,6 +266,12 @@ const StbPage = () => {
                     header: "Aksi",
                     render: (row) => (
                       <div className="inline-flex justify-center gap-2">
+                        <ActionButton
+                          to={`/app/iptv/stb/${row.id}`}
+                          icon={Eye}
+                          color="info"
+                          tooltip="Lihat Detail"
+                        />
                         {/* Terbitkan Kode Enrollment */}
                         {row.status === "ENROLLED" ? (
                           <ActionButton
@@ -281,7 +288,6 @@ const StbPage = () => {
                             tooltip="Terbitkan Kode Enrollment"
                           />
                         )}
-
                         {/* Tombol Binding / Unbind Bed */}
                         {row.binding ? (
                           <ActionButton

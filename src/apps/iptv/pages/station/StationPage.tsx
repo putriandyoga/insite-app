@@ -52,7 +52,7 @@ const StationPage = () => {
 
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto md:overflow-hidden h-full">
-          <div className="flex flex-col lg:flex-1 lg:min-h-0 relative rounded-xl border border-base-200 md:overflow-auto">
+          <div className="flex flex-col lg:flex-1 lg:min-h-0 relative md:overflow-auto gap-4">
             <DataSection
               loading={loading}
               error={error}

@@ -360,10 +360,12 @@ const FormInput = ({
         cursor-pointer
       `}
             >
-              <span>
-                {value
+              <span className={!value ? "text-base-content/50" : ""}>
+                {value !== undefined && value !== null && value !== ""
                   ? normalizedOptions.find((o) => o.value === String(value))
-                      ?.label
+                      ?.label ||
+                    placeholder ||
+                    `Pilih ${label}`
                   : placeholder || `Pilih ${label}`}
               </span>
               <ChevronDown className="w-4 h-4 text-base-content" />
@@ -381,6 +383,18 @@ const FormInput = ({
                 />
 
                 <ul className="max-h-60 overflow-auto flex flex-col gap-1">
+                  {/* Opsi untuk mengosongkan pilihan */}
+                  <li
+                    onMouseDown={() => {
+                      onChange?.("");
+                      setSelectOpen(false);
+                      setSearchText("");
+                    }}
+                    className="px-3 py-2 rounded-md cursor-pointer text-base-content/60 hover:bg-base-200 italic border-b border-base-300/50 mb-1"
+                  >
+                    Empty Value
+                  </li>
+
                   {filteredSelectOptions.length > 0 ? (
                     filteredSelectOptions.map((opt) => (
                       <li

@@ -10,7 +10,7 @@ export interface UserItem {
   password_changed_at: string;
   created_at: string;
   password: string;
-  station_id: string;
+  station_id: string | null;
 }
 
 export const defaultUser: UserItem = {
@@ -38,9 +38,9 @@ export const validateUser = (payload: UserItem): string[] => {
   if (!payload.status || payload.status.trim() === "") {
     errors.push("Status is required.");
   }
-  if (!payload.station_id || payload.station_id.trim() === "") {
-    errors.push("Station is required.");
-  }
+  // if (!payload.station_id || payload.station_id.trim() === "") {
+  //   errors.push("Station is required.");
+  // }
 
   return errors;
 };

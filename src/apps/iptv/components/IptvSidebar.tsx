@@ -38,16 +38,7 @@ export const iptvSidebar: SidebarItem[] = [
     to: "/app/iptv/stb",
     icon: <Cpu size={20} />,
   },
-  {
-    label: "Binding STB",
-    to: "/app/iptv/binding",
-    icon: <Link2 size={20} />,
-  },
-  {
-    label: "Lifecycle Perangkat",
-    to: "/app/iptv/lifecycle",
-    icon: <RefreshCw size={20} />,
-  },
+
   {
     label: "Import CSV",
     icon: <FileSpreadsheet size={20} />,

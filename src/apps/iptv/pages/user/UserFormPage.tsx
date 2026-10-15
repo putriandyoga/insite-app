@@ -8,8 +8,8 @@ import FormInput from "@/components/FormInput";
 import FormActions from "@/components/FormActions";
 import Card from "@/components/Card";
 import { useStationList } from "@iptv/hooks/station/use-station-list";
-import { useEffect } from "react";
 import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
+import { UserProfileCard } from "@iptv/components/UserProfileCard";
 
 const UserFormPage = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -22,14 +22,6 @@ const UserFormPage = () => {
     undefined,
     100,
   );
-
-  useEffect(() => {
-    if (isEditMode && data) {
-      if (data.station && typeof data.station === "object" && data.station.id) {
-        setField("station_id", data.station.id);
-      }
-    }
-  }, [data, isEditMode, setField]);
 
   const roleOptions = [
     { label: "Admin", value: "admin" },
@@ -63,6 +55,8 @@ const UserFormPage = () => {
 
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto md:overflow-hidden h-full">
+          {isEditMode && <UserProfileCard data={data} />}
+
           <FormSection title="Data User" icon={User} color="primary">
             <FormInput
               label="Username"

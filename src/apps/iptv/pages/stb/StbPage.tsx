@@ -110,7 +110,7 @@ const StbPage = () => {
             <ActionButton
               to="/app/iptv/stb/create"
               icon={PenBox}
-              label="Tambah Stb"
+              label="Tambah STB"
               color="primary"
             />
           </div>
@@ -124,7 +124,7 @@ const StbPage = () => {
               loading={loading}
               error={error}
               data={data}
-              emptyMessage="Belum Ada Data Stb"
+              emptyMessage="Belum Ada Data STB"
             />
 
             {!loading && !error && data.length > 0 && (

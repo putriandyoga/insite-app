@@ -16,13 +16,4 @@ export const dashboardCards = [
     description: "Verifikasi data identitas dan status kepesertaan pasien.",
     path: "/app/patient-verification/login",
   },
-
-  // Client-specific dashboard card
-  // {
-  //   color: "info",
-  //   icon: UserSquare2,
-  //   title: "Ticketing",
-  //   description: "Ajukan tiket baru dan pantau status laporan Anda.",
-  //   path: "/client/ticketing/dashboard",
-  // },
 ];

@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\hooks\core\useBaseLogout.ts
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";

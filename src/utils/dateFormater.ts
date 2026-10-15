@@ -1,4 +1,3 @@
-// --- Konstanta Lokal ---
 const INDONESIAN_MONTHS_FULL = [
   "Januari",
   "Februari",
@@ -41,14 +40,11 @@ const INDONESIAN_DAYS = [
 
 type DateInput = string | Date | null | undefined;
 
-/** Helper internal untuk parsing tanggal */
 const parseDate = (date: DateInput): Date | null => {
   if (!date) return null;
   const dt = typeof date === "string" ? new Date(date) : date;
   return isNaN(dt.getTime()) ? null : dt;
 };
-
-// --- Fungsi Format Tanggal & Waktu ---
 
 export function getAgeFromDob(dob: DateInput): string {
   const birthDate = parseDate(dob);
@@ -188,8 +184,6 @@ export function checkIsPublished(
   return !!publishStart && !!publishEnd;
 }
 
-// --- Kalkulasi Durasi ---
-
 export function calculateDurationDays(
   startDate: string | Date,
   endDate: string | Date,
@@ -256,8 +250,6 @@ export function calculateDurationMinute(
 
   return { text, isError: days >= 1 };
 }
-
-// --- Utility Lainnya ---
 
 export function excelDateToString(excelDate: number | string): string {
   if (!excelDate) return "-";

@@ -26,7 +26,7 @@ export function useStbRevoke(onSuccess?: () => void) {
 
     try {
       setLoading(true);
-      await stbService.revoke(id, note); // Meneruskan parameter note ke service
+      await stbService.revoke(id, note);
 
       await showAlert({
         title: "Berhasil!",

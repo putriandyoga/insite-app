@@ -23,7 +23,6 @@ const UserFormPage = () => {
     100,
   );
 
-  // Handle otomatis set station_id jika API mengembalikan nested object 'station' saat edit mode
   useEffect(() => {
     if (isEditMode && data) {
       if (data.station && typeof data.station === "object" && data.station.id) {

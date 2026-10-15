@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\services\core\createCrudService.ts
 import type { Method } from "axios";
 import type {
   ApiRequestClient,

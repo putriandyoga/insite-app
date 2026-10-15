@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\hooks\core\useBaseLogin.ts
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore, type UserData } from "@/store/useAuthStore";
@@ -33,7 +32,6 @@ export function useBaseLogin<TPayload, TResult>({
       if (transformUser) {
         userData = transformUser(result, payload);
       } else {
-        // Fallback default jika tidak ada transformer khusus
         userData = {
           id: "",
           email: "",

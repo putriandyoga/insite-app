@@ -1,4 +1,3 @@
-// import { useWardDelete } from "@iptv/hooks/master/ward/use-ward-delete";
 import { useWardList } from "@iptv/hooks/master/ward/use-ward-list";
 import ActionButton from "@/components/ActionButton";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -36,7 +35,7 @@ const WardPage = () => {
 
   const { data, loading, error, total, lastPage, perPage, isFetching } =
     useWardList(page, activeFilters);
-  // const { handleDelete } = useWardDelete();
+
   const { archiveWard, loading: isArchiving } = useWardArchive();
   const isFilterActive = Boolean(searchTitle || filters.status);
   return (
@@ -121,7 +120,7 @@ const WardPage = () => {
                   },
                   {
                     header: "Nama Ward",
-                    accessor: "name", // Disesuaikan dengan field JSON API "name"
+                    accessor: "name",
                     render: (row) => row.name,
                     className: "max-w-xs",
                   },
@@ -143,7 +142,6 @@ const WardPage = () => {
 
                     render: (row) => (
                       <div className="inline-flex justify-center gap-2">
-                        {/* Tombol Edit */}
                         <ActionButton
                           to={`/app/iptv/ward/${row.id}/edit`}
                           icon={Pencil}
@@ -151,7 +149,6 @@ const WardPage = () => {
                           tooltip="Edit Data"
                         />
 
-                        {/* Tombol Arsip */}
                         <ActionButton
                           onClick={() => archiveWard(row.id)}
                           icon={Archive}

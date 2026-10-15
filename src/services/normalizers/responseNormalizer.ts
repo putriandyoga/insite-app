@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\services\normalizers\responseNormalizer.ts
 type UnknownRecord = Record<string, unknown>;
 
 function isRecord(value: unknown): value is UnknownRecord {

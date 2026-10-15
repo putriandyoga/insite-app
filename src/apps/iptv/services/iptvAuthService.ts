@@ -23,7 +23,7 @@ interface IptvSession {
 }
 
 export interface IptvLoginResponse {
-  token: string; // <-- Ditambahkan di sini
+  token: string;
   user: IptvUser;
   session: IptvSession;
 }

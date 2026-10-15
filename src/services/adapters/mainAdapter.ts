@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\services\adapters\mainAdapter.ts
 import type {
   CrudAdapter,
   PaginatedParams,

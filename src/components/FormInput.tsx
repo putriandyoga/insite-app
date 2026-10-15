@@ -15,7 +15,7 @@ type RadioOption = {
 type FormInputProps = {
   label: string;
   value?: any;
-  // onChange: (value: any) => void;
+
   onChange?: (value: any) => void;
   required?: boolean;
   placeholder?: string;
@@ -307,7 +307,7 @@ const FormInput = ({
       ) : type === "password" ? (
         <div className="relative">
           <input
-            type={showPassword ? "text" : "password"} // <-- toggle password
+            type={showPassword ? "text" : "password"}
             value={value}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               onChange?.(e.target.value)

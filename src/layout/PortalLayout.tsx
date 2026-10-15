@@ -25,10 +25,8 @@ export default function PortalLayout() {
 
   return (
     <div className="flex flex-col h-screen bg-base-200">
-      {/* HEADER NAVBAR */}
       <header className="navbar bg-base-100 border-b border-base-300 px-6 h-16 shrink-0 relative z-30">
         <div className="flex flex-1 items-center gap-2">
-          {/* Logo tetap menggunakan logo utama di semua ukuran layar */}
           <div className="flex items-center gap-3">
             <img
               src="/images/logo.png"
@@ -38,7 +36,6 @@ export default function PortalLayout() {
           </div>
         </div>
 
-        {/* Judul Header Tengah (Hidden saat mobile, tampil di sm ke atas) */}
         <div className="absolute left-1/2 -translate-x-1/2 flex-col items-center text-center pointer-events-none hidden sm:flex">
           <h4 className="font-semibold heading-h4 leading-tight">
             {moduleHeader.title}
@@ -50,7 +47,6 @@ export default function PortalLayout() {
           )}
         </div>
 
-        {/* TOPBAR ACTIONS (Theme Toggle) */}
         <div className="flex flex-none gap-2 items-center">
           <button
             onClick={toggleTheme}
@@ -66,12 +62,10 @@ export default function PortalLayout() {
         </div>
       </header>
 
-      {/* MAIN CONTENT WRAPPER */}
       <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-base-200 relative z-0">
         <Outlet key={location.pathname} />
       </main>
 
-      {/* FOOTER PORTAL */}
       <footer className="bg-base-100 border-t border-base-300 shrink-0">
         <div className="max-w-7xl mx-auto px-6 py-4 text-center text-xs text-base-content/60">
           <span>

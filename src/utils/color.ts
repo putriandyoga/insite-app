@@ -86,7 +86,6 @@ export const colorSchemeMap: Record<DaisyColor, ColorSchemeConfig> = {
   },
 };
 
-// --- HELPER FUNCTIONS ---
 // Mengambil konfigurasi dasar berdasarkan warna
 export const getColorScheme = (color: DaisyColor): ColorSchemeConfig =>
   colorSchemeMap[color] || colorSchemeMap.primary;

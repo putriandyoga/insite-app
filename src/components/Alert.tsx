@@ -243,7 +243,6 @@ const Alert = ({
               </p>
             )}
 
-            {/* --- FITUR TAMBAHAN: Kotak Khusus Teks + CopyButton --- */}
             {copyableText && (
               <div className="flex items-center justify-between bg-base-200/70 border border-base-300 px-4 py-2.5 rounded-xl mb-4">
                 <span className="font-mono font-bold text-base tracking-wider text-primary select-all">

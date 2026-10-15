@@ -7,9 +7,9 @@ export const iptvApi = createApiClient(
   import.meta.env.DEV ? "/iptv-api" : getEnv("VITE_IPTV_API", ""),
   {
     withCredentials: false,
-    useLocalStorageToken: true, // Mengaktifkan pembacaan token dari localStorage
-    tokenStorageKey: "user", // Sesuaikan dengan key storage auth IPTV / aplikasi Anda (misal: "user" atau "auth-storage")
-    loginPath: "/app/iptv/login", // Jalur redirect saat 401 Unauthorized
+    useLocalStorageToken: true,
+    tokenStorageKey: "user",
+    loginPath: "/app/iptv/login",
   },
 );
 // IPTV with cookies
@@ -31,15 +31,14 @@ export const iptvApi = createApiClient(
 //   return request;
 // });
 
-// --- API PATIENT VERIFICATION ---
 export const patientVerificationApi = createApiClient(
   import.meta.env.DEV
     ? "/patient-api"
     : getEnv("VITE_PATIENT_VERIFICATION_API", ""),
   {
     withCredentials: false,
-    useLocalStorageToken: true, // Karena menggunakan token dari respons API (Bearer token)
-    tokenStorageKey: "patient_verification_token", // Kunci penyimpanan token di localStorage
-    loginPath: "/app/patient-verification/login", // Jalur redirect saat 401 Unauthorized
+    useLocalStorageToken: true,
+    tokenStorageKey: "patient_verification_token",
+    loginPath: "/app/patient-verification/login",
   },
 );

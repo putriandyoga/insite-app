@@ -11,7 +11,7 @@ export interface StbItem {
   serial_source: string;
   status: string;
   note: string;
-  online: boolean; // Diubah ke boolean karena merepresentasikan status true/false
+  online: boolean;
   last_seen_at: string;
   app_version: string;
   os_version: string;

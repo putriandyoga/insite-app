@@ -6,7 +6,7 @@ import SidebarItemComponent, {
 } from "./SidebarItem";
 import { useAuthStore } from "@/store/useAuthStore";
 import { hasPermission } from "@/utils/hasPermission";
-import { ENABLE_SIDEBAR_PERMISSION } from "@/config/featureFlags"; // <-- Import flag
+import { ENABLE_SIDEBAR_PERMISSION } from "@/config/featureFlags";
 
 interface SideMenuProps {
   menuItems: SidebarItem[];

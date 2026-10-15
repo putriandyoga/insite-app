@@ -26,12 +26,8 @@ import { useUserRevokeSessions } from "@iptv/hooks/user/use-user-revoke-sessions
 
 const UserPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
+    {},
     {
-      // status: "",
-      // ward_id: "",
-    },
-    {
-      // searchKey: "title",
       storeKey: "user-management-page",
     },
   );

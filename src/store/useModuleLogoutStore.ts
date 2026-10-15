@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\store\useModuleLogoutStore.ts
 import { create } from "zustand";
 
 interface ModuleLogoutState {

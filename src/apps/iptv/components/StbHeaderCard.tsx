@@ -24,7 +24,6 @@ export const StbHeaderCard = ({ data }: StbHeaderCardProps) => {
   return (
     <Card>
       <div className="flex flex-col gap-5  lg:flex-row lg:items-center lg:justify-between">
-        {/* Informasi utama perangkat */}
         <div className="flex min-w-0 items-start gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/40 text-base-content">
             <Tv className="h-6 w-6" />
@@ -65,7 +64,6 @@ export const StbHeaderCard = ({ data }: StbHeaderCardProps) => {
           </div>
         </div>
 
-        {/* Informasi teknis */}
         <div className="grid grid-cols-1 gap-3 border-t border-base-300 pt-4 sm:grid-cols-3 lg:w-auto lg:min-w-120 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
           <div className="min-w-0">
             <p className="text-xs text-base-content/60">App Version</p>

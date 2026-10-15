@@ -1,11 +1,10 @@
-// C:\Project\Production\insite-react\src\store\useAuthStore.ts
 import { create } from "zustand";
 import { decrypt, encrypt } from "@/utils/secureStorage";
 
 export interface UserData {
   id: string;
   email?: string;
-  username?: string; // <-- Ditambahkan agar mendukung IPTV / login berbasis username
+  username?: string;
   token: string;
   role: string;
   permissions: any[];
@@ -20,7 +19,6 @@ interface AuthState {
   logout: () => void;
 }
 
-// Helper untuk membaca localStorage dengan aman di awal
 const getInitialAuth = () => {
   try {
     const stored = localStorage.getItem("user");

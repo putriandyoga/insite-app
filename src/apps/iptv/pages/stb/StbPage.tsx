@@ -31,7 +31,7 @@ import { useStbUnbindBed } from "@iptv/hooks/stb/use-stb-unbind-bed";
 
 const StbPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
-    {}, // Initial filters kosong karena tidak ada dropdown filter tambahan
+    {},
     {
       storeKey: "stb-management-page",
     },
@@ -48,8 +48,6 @@ const StbPage = () => {
 
   const { unbindBed } = useStbUnbindBed();
 
-  // Handler interaktif khusus untuk aksi yang memerlukan input note
-  // Handler interaktif dengan modal input note
   const handleRevokeWithNote = async (id: string) => {
     const note = await showAlert({
       title: "Revoke STB",
@@ -65,7 +63,6 @@ const StbPage = () => {
       },
     });
 
-    // Jika user menekan tombol Batal, nilainya false. Jika Konfirmasi, nilainya string note.
     if (typeof note === "string" && note.trim()) {
       await revokeStb(id, note);
     }
@@ -272,11 +269,11 @@ const StbPage = () => {
                           color="info"
                           tooltip="Lihat Detail"
                         />
-                        {/* Terbitkan Kode Enrollment */}
+
                         {row.status === "ENROLLED" ? (
                           <ActionButton
                             onClick={() => deleteEnrollmentCode(row.id)}
-                            icon={LockOpen} // Gunakan icon sesuai preferensi
+                            icon={LockOpen}
                             color="error"
                             tooltip="Cabut Kode Enrollment"
                           />
@@ -288,7 +285,7 @@ const StbPage = () => {
                             tooltip="Terbitkan Kode Enrollment"
                           />
                         )}
-                        {/* Tombol Binding / Unbind Bed */}
+
                         {row.binding ? (
                           <ActionButton
                             onClick={() => unbindBed(row.id)}
@@ -298,7 +295,7 @@ const StbPage = () => {
                           />
                         ) : (
                           <ActionButton
-                            to={`/app/iptv/stb/${row.id}/bind`} // Mengarah ke halaman pemilihan bed
+                            to={`/app/iptv/stb/${row.id}/bind`}
                             icon={Link2}
                             color="success"
                             tooltip="Ikat ke Bed"
@@ -319,7 +316,7 @@ const StbPage = () => {
                             tooltip="Revoke Perangkat"
                           />
                         )}
-                        {/* Retire / Pensiunkan dengan Catatan */}
+
                         <ActionButton
                           onClick={() => handleRetireWithNote(row.id)}
                           icon={ArchiveRestore}

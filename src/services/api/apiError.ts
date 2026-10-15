@@ -50,7 +50,6 @@ export function normalizeApiError(error: unknown): ApiError {
     const responseData: unknown = error.response?.data;
     const payload = isRecord(responseData) ? responseData : {};
 
-    // Cek apakah ada objek 'meta' di dalam payload respons API
     const meta = isRecord(payload.meta) ? payload.meta : {};
 
     const message =

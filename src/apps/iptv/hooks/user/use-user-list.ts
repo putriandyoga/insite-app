@@ -5,9 +5,6 @@ import type { UserItem } from "@iptv/types/userTypes";
 import { userService } from "@iptv/services/userService";
 
 export interface UserFilterParams extends PaginatedParams {
-  // title?: string;
-  // ward_id?: string;
-  // status?: string;
   per_page?: number;
 }
 

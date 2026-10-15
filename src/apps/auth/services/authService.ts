@@ -1,7 +1,6 @@
-// C:\Project\Production\insite-react\src\services\modules\authService.ts
 import { authApi } from "@/services/api/endpoints";
 import { normalizeDetail } from "@/services/normalizers/responseNormalizer";
-import { encrypt } from "@/utils/secureStorage"; // Sesuaikan path jika perlu
+import { encrypt } from "@/utils/secureStorage";
 
 interface LoginResponse {
   access_token: string;

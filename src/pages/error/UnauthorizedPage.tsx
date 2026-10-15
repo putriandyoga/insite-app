@@ -5,14 +5,12 @@ export default function UnauthorizedPage() {
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center px-4 py-20">
       <div className="max-w-4xl mx-auto text-center w-full">
-        {/* Nomor Error */}
         <div className="mb-6">
           <h1 className="text-[140px] lg:text-[180px] font-black text-primary leading-none select-none">
             401
           </h1>
         </div>
 
-        {/* Informasi Utama */}
         <div className="space-y-3 mb-10">
           <h2 className="heading-h2 text-base-content">
             Akses Sesi Anda Telah Kedaluwarsa
@@ -25,7 +23,6 @@ export default function UnauthorizedPage() {
           </p>
         </div>
 
-        {/* Tombol Aksi */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
           <ActionButton
             to="/app/iptv/login"

@@ -11,7 +11,6 @@ export const stbService = {
     updateMethod: "PATCH",
   }),
 
-  // --- Enrollment Codes (Menerima parameter ttlHours dengan default 24) ---
   async createEnrollmentCode(
     id: string,
     ttlHours: number = 24,
@@ -32,12 +31,11 @@ export const stbService = {
     return normalizeDetail<StbItem>(response);
   },
 
-  // --- Binding (Ikat & Lepas Bed) ---
   async bindBed(id: string, bedId: string): Promise<StbItem> {
     const response = await iptvApi.apiRequest<unknown>(
       "POST",
       `/admin/stbs/${id}/binding`,
-      { bed_id: bedId }, // Mengirim body { bed_id }
+      { bed_id: bedId },
     );
     return normalizeDetail<StbItem>(response);
   },
@@ -50,12 +48,11 @@ export const stbService = {
     return normalizeDetail<StbItem>(response);
   },
 
-  // --- Status Perangkat (Revoke, Revive, Retire) ---
   async revoke(id: string, note: string): Promise<StbItem> {
     const response = await iptvApi.apiRequest<unknown>(
       "POST",
       `/admin/stbs/${id}/revoke`,
-      { note }, // Mengirim body { note }
+      { note },
     );
     return normalizeDetail<StbItem>(response);
   },
@@ -72,7 +69,7 @@ export const stbService = {
     const response = await iptvApi.apiRequest<unknown>(
       "POST",
       `/admin/stbs/${id}/retire`,
-      { note }, // Mengirim body { note }
+      { note },
     );
     return normalizeDetail<StbItem>(response);
   },

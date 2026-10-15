@@ -4,7 +4,6 @@ import { queryKeys } from "@/utils/queryKeys";
 import type { RoomItem } from "@iptv/types/roomTypes";
 import { roomService } from "@iptv/services/roomService";
 
-// Definisikan tipe parameter filter yang didukung oleh backend Room
 export interface RoomFilterParams extends PaginatedParams {
   title?: string;
   ward_id?: string;
@@ -20,7 +19,7 @@ export function useRoomList(
   const params: RoomFilterParams = {
     page,
     per_page: perPage,
-    ...filters, // Menggabungkan semua filter (title, ward_id, status) di sini
+    ...filters,
   };
 
   return useBaseList<RoomItem, RoomFilterParams>({

@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\services\normalizers\paginationNormalizer.ts
 import type { ApiMeta, PaginationLinks } from "@/services/types/api";
 import type { PaginationResult } from "@/services/types/common";
 import { normalizeList } from "./responseNormalizer";
@@ -51,7 +50,6 @@ function findPaginationMeta(response: unknown): UnknownRecord {
 
   if (isRecord(rootData.pagination)) return rootData.pagination;
   if (isRecord(rootData.meta) && !("current_page" in rootData)) {
-    // Menghindari konflik jika meta berisi api response meta biasa
     if (
       "current_page" in (rootData.meta as UnknownRecord) ||
       "last_page" in (rootData.meta as UnknownRecord)
@@ -100,7 +98,7 @@ function readApiMeta(response: unknown): ApiMeta | undefined {
   if (!isRecord(response) || !isRecord(response.meta)) return undefined;
 
   const meta = response.meta;
-  // Pastikan ini benar-benar API Meta (code/status), bukan pagination meta
+
   if (!("code" in meta || "status" in meta || "message" in meta)) {
     return undefined;
   }

@@ -10,13 +10,12 @@ export const stationService = {
     adapter: iptvAdapter,
   }),
 
-  // Custom endpoint tambahan khusus IPTV stations
   async rebootStation(id: string): Promise<any> {
     const response = await iptvApi.apiRequest<unknown>(
       "POST",
       `/admin/stations/${id}/reboot`,
     );
-    // Gunakan normalizeDetail agar konsisten dengan service lain (membuka wrapper .data jika ada)
+
     return normalizeDetail<any>(response);
   },
 };

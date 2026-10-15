@@ -44,14 +44,13 @@ export default function TitleSection({
             >
               {title}
             </h2>
-            {/* Subtitle / description di-hide saat mobile */}
+
             {!isMobile && (
               <p className="text-xs text-base-content/60">{description}</p>
             )}
           </div>
         </div>
 
-        {/* Badge hitung modul di-hide saat mobile */}
         {!isMobile && (
           <span className="rounded-md border border-base-300 bg-base-100 px-2.5 py-1 text-xs font-medium tabular-nums text-base-content/70">
             {cards.length} modul

@@ -21,7 +21,7 @@ export const iptvSidebar: SidebarItem[] = [
   },
   {
     label: "Station List",
-    to: "/app/iptv/station", // <-- Harus menggunakan awalan /app/iptv
+    to: "/app/iptv/station",
     icon: <Tv size={20} />,
   },
   {

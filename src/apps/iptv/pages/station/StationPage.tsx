@@ -13,7 +13,7 @@ import { formatDateIndoWithTime, formatTimeAgo } from "@/utils/dateFormater";
 
 const StationPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
-    {}, // Initial filters kosong karena tidak ada dropdown filter tambahan
+    {},
     {
       storeKey: "station-management-page",
     },

@@ -77,7 +77,6 @@ const SidebarItemComponent = ({
 
         <div className="absolute inset-y-0 left-full w-3"></div>
 
-        {/* Dropdown Popover saat Sidebar Collapsed */}
         {collapsed && level === 0 && (
           <div className="absolute left-full top-0 ml-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-left-2 duration-200">
             <div className="bg-base-100 rounded-lg shadow-xl border border-base-300 py-2 min-w-50 max-h-100 overflow-y-auto">
@@ -106,7 +105,6 @@ const SidebarItemComponent = ({
           </div>
         )}
 
-        {/* Sub-menu saat Sidebar Expanded */}
         {!collapsed && isOpen && (
           <ul className="ml-2 mt-1 space-y-1 animate-in slide-in-from-top-2 duration-300">
             {item
@@ -171,7 +169,6 @@ const SidebarItemComponent = ({
               <div className="relative flex items-center">
                 {item.icon}
 
-                {/* Tooltip saat collapsed */}
                 {collapsed && (
                   <div
                     className="

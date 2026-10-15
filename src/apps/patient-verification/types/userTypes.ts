@@ -1,5 +1,3 @@
-// src/apps/patient-verification/types/userTypes.ts
-
 export interface PatientUserItem {
   id: string | number;
   username: string;

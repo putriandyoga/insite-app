@@ -22,7 +22,7 @@ export function useAutoModuleTheme() {
     } else {
       // Jika kembali ke Home/Dashboard utama, kembalikan ke default (light/dark)
       if (Object.values(APP_THEME_MAP).some((t) => theme.startsWith(t))) {
-        setTheme("light"); // atau sesuaikan default utama Anda
+        setTheme("light");
       }
     }
   }, [location.pathname]);

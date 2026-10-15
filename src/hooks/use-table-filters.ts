@@ -1,14 +1,12 @@
-// src/hooks/use-table-filters.ts
 import { useDebounce } from "./use-debounce";
 import { create } from "zustand";
 
 interface FilterOptions {
   debounceDelay?: number;
   searchKey?: string;
-  storeKey?: string; // Kunci unik untuk store jika diperlukan per halaman
+  storeKey?: string;
 }
 
-// Factory Zustand Store yang independen per instance/halaman
 const createTableStore = <TFilters extends Record<string, any>>(
   initialFilters: TFilters,
 ) => {

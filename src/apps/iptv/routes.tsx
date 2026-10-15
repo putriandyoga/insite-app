@@ -1,5 +1,5 @@
 import { ModuleLogoutSync } from "@/components/ModuleLogoutSync";
-// import PermissionRoute from "@/routes/PermissionRoute"; // <-- Matikan ini
+
 import { lazy } from "react";
 import { Outlet, type RouteObject } from "react-router-dom";
 import { useIptvLogout } from "./hooks/auth/use-logout";
@@ -14,20 +14,17 @@ function IptvSyncWrapper() {
   );
 }
 
-// Station Page
 const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 const StationFormPage = lazy(
   () => import("@iptv/pages/station/StationFormPage"),
 );
 
-// Master Page
 const WardPage = lazy(() => import("@iptv/pages/master/ward/WardPage"));
 const WardFormPage = lazy(() => import("@iptv/pages/master/ward/WardFormPage"));
 const RoomPage = lazy(() => import("@iptv/pages/master/room/RoomPage"));
 const RoomFormPage = lazy(() => import("@iptv/pages/master/room/RoomFormPage"));
 const BedPage = lazy(() => import("@iptv/pages/master/bed/BedPage"));
 
-// User Page
 const UserPage = lazy(() => import("@iptv/pages/user/UserPage"));
 const UserFormPage = lazy(() => import("@iptv/pages/user/UserFormPage"));
 const UserDetailPage = lazy(() => import("@iptv/pages/user/UserDetailPage"));
@@ -35,7 +32,6 @@ const UserResetPasswordPage = lazy(
   () => import("@iptv/pages/user/UserResetPasswordPage"),
 );
 
-// STB Page
 const StbPage = lazy(() => import("@iptv/pages/stb/StbPage"));
 const StbBindPage = lazy(() => import("@iptv/pages/stb/StbBindPage"));
 const StbDetailPage = lazy(() => import("@iptv/pages/stb/StbDetailPage"));
@@ -44,11 +40,9 @@ export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
   children: [
-    // Hapus atau comment wrapper PermissionRoute di sini
     { index: true, element: <StationPage /> },
     {
       path: "dashboard",
-      // element: <DashboardPage />,
     },
     {
       path: "station",
@@ -62,7 +56,6 @@ export const iptvRoutes: RouteObject = {
       children: [
         { index: true, element: <WardPage /> },
         { path: "create", element: <WardFormPage /> },
-        // { path: ":wardId/edit", element: <WardFormPage /> },
       ],
     },
     {

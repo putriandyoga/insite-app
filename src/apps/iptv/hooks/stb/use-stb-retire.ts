@@ -26,7 +26,7 @@ export function useStbRetire(onSuccess?: () => void) {
 
     try {
       setLoading(true);
-      await stbService.retire(id, note); // Meneruskan parameter note ke service
+      await stbService.retire(id, note);
 
       await showAlert({
         title: "Berhasil!",

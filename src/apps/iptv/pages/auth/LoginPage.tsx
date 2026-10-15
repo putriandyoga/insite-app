@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\modules\iptv\pages\auth\LoginPage.tsx
 import { User, LockKeyhole, Tv } from "lucide-react";
 import { useLogin } from "@iptv/hooks/auth/use-login";
 import { BaseLoginForm, type FieldConfig } from "@/components/BaseLoginForm";

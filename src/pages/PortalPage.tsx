@@ -12,7 +12,6 @@ const PortalPage = () => {
   const { user } = useAuthStore();
   const reduceMotion = useReducedMotion();
 
-  // --- FILTER KARTU DASHBOARD ---
   const { staffCards, clientCards, allowedCards } = useMemo(() => {
     const allowed = dashboardCards.filter((card) => {
       const permission = getRoutePermission(card.path);
@@ -38,7 +37,6 @@ const PortalPage = () => {
         />
       )}
 
-      {/* SEKSI PORTAL KLIEN */}
       {clientCards.length > 0 && (
         <TitleSection
           title="Portal Klien"
@@ -49,7 +47,6 @@ const PortalPage = () => {
         />
       )}
 
-      {/* TIDAK ADA AKSES SAMA SEKALI */}
       {allowedCards.length === 0 && (
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 8 }}

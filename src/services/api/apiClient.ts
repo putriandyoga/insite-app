@@ -14,7 +14,7 @@ interface CreateApiClientOptions {
   tokenStorageKey?: string;
   loginPath?: string;
   useLocalStorageToken?: boolean;
-  tokenCookieName?: string; // Nama cookie yang menyimpan token
+  tokenCookieName?: string;
 }
 
 // Helper untuk membaca nilai cookie berdasarkan nama di sisi client

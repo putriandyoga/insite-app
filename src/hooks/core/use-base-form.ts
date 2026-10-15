@@ -1,4 +1,3 @@
-// src/core/use-base-form.ts
 import { useMemo, useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -66,7 +65,7 @@ export function useBaseForm<T>({
         ...detailQuery.data,
       });
     }
-  }, [detailQuery.data]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [detailQuery.data]);
 
   const setField = <K extends keyof T>(field: K, value: T[K]) => {
     setData((prev) => ({ ...prev, [field]: value }));

@@ -16,7 +16,6 @@ const StbDetailPage = () => {
 
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden">
-      {/* Top Section: Breadcrumb */}
       <PageTop>
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full py-1">
           <div className="overflow-x-auto min-w-0">

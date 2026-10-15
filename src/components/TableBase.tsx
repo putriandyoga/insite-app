@@ -35,7 +35,6 @@ export default function TableBase<T>({
   };
 
   return (
-    /* Tambahkan wrapper div dengan overflow-auto dan relative agar sticky top-0 mendeteksi kontainer scroll ini */
     <div className="relative max-h-full w-full overflow-auto">
       <table className={`table w-full border-collapse ${className}`}>
         <thead>

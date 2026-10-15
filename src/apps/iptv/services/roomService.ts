@@ -2,7 +2,6 @@ import { createCrudService } from "@/services/core/createCrudService";
 import { iptvApi } from "@/services/api/endpoints";
 import { iptvAdapter } from "@/services/adapters/iptvAdapter";
 import type { RoomItem } from "../types/roomTypes";
-// import { normalizeDetail } from "@/services/normalizers/responseNormalizer";
 
 export const roomService = {
   ...createCrudService<RoomItem>("/admin/rooms", {

@@ -1,4 +1,3 @@
-// src/core/use-base-all.ts
 import { useQuery } from "@tanstack/react-query";
 
 interface UseBaseAllProps<T> {

@@ -1,4 +1,3 @@
-// src/core/use-base-list.ts
 import type { PaginationResult } from "@/types/common";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
@@ -15,7 +14,6 @@ export function useBaseList<T, P extends Record<string, any>>({
   params,
   enabled = true,
 }: UseBaseListProps<T, P>) {
-  // PENTING: Masukkan params ke dalam queryKey agar cache reaktif terhadap search & filter!
   const query = useQuery({
     queryKey: [...queryKey, params],
     queryFn: () => fetcher(params),
@@ -30,7 +28,7 @@ export function useBaseList<T, P extends Record<string, any>>({
     perPage: query.data?.perPage ?? 10,
     page: query.data?.currentPage ?? params.page ?? 1,
     loading: query.isLoading,
-    isFetching: query.isFetching, // Berguna untuk indikator loading saat mengetik search/filter
+    isFetching: query.isFetching,
     error: query.isError,
     refetch: query.refetch,
   };

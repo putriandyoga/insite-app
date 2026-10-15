@@ -1,5 +1,5 @@
 import { ModuleLogoutSync } from "@/components/ModuleLogoutSync";
-// import PermissionRoute from "@/routes/PermissionRoute"; // <-- Matikan ini
+
 import { Outlet, type RouteObject } from "react-router-dom";
 import { useIptvLogout } from "./hooks/auth/use-logout";
 
@@ -19,7 +19,6 @@ export const patientVerificationRoutes: RouteObject = {
   children: [
     {
       path: "dashboard",
-      // element: <DashboardPage />,
     },
 
     {

@@ -23,7 +23,7 @@ export function useUserResetPassword(onSuccess?: () => void) {
 
     try {
       setLoading(true);
-      // Kirim password baru ke service
+
       await userService.resetPassword(userId, newPassword);
 
       await showAlert({

@@ -66,7 +66,6 @@ export default function DashboardLayout() {
 
   return (
     <div className="flex h-screen bg-base-200">
-      {/* DESKTOP SIDEBAR */}
       {!isMobile && (
         <aside
           className={`${
@@ -110,7 +109,6 @@ export default function DashboardLayout() {
         </aside>
       )}
 
-      {/* MOBILE DRAWER SIDEBAR */}
       {isMobile && (
         <>
           {sidebarOpen && (
@@ -141,7 +139,6 @@ export default function DashboardLayout() {
         </>
       )}
 
-      {/* MAIN CONTENT WRAPPER */}
       <div className="flex flex-col flex-1 overflow-hidden">
         <header className="navbar bg-base-100 border-b border-base-300 px-6 h-16">
           <div className="flex flex-1 items-center gap-2">
@@ -165,7 +162,6 @@ export default function DashboardLayout() {
             </div>
           )}
 
-          {/* TOPBAR ACTIONS & PROFILE DROPDOWN */}
           <div className="flex flex-none gap-2 items-center">
             <button
               onClick={toggleTheme}
@@ -194,7 +190,6 @@ export default function DashboardLayout() {
                 tabIndex={0}
                 className="dropdown-content menu bg-base-100 rounded-2xl z-50 w-52 p-2 shadow-xl border border-base-200 mt-2"
               >
-                {/* Informasi user menggunakan text-caption */}
                 {(user?.username || user?.email) && (
                   <li className="menu-title px-3 py-2">
                     <span className="text-caption text-base-content/50 uppercase">
@@ -208,7 +203,6 @@ export default function DashboardLayout() {
 
                 <div className="divider my-1 opacity-50" />
 
-                {/* Tombol Logout */}
                 <li>
                   <button
                     onClick={logout}

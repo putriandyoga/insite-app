@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\apps\patient-verification\pages\auth\LoginPage.tsx
 import { User, LockKeyhole, CheckSquare } from "lucide-react";
 import { useLogin } from "@patient-verification/hooks/auth/use-login";
 import { BaseLoginForm, type FieldConfig } from "@/components/BaseLoginForm";

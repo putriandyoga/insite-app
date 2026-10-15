@@ -17,26 +17,23 @@ const RoomFormPage = () => {
 
   const { data, setField, loading, saving, handleSubmit } = useRoomForm(roomId);
 
-  // Panggil useWardList di atas sebelum pengecekan loading agar urutan hook konsisten
   const { data: wardList, loading: loadingWards } = useWardList(
     1,
     undefined,
     1000,
   );
 
-  // State lokal untuk menampung teks input bed yang sedang diketik
   const [bedInput, setBedInput] = useState("");
 
   if (loading || loadingWards) return <IndicatorLoading />;
 
-  // Handler untuk menambah bed saat menekan Enter atau Koma
   const handleBedKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       const trimmedValue = bedInput.trim();
       if (trimmedValue) {
         const currentBeds = Array.isArray(data.beds) ? data.beds : [];
-        // Cek agar tidak duplikat
+
         if (!currentBeds.includes(trimmedValue)) {
           setField("beds", [...currentBeds, trimmedValue] as any);
         }
@@ -45,7 +42,6 @@ const RoomFormPage = () => {
     }
   };
 
-  // Handler untuk menghapus bed yang sudah dipilih
   const handleRemoveBed = (bedToRemove: string) => {
     const currentBeds = Array.isArray(data.beds) ? data.beds : [];
     setField("beds", currentBeds.filter((b) => b !== bedToRemove) as any);

@@ -36,7 +36,6 @@ export function useWardArchive(onSuccess?: () => void) {
         showConfirmButton: false,
       });
 
-      // Menggunakan queryKeys.ward.lists() untuk invalidate semua list query ward
       queryClient.invalidateQueries({
         queryKey: queryKeys.ward.lists(),
       });

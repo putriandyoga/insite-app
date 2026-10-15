@@ -22,7 +22,6 @@ export function useStbBindBed(onSuccess?: () => void) {
       cancelButtonText: "Batal",
     });
 
-    // Pastikan result bernilai true (karena showAlert mengembalikan true jika tombol konfirmasi diklik)
     if (result !== true) return;
 
     try {

@@ -1,4 +1,3 @@
-// C:\Project\Production\insite-react\src\components\core\BaseLoginForm.tsx
 import { useState, type ReactNode } from "react";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 
@@ -57,7 +56,6 @@ export function BaseLoginForm({
     <div className="p-6 space-y-4 flex flex-col items-center justify-center h-full">
       <div className="backdrop-blur-lg bg-base-100/30 border border-white/40 shadow-2xl rounded-2xl p-2 flex flex-col items-center relative z-10 w-full max-w-md">
         <div className="p-4 w-full">
-          {/* Logo / Header Icon */}
           <div className="mb-7 flex flex-col items-center text-center">
             <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 shadow-md shadow-primary/10">
               {icon}
@@ -67,7 +65,6 @@ export function BaseLoginForm({
             </h1>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleFormSubmit} className="space-y-5">
             {fields.map((field) => {
               const isPasswordField = field.type === "password";
@@ -124,7 +121,6 @@ export function BaseLoginForm({
               );
             })}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}

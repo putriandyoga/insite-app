@@ -9,8 +9,6 @@ import { showAlert } from "@/components/Alert";
 const DashboardPage = () => {
   const { user } = useAuthStore();
 
-  // --- KUMPULAN CONTOH PEMANGGILAN ALERT ---
-
   const handleTestSuccess = async () => {
     await showAlert({
       title: "Berhasil!",
@@ -107,11 +105,10 @@ const DashboardPage = () => {
       showConfirmButton: true,
       confirmButtonText: "Selesai",
       extraButtonText: "Download Excel",
-      extraButtonPath: "/files/rekap-pasien.xlsx", // atau bisa pakai extraButtonOnClick
+      extraButtonPath: "/files/rekap-pasien.xlsx",
     });
   };
 
-  // --- FILTER KARTU DASHBOARD ---
   const { staffCards, clientCards, allowedCards } = useMemo(() => {
     const allowed = dashboardCards.filter((card) => {
       const permission = getRoutePermission(card.path);
@@ -127,7 +124,6 @@ const DashboardPage = () => {
 
   return (
     <div className="flex flex-col gap-8 max-w-full">
-      {/* PANEL TESTING ALERT (Hapus bagian ini jika sudah selesai uji coba) */}
       <div className="bg-base-200 p-5 rounded-lg border border-base-300">
         <h2 className="text-sm font-bold text-base-content uppercase tracking-wider mb-3">
           🛠️ Panel Playground Test Alert (`showAlert`)
@@ -180,7 +176,7 @@ const DashboardPage = () => {
           </button>
         </div>
       </div>
-      {/* RENDER INTERNAL SECTION (Only if user has access to at least 1 internal feature) */}
+
       {staffCards.length > 0 && (
         <div>
           <div className="divider font-bold text-lg mb-4">
@@ -194,7 +190,6 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* RENDER CLIENT SECTION (Only if user has access to client views) */}
       {clientCards.length > 0 && (
         <div>
           <div className="divider font-bold text-lg mb-4 text-info">

@@ -20,18 +20,15 @@ const StbBindPage = () => {
   const navigate = useNavigate();
   const { data, loading, error } = useStbDetail(stbId);
 
-  // State untuk filter Ward dan Bed yang dipilih
   const [selectedWardId, setSelectedWardId] = useState("");
   const [selectedBedId, setSelectedBedId] = useState("");
 
-  // Ambil daftar Ward
   const { data: wardList, loading: loadingWards } = useWardList(
     1,
     undefined,
     1000,
   );
 
-  // Ambil daftar Bed berdasarkan ward yang dipilih
   const { data: bedList, loading: bedLoading } = useBedList(
     1,
     {
@@ -41,7 +38,6 @@ const StbBindPage = () => {
     500,
   );
 
-  // Grouping bed berdasarkan Ruangan (room_id / room_label)
   const groupedBeds = useMemo(() => {
     if (!Array.isArray(bedList)) return {};
 
@@ -58,7 +54,6 @@ const StbBindPage = () => {
     }, {});
   }, [bedList]);
 
-  // Hook bind bed
   const { bindBed, loading: saving } = useStbBindBed(() => {
     navigate("/app/iptv/stb");
   });
@@ -117,7 +112,6 @@ const StbBindPage = () => {
               color="primary"
             >
               <div className="flex flex-col gap-6">
-                {/* Step 1: Pilih Ward */}
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-base-content">
                     1. Pilih Ruang Perawatan
@@ -128,7 +122,7 @@ const StbBindPage = () => {
                     value={selectedWardId}
                     onChange={(e) => {
                       setSelectedWardId(e.target.value);
-                      setSelectedBedId(""); // Reset pilihan bed jika ward diganti
+                      setSelectedBedId("");
                     }}
                     disabled={loadingWards}
                   >
@@ -142,7 +136,6 @@ const StbBindPage = () => {
                   </select>
                 </div>
 
-                {/* Step 2: Denah Pemilihan Bed */}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-base-content">
@@ -150,7 +143,6 @@ const StbBindPage = () => {
                       <span className="text-error">*</span>
                     </label>
 
-                    {/* Legend / Keterangan Warna */}
                     <div className="flex items-center gap-4 text-xs text-base-content/70">
                       <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-md bg-base-200 border border-base-300"></div>
@@ -184,7 +176,6 @@ const StbBindPage = () => {
                           key={roomName}
                           className="flex flex-col gap-3 p-4 bg-base-100 rounded-2xl border border-base-200 shadow-sm hover:shadow-md transition-shadow"
                         >
-                          {/* Header Nama Ruangan dengan Badge/Icon */}
                           <div className="flex items-center gap-2 pb-2 border-b border-base-300 text-primary font-bold text-sm">
                             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/40 text-base-content">
                               <DoorOpen className="h-4 w-4" />
@@ -192,7 +183,6 @@ const StbBindPage = () => {
                             <span>{roomName}</span>
                           </div>
 
-                          {/* Grid Kotak Bed ala Bioskop yang Compact */}
                           <div className="grid grid-cols-4 gap-2">
                             {beds.map((bed: any) => {
                               const isSelected = selectedBedId === bed.id;

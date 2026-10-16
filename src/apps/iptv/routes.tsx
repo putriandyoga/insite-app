@@ -37,6 +37,8 @@ const StbFormPage = lazy(() => import("@iptv/pages/stb/StbFormPage"));
 const StbBindPage = lazy(() => import("@iptv/pages/stb/StbBindPage"));
 const StbDetailPage = lazy(() => import("@iptv/pages/stb/StbDetailPage"));
 
+const PanelPage = lazy(() => import("@iptv/pages/panel/NurseCallMonitor"));
+
 export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
@@ -84,6 +86,15 @@ export const iptvRoutes: RouteObject = {
       path: "stb",
       children: [
         { index: true, element: <StbPage /> },
+        { path: "create", element: <StbFormPage /> },
+        { path: ":stbId", element: <StbDetailPage /> },
+        { path: ":stbId/bind", element: <StbBindPage /> },
+      ],
+    },
+    {
+      path: "panel",
+      children: [
+        { index: true, element: <PanelPage /> },
         { path: "create", element: <StbFormPage /> },
         { path: ":stbId", element: <StbDetailPage /> },
         { path: ":stbId/bind", element: <StbBindPage /> },

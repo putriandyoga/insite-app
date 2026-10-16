@@ -55,6 +55,7 @@ export const validateStb = (payload: StbItem): string[] => {
 
   return errors;
 };
+
 export interface EnrollmentCodeResponse {
   id: string;
   code: string;

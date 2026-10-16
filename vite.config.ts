@@ -13,6 +13,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/iptv-api/, ""),
       },
+      "/panel": {
+        target: "http://192.168.101.207:3020",
+        changeOrigin: true,
+        secure: false,
+      },
       "/patient-api": {
         target: "http://ok-test.local:2024/api/v1",
         changeOrigin: true,

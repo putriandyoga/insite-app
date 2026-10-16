@@ -5,8 +5,6 @@ import {
   MapPin,
   FileSpreadsheet,
   Cpu,
-  Link2,
-  RefreshCw,
   Users,
 } from "lucide-react";
 

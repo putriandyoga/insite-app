@@ -10,7 +10,7 @@ export default function GuestRoute() {
   }
 
   if (token) {
-    return <Navigate to="/GUESS" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

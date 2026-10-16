@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Watcher - Nurse Call</title>
+    <style>
+      /* Tanpa framework, dan itu keputusan. Halaman ini satu file, tanpa build step,
+   tanpa dependensi. Yang menambahkannya hanya tempat bug baru bisa tinggal,
+   dan tidak ada satu pun komponen yang perlu di-reuse di tempat lain. */
+      :root {
+        --bg: #0f1720;
+        --card: #1a2430;
+        --line: #2b3948;
+        --text: #e6edf3;
+        --dim: #8fa3b5;
+        --hijau: #3fb950;
+        --kuning: #d29922;
+        --abu: #6e7d8a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 600;
+      }
+      #ward {
+        color: var(--dim);
+        font-size: 14px;
+      }
+      #status {
+        margin-left: auto;
+        font-size: 14px;
+        color: var(--dim);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #titik {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--abu);
+      }
+      main {
+        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+      }
+      li {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .jenis {
+        font-weight: 600;
+        font-size: 15px;
+        min-width: 96px;
+      }
+      .kamar {
+        color: var(--dim);
+        font-size: 14px;
+      }
+      .tekanan {
+        color: var(--dim);
+        font-size: 13px;
+        margin-left: auto;
+      }
+
+      /* Siapa yang sedang menangani. Kalau station sendiri, tulis "Anda" -
+   perawat lain cukup tahu "sudah ada yang menangani", tanpa identitas. */
+      .dipakai {
+        color: #ffb4ab;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 2px 9px;
+        border-radius: 11px;
+        background: rgba(255, 180, 171, 0.14);
+      }
+
+      /* Daftar perangkat: supaya perawat tahu TV mana yang mati. */
+      #perangkat {
+        border-top: 1px solid var(--garis);
+        padding: 12px 20px 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        align-items: center;
+      }
+      #perangkat-judul {
+        color: var(--dim);
+        font-size: 13px;
+        margin-right: 5px;
+      }
+      .perangkat {
+        padding: 4px 11px;
+        border-radius: 13px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--dim);
+      }
+      .perangkat.hidup {
+        color: #7ee2a8;
+        border-color: rgba(126, 226, 168, 0.35);
+      }
+      .perangkat.mati {
+        color: #ffb4ab;
+        border-color: #f85149;
+        background: rgba(248, 81, 73, 0.15);
+        font-weight: 600;
+      }
+      #perangkat-kosong {
+        color: var(--dim);
+        font-size: 13px;
+      }
+      button {
+        font: inherit;
+        font-size: 14px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: #243244;
+        color: var(--text);
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) {
+        background: #2d3d52;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .pesan {
+        padding: 32px 20px;
+        text-align: center;
+        color: var(--dim);
+      }
+      #pesan.error {
+        color: #f85149;
+      }
+
+      /* Warna menandai KONDISI, bukan jenis permintaan. Perawat yang sedang sibuk mencari "siapa yang belum ditangani", bukan "permintaan
+   yang mana". Menegate warna per jenis akan membuat dua hal yang beda
+   terlihat sama. */
+      .s-pending {
+        border-left: 4px solid var(--kuning);
+      }
+      .s-acked {
+        border-left: 4px solid var(--hijau);
+        opacity: 0.75;
+      }
+
+      /* Blok aktivasi suara.
+   Bukan hiasan: tanpa interaksi pengguna, browser memblokir audio
+   otomatis. Menampilkan tombol yang jelas lebih jujur daripada diam saja
+   lalu membiarkan perawat mengira tidak ada permintaan masuk. */
+      #bunyi {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 16px;
+        margin-bottom: 14px;
+        border: 2px solid #d29922;
+        border-radius: 8px;
+        background: #2d2200;
+        color: #f0d9a8;
+        font-size: 14px;
+      }
+      #bunyi[hidden] {
+        display: none;
+      }
+      #aktifkan {
+        padding: 8px 16px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        border-radius: 6px;
+        background: #d29922;
+        color: #1a1200;
+      }
+      #aktifkan:hover {
+        background: #e3ac31;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Nurse Call</h1>
+      <span id="ward">memuat ward...</span>
+      <span id="status"
+        ><span id="titik"></span><span id="teks">terhubung</span></span
+      >
+    </header>
+    <main>
+      <div id="bunyi" hidden>
+        <button id="aktifkan">Aktifkan suara</button>
+        <span
+          >Browser memblokir suara otomatis sampai Anda mengeklik sekali.</span
+        >
+      </div>
+      <ol id="daftar"></ol>
+      <p class="pesan" id="pesan"></p>
+      <div id="perangkat" hidden></div>
+    </main>
+
+    <script>
+      // Server punya SATU presenter (src/domain/calls/presenter.ts) untuk SSE dan
+      // polling. Halaman ini tidak menghitung apa pun sendiri - hanya menampilkan
+      // apa yang dikirim, supaya tidak ada tempat kedua di mana bentuk datanya bisa
+      // berbeda dari server.
+
+      function setStatus(teks, warna) {
+        document.getElementById("teks").textContent = teks;
+        document.getElementById("titik").style.background = warna;
+      }
+
+      /**
+       * Suara alarm.
+       *
+       * Kenapa tombol "Aktifkan suara" dan bukan langsung berbunyi: browser
+       * memblokir audio otomatis sampai ada interaksi pengguna. Kalau halaman
+       * diamkan begitu saja, perawat melihat tidak ada suara dan menyimpulkan
+       * ada permintaan - padahal permintaannya masuk dan tidak terlihat.
+       *
+       * Berhenti saat tidak ada permintaan PENDING lagi, bukan setelah satu kali
+       * putar. Alarm yang berhenti sendiri setelah 2 detik hanya berbunyi sekali, lalu
+       * diam padahal permintaannya masih menunggu.
+       */
+      /**
+       * Permintaan yang sedang ditampilkan.
+       *
+       * Nama ini harus BEDA dari `id="daftar"` milik elemen DOM. Browser membuat
+       * `window.daftar` otomatis untuk setiap elemen ber-id, sehingga `daftar.some(...)`
+       * di luar fungsi `gambar()` tidak merujuk parameternya — ia merujuk elemen
+       * DOM, dan elemen tidak punya `.some()`. Gejalanya "Uncaught TypeError" dan
+       * halaman kosong total.
+       */
+      let daftarSaatIni = [];
+      // Dipakai untuk menulis "Anda" alih-alih nama mesin, kalau station ini yang
+      // menjawab. Tanpa ini perawat kedua tidak tahu sudah ada yang menangani.
+      let namaStation = "";
+
+      const audio = new Audio("/assets/alarm.mp3");
+      audio.loop = true;
+      let suaraTersedia = false;
+      let berbunyi = false;
+
+      async function bukaSuara() {
+        try {
+          await audio.play();
+          audio.pause();
+          audio.currentTime = 0;
+          suaraTersedia = true;
+          document.getElementById("bunyi").hidden = true;
+          perbaruiSuara();
+        } catch (err) {
+          document.getElementById("bunyi").hidden = false;
+        }
+      }
+
+      function perbaruiSuara() {
+        const adaYangMenunggu = daftarSaatIni.some(
+          (c) => c.status === "PENDING",
+        );
+        if (!suaraTersedia) return;
+        if (adaYangMenunggu && !berbunyi) {
+          audio.play().catch(() => {
+            // Autoplay diblokir (mis. tab dipulihkan dari latar belakang).
+            document.getElementById("bunyi").hidden = false;
+          });
+          berbunyi = true;
+        } else if (!adaYangMenunggu && berbunyi) {
+          audio.pause();
+          audio.currentTime = 0;
+          berbunyi = false;
+        }
+      }
+
+      function gambar(daftar) {
+        // Disimpan supaya perbaruiSuara() bisa membacanya. `daftar` di sini hanya
+        // parameter; setelah fungsi selesai, tidak ada lagi yang bisa membacanya.
+        daftarSaatIni = daftar;
+
+        const ol = document.getElementById("daftar");
+        const pesan = document.getElementById("pesan");
+        ol.textContent = "";
+        pesan.style.display = daftar.length ? "none" : "block";
+
+        for (const c of daftar) {
+          const li = document.createElement("li");
+          li.className = c.status === "PENDING" ? "s-pending" : "s-acked";
+
+          const jenis = document.createElement("span");
+          jenis.className = "jenis";
+          jenis.textContent = c.kind;
+
+          const kamar = document.createElement("span");
+          kamar.className = "kamar";
+          kamar.textContent =
+            (c.room_label || "?") + " - " + (c.ward_name || "?");
+
+          const tekanan = document.createElement("span");
+          tekanan.className = "tekanan";
+          tekanan.textContent =
+            c.press_count > 1 ? c.press_count + "x ditekan" : "";
+
+          // Siapa yang menjawab. Tanpa ini, perawat kedua di ward yang sama tidak
+          // tahu permintaannya sudah diambil - lalu ikut berjalan ke kamar yang
+          // sama, atau menyia-nyiakan perjalanan.
+          let diambil = null;
+          if (c.status === "ACKNOWLEDGED") {
+            diambil = document.createElement("span");
+            diambil.className = "dipakai";
+            // "Anda" kalau station ini yang menjawab: perawat cukup tahu itu
+            // permintaannya, tanpa perlu membaca nama mesinnya sendiri.
+            diambil.textContent =
+              c.acked_by && namaStation && c.acked_by === namaStation
+                ? "Anda"
+                : " oleh " + (c.acked_by || "perawat lain");
+          }
+
+          const sudahDijawab = c.status === "ACKNOWLEDGED";
+          const tombol = document.createElement("button");
+          tombol.textContent = sudahDijawab ? "Tutup" : "Jawab";
+          tombol.onclick = async () => {
+            tombol.disabled = true;
+            try {
+              const aksi = sudahDijawab ? "resolve" : "ack";
+              const r = await fetch("/panel/calls/" + c.call_id + "/" + aksi, {
+                method: "POST",
+              });
+              if (!r.ok) {
+                const body = await r.json().catch(function () {
+                  return {};
+                });
+                // 409 menyebut siapa yang menjawab lebih dulu. Itu informasi yang
+                // berguna, jadi ditampilkan apa adanya - bukan diganti "gagal".
+                pesan.className = "pesan error";
+                pesan.style.display = "block";
+                pesan.textContent = body?.meta?.message || "Gagal menyimpan.";
+              }
+            } finally {
+              tombol.disabled = false;
+              muatUlang();
+            }
+          };
+
+          li.append(jenis, kamar, diambil, tekanan, tombol);
+          ol.append(li);
+        }
+
+        perbaruiSuara();
+
+        // Daftar perangkat dimuat dari DALAM `gambar()`, bukan dari tiap pemanggil.
+        //
+        // Alasannya: `gambar()` adalah satu-satunya jalan render. Snapshot SSE,
+        // `muatUlang()`, dan setiap event semuanya lewat ke sini. Kalau pemanggilan
+        // ditaruh di pemanggil, ada jalur yang lupa - dan gejalanya "dafarnya kosong
+        // sampai saya pindah tab", persis kelas bug "harus reload" yang sudah pernah
+        // terjadi dua kali.
+        muatPerangkat();
+      }
+
+      /**
+       * Heartbeat ke server.
+       *
+       * Tanpa ini, `last_seen_at` station hanya diperbarui saat tukar session - jadi
+       * PC perawat yang menyala seharian akan terlihat "offline" di dashboard padahal
+       * someone masih memandauinya. Endpoint-nya sudah ada; yang tidak ada adalah
+       * pemanggilnya.
+       *
+       * Interval 30 detik, sama dengan STB, dan 1/3 dari TTL 90 detik. Itu berarti
+       * masih boleh tiga heartbeat hilang berturut-turut sebelum ditandai offline - jadi
+       * satu request yang gagal tidak langsung membuat perawat terlihat pergi.
+       *
+       * Sengaja tidak memakai `visibilitychange`: tab di belakang masih
+       * dipantau, dan heartbeat yang berhenti saat tab disembunyikan akan melaporkan
+       * perawat yang sedang hallway sebagai offline.
+       */
+      const JEDA_HEARTBEAT_MS = 30000;
+
+      function mulaiHeartbeat() {
+        const kirim = () => {
+          fetch("/panel/heartbeat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: "{}",
+          })
+            .then(function (r) {
+              // 401 berarti cookie sudah tidak berlaku. Heartbeat berulang
+              // tidak akan menghidupkannya lagi, dan diam saja membuat dashboard
+              // menunjukkan "offline" tanpa sebab yang bisa ditindaklanjuti.
+              if (r.status === 401) {
+                pesan("Sesi berakhir. Tukar ulang token station.", true);
+              }
+            })
+            .catch(function () {
+              // Lewati: percobaan berikutnya akan mengirim lagi.
+            });
+        };
+
+        kirim();
+        setInterval(kirim, JEDA_HEARTBEAT_MS);
+      }
+
+      /**
+       * Daftar perangkat di ward ini.
+       *
+       * Tanpa ini, kalau satu TV mati, tidak ada yang tahu sampai pasien menekan
+       * tombol yang tidak pernah sampai. Penyebabnya bukan tidak ada orang - tapi
+       * tidak ada yang punya cukup untuk melihatnya.
+       */
+      async function muatPerangkat() {
+        try {
+          const r = await fetch("/panel/stbs", { credentials: "same-origin" });
+          if (!r.ok) return;
+          const b = await r.json();
+          const devices = (b.data && b.data.devices) || [];
+
+          const wadah = document.getElementById("perangkat");
+          wadah.innerHTML = "";
+
+          const judul = document.createElement("span");
+          judul.id = "perangkat-judul";
+          judul.textContent = "TV di ward ini:";
+          wadah.append(judul);
+
+          if (devices.length === 0) {
+            const kosong = document.createElement("span");
+            kosong.id = "perangkat-kosong";
+            kosong.textContent = "belum ada";
+            wadah.append(kosong);
+          } else {
+            // Yang mati ditampilkan lebih dulu: itu yang butuh tindakan, dan kalau
+            // hanya dibaca sekilas, yang paling penting harus terlihat tanpa harus
+            // menggulir.
+            const urut = devices.slice().sort(function (a, b) {
+              if (a.online !== b.online) return a.online ? 1 : -1;
+              return (a.room_label || "").localeCompare(b.room_label || "");
+            });
+
+            for (const d of urut) {
+              const el = document.createElement("span");
+              el.className = "perangkat " + (d.online ? "hidup" : "mati");
+              const lalu = d.last_seen_at
+                ? sejakRelative(d.last_seen_at)
+                : "tidak pernah";
+              el.textContent =
+                (d.room_label || d.serial) +
+                " · " +
+                (d.online ? "hidup" : "mati " + lalu);
+              el.title =
+                d.serial + (d.online ? "" : " — terakhir dilihat " + lalu);
+              wadah.append(el);
+            }
+          }
+          wadah.hidden = false;
+        } catch (e) {
+          // Perangkat bukan informasi kritis. Kegagalan di sini tidak boleh
+          // menyembunyikan daftar permintaan.
+        }
+      }
+
+      /** "baru saja", "5 menit lalu", "2 jam lalu". */
+      function sejakRelative(iso) {
+        const detik = Math.max(
+          0,
+          Math.round((Date.now() - new Date(iso).getTime()) / 1000),
+        );
+        if (detik < 60) return "baru saja";
+        const menit = Math.round(detik / 60);
+        if (menit < 60) return menit + " menit lalu";
+        const jam = Math.round(menit / 60);
+        if (jam < 24) return jam + " jam lalu";
+        return Math.round(jam / 24) + " hari lalu";
+      }
+
+      async function muatUlang() {
+        try {
+          const r = await fetch("/panel/active");
+          if (r.ok) {
+            const b = await r.json();
+            if (b.data && b.data.station)
+              namaStation = b.data.station.name || "";
+            gambar((b.data && b.data.calls) || []);
+          }
+        } catch (e) {
+          // Lewati: polling periodik akan mencoba lagi.
+        }
+        // Daftar perangkat dimuat terpisah: kalau gagal, permintaan tetap tampil.
+        muatPerangkat();
+      }
+
+      function hubung() {
+        const es = new EventSource("/panel/events");
+
+        es.addEventListener("open", function () {
+          setStatus("terhubung", "#3fb950");
+        });
+        es.addEventListener("error", function () {
+          setStatus("terputus - menyambung lagi", "#d29922");
+        });
+
+        // Snapshot adalah sumber kebenaran: daftar permintaan aktif saat terhubung.
+        // Event setelah itu hanya memberi tahu "ada yang berubah".
+        es.addEventListener("snapshot", function (e) {
+          setStatus("terhubung", "#3fb950");
+          gambar(JSON.parse(e.data).calls || []);
+        });
+
+        // Daftar ini WAJIB sama dengan `EventType` di src/domain/calls/dispatcher.ts.
+        //
+        // `call.updated` itu yang hilang sebelumnya, dan akibatnya bukan "tidak ada
+        // live update" secara umum: tekan PERTAMA kali muncul (call.created), tapi
+        // tekan kedua kali tidak mengubah apa pun — karena permintaan yang sama
+        // digabung jadi call.updated, yang tidak listened. Gejalanya persis
+        // "harus reload", padahal stream-nya hidup dan event-nya sampai.
+        //
+        // Kalau nama baru ditambah di server, halaman ini harus ikut — kalau tidak,
+        // perawat melihat daftar basi dan tidak pernah tahu itu salah.
+        const JENIS_EVENT = [
+          "call.created",
+          "call.updated",
+          "call.acked",
+          "call.resolved",
+          "presence",
+        ];
+        for (const nama of JENIS_EVENT) {
+          es.addEventListener(nama, function () {
+            muatUlang();
+          });
+        }
+
+        // Jaring pengaman untuk kelas bug yang sama: kalau ada event yang namanya
+        // tidak cocok (event baru, salah ketik, perubahan server yang belum ikut ke
+        // sini), perawat tetap melihat data terbaru begitu kembali ke tab. Biaya
+        // satu permintaan, dan menutup kelas bug ini sepenuhnya.
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) muatUlang();
+        });
+
+        window.addEventListener("beforeunload", function () {
+          es.close();
+        });
+      }
+
+      fetch("/panel/me")
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (b) {
+          document.getElementById("ward").textContent =
+            b?.data?.ward?.name || "ward tidak dikenal";
+          // Nama station dipakai untuk menulis "Anda" alih-alih nama mesin pada
+          // permintaan yang station ini yang menjawabnya.
+          const namaBaru = b?.data?.station?.name || "";
+          // Render ulang kalau nama baru saja datang: tanpa ini, permintaan yang
+          // station ini yang menjawabnya bisa tampil "oleh PC Demo" di render
+          // pertama, lalu tidak pernah dikoreksi - karena render berikutnya hanya
+          // terjadi kalau ada perubahan.
+          if (namaBaru && namaBaru !== namaStation) {
+            namaStation = namaBaru;
+            gambar(daftarSaatIni);
+          }
+        })
+        .catch(function () {});
+
+      document.getElementById("aktifkan").addEventListener("click", bukaSuara);
+
+      // Tab yang dipulihkan dari latar belakang sering diblokir autoplay, walau
+      // sempat diizinkan sebelumnya. Karena itu suara ditanyakan ulang tiap load.
+      addEventListener("pageshow", () => {
+        if (!suaraTersedia) document.getElementById("bunyi").hidden = false;
+      });
+
+      // Heartbeat harus jalan SEBELUM hubung(): kalau SSE gagal total, dashboard
+      // masih harus tahu PC ini hidup - stream yang putus bukan alasan perawat
+      // dianggap pergi.
+      mulaiHeartbeat();
+      hubung();
+    </script>
+  </body>
+</html>

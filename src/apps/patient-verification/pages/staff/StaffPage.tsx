@@ -8,7 +8,7 @@ import DataSection from "@/components/DataSection";
 import Pagination from "@/components/Pagination";
 import TableBase from "@/components/TableBase";
 import { useTableFilters } from "@/hooks/use-table-filters";
-import { PenBox, Pencil, Trash } from "lucide-react";
+import { Eye, PenBox, Pencil, Trash } from "lucide-react";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
 import { CopyButton } from "@/components/CopyButton";
 
@@ -76,7 +76,7 @@ const StaffPage = () => {
                   {
                     header: "Employee ID",
                     render: (row) => (
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-2">
                         {row.employee_id}
                         <CopyButton text={row.employee_id} iconOnly />
                       </div>
@@ -113,6 +113,12 @@ const StaffPage = () => {
                     header: "Aksi",
                     render: (row) => (
                       <div className="inline-flex justify-center gap-2">
+                        <ActionButton
+                          to={`/app/patient-verification/staff/${row.id}`}
+                          icon={Eye}
+                          color="primary"
+                          tooltip="Lihat Data"
+                        />
                         <ActionButton
                           to={`/app/patient-verification/staff/${row.id}/edit`}
                           icon={Pencil}

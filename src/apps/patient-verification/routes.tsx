@@ -19,12 +19,18 @@ const DepartementPage = lazy(
 const DepartementFormPage = lazy(
   () => import("@patient-verification/pages/departement/DepartementFormPage"),
 );
+const DepartementDetailPage = lazy(
+  () => import("@patient-verification/pages/departement/DepartementDetailPage"),
+);
 
 const StaffPage = lazy(
   () => import("@patient-verification/pages/staff/StaffPage"),
 );
 const StaffFormPage = lazy(
   () => import("@patient-verification/pages/staff/StaffFormPage"),
+);
+const StaffDetailPage = lazy(
+  () => import("@patient-verification/pages/staff/StaffDetailPage"),
 );
 
 export const patientVerificationRoutes: RouteObject = {
@@ -39,6 +45,7 @@ export const patientVerificationRoutes: RouteObject = {
       children: [
         { index: true, element: <DepartementPage /> },
         { path: "create", element: <DepartementFormPage /> },
+        { path: ":departementId", element: <DepartementDetailPage /> },
         { path: ":departementId/edit", element: <DepartementFormPage /> },
       ],
     },
@@ -47,6 +54,7 @@ export const patientVerificationRoutes: RouteObject = {
       children: [
         { index: true, element: <StaffPage /> },
         { path: "create", element: <StaffFormPage /> },
+        { path: ":staffId", element: <StaffDetailPage /> },
         { path: ":staffId/edit", element: <StaffFormPage /> },
       ],
     },

@@ -16,7 +16,7 @@ export const patientVerificationSidebar: SidebarItem[] = [
     permission: "verification.view", // Izin utama untuk melihat menu Verifikasi Pasien
     children: [
       {
-        label: "Daftar Instance",
+        label: "Instance",
         to: "/app/patient-verification/instances",
         permission: "instances.list", // Izin spesifik sub-menu
       },
@@ -32,9 +32,7 @@ export const patientVerificationSidebar: SidebarItem[] = [
   {
     label: "Manajemen Proses",
     icon: <GitBranch size={20} />,
-    children: [
-      { label: "Daftar Proses", to: "/app/patient-verification/processes" },
-    ],
+    children: [{ label: "Proses", to: "/app/patient-verification/processes" }],
   },
 
   // 3. Template Konteks (Contoh diproteksi khusus admin/manager)
@@ -45,7 +43,7 @@ export const patientVerificationSidebar: SidebarItem[] = [
     permission: "context-templates.manage",
     children: [
       {
-        label: "Daftar Template",
+        label: "Template",
         to: "/app/patient-verification/context-templates",
       },
     ],
@@ -56,17 +54,17 @@ export const patientVerificationSidebar: SidebarItem[] = [
     label: "Master",
     icon: <Users size={20} />,
     children: [
-      { label: "Daftar Staff", to: "/app/patient-verification/staff" },
+      { label: "Staff", to: "/app/patient-verification/staff" },
       {
-        label: "Staff Departemen Saya",
-        to: "/app/patient-verification/staff/my-department",
-        enablePermission: true,
-        permission: "staff.my-department", // Hanya user dengan izin ini yang bisa melihat sub-menu ini
-      },
-      {
-        label: "Daftar Departemen",
+        label: "Departemen",
         to: "/app/patient-verification/departement",
       },
+      // {
+      //   label: "Staff Departemen Saya",
+      //   to: "/app/patient-verification/staff/my-department",
+      //   enablePermission: true,
+      //   permission: "staff.my-department", // Hanya user dengan izin ini yang bisa melihat sub-menu ini
+      // },
     ],
   },
 

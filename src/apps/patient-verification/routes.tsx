@@ -20,6 +20,13 @@ const DepartementFormPage = lazy(
   () => import("@patient-verification/pages/departement/DepartementFormPage"),
 );
 
+const StaffPage = lazy(
+  () => import("@patient-verification/pages/staff/StaffPage"),
+);
+const StaffFormPage = lazy(
+  () => import("@patient-verification/pages/staff/StaffFormPage"),
+);
+
 export const patientVerificationRoutes: RouteObject = {
   path: "patient-verification",
   element: <IptvSyncWrapper />,
@@ -33,6 +40,14 @@ export const patientVerificationRoutes: RouteObject = {
         { index: true, element: <DepartementPage /> },
         { path: "create", element: <DepartementFormPage /> },
         { path: ":departementId/edit", element: <DepartementFormPage /> },
+      ],
+    },
+    {
+      path: "staff",
+      children: [
+        { index: true, element: <StaffPage /> },
+        { path: "create", element: <StaffFormPage /> },
+        { path: ":staffId/edit", element: <StaffFormPage /> },
       ],
     },
     {

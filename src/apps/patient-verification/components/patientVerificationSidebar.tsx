@@ -56,12 +56,12 @@ export const patientVerificationSidebar: SidebarItem[] = [
     label: "Master",
     icon: <Users size={20} />,
     children: [
-      { label: "Daftar Staff", to: "/app/patient-verification/staffs" },
+      { label: "Daftar Staff", to: "/app/patient-verification/staff" },
       {
         label: "Staff Departemen Saya",
-        to: "/app/patient-verification/staffs/my-department",
+        to: "/app/patient-verification/staff/my-department",
         enablePermission: true,
-        permission: "staffs.my-department", // Hanya user dengan izin ini yang bisa melihat sub-menu ini
+        permission: "staff.my-department", // Hanya user dengan izin ini yang bisa melihat sub-menu ini
       },
       {
         label: "Daftar Departemen",

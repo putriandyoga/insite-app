@@ -30,7 +30,10 @@ export function CopyButton({
   };
 
   return (
-    <div className="tooltip z-100" data-tip={copied ? "Copied!" : "Copy"}>
+    <div
+      className="tooltip tooltip-left"
+      data-tip={copied ? "Copied!" : "Copy"}
+    >
       <button
         onClick={handleCopy}
         className={`btn btn-xs bg-primary/40 text-base-content border-0 hover:bg-primary/60 flex items-center gap-1 ${className}`}

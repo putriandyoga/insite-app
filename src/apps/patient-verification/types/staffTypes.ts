@@ -8,7 +8,7 @@ export interface StaffItem extends BaseItem {
   position: string;
   departemen_id: number;
   is_active: boolean;
-  departement: DepartementItem;
+  departemen: DepartementItem;
 }
 
 export const defaultStaff: StaffItem = {
@@ -18,7 +18,7 @@ export const defaultStaff: StaffItem = {
   position: "",
   departemen_id: 0,
   is_active: false,
-  departement: defaultDepartement,
+  departemen: defaultDepartement,
   createdAt: "",
   updatedAt: "",
   deletedAt: null,

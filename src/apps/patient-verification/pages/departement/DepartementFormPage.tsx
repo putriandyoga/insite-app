@@ -66,7 +66,8 @@ const DepartementFormPage = () => {
           onSubmit={handleSubmit}
           saving={saving}
           isEditMode={isEditMode}
-          cancelEditTo={`/app/patient-verification/departement/${departementId}`}
+          // cancelEditTo={`/app/patient-verification/departement/${departementId}`}
+          cancelEditTo="/app/patient-verification/departement"
           cancelCreateTo="/app/patient-verification/departement"
         />
       </PageBottom>

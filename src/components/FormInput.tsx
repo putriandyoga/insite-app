@@ -4,7 +4,7 @@ import type { ChangeEvent } from "react";
 
 type SelectOption =
   | string
-  | { label: string; value: string | number }
+  | { label: string; value: string | number | boolean }
   | { label: string; options: { label: string; value: string | number }[] };
 
 type RadioOption = {

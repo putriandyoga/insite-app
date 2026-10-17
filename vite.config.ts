@@ -19,7 +19,7 @@ export default defineConfig({
         secure: false,
       },
       "/patient-api": {
-        target: "http://ok-test.local:2024/api/v1",
+        target: "http://192.168.19.21:2024/api/v1",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/patient-api/, ""),
       },

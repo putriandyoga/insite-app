@@ -43,10 +43,46 @@ function readOptionalNumber(
   return undefined;
 }
 
+// function findPaginationMeta(response: unknown): UnknownRecord {
+//   if (!isRecord(response)) return {};
+
+//   const rootData = isRecord(response.data) ? response.data : response;
+
+//   if (isRecord(rootData.pagination)) return rootData.pagination;
+//   if (isRecord(rootData.meta) && !("current_page" in rootData)) {
+//     if (
+//       "current_page" in (rootData.meta as UnknownRecord) ||
+//       "last_page" in (rootData.meta as UnknownRecord)
+//     ) {
+//       return rootData.meta as UnknownRecord;
+//     }
+//   }
+
+//   const paginationKeys = [
+//     "current_page",
+//     "currentPage",
+//     "last_page",
+//     "lastPage",
+//     "per_page",
+//     "perPage",
+//     "total",
+//   ];
+//   if (paginationKeys.some((key) => key in rootData)) {
+//     return rootData;
+//   }
+
+//   return {};
+// }
+
 function findPaginationMeta(response: unknown): UnknownRecord {
   if (!isRecord(response)) return {};
 
   const rootData = isRecord(response.data) ? response.data : response;
+
+  // Cek jika pagination berada di dalam response.data.meta (struktur API patient-verification)
+  if (isRecord(rootData.meta) && "current_page" in rootData.meta) {
+    return rootData.meta as UnknownRecord;
+  }
 
   if (isRecord(rootData.pagination)) return rootData.pagination;
   if (isRecord(rootData.meta) && !("current_page" in rootData)) {
@@ -94,12 +130,31 @@ function readLinks(response: unknown): PaginationLinks | undefined {
   };
 }
 
+// function readApiMeta(response: unknown): ApiMeta | undefined {
+//   if (!isRecord(response) || !isRecord(response.meta)) return undefined;
+
+//   const meta = response.meta;
+
+//   if (!("code" in meta || "status" in meta || "message" in meta)) {
+//     return undefined;
+//   }
+
+//   return {
+//     code: typeof meta.code === "number" ? meta.code : undefined,
+//     status: typeof meta.status === "string" ? meta.status : undefined,
+//     message: typeof meta.message === "string" ? meta.message : undefined,
+//     request_id:
+//       typeof meta.request_id === "string" ? meta.request_id : undefined,
+//     error: meta.error,
+//   };
+// }
 function readApiMeta(response: unknown): ApiMeta | undefined {
-  if (!isRecord(response) || !isRecord(response.meta)) return undefined;
+  if (!isRecord(response)) return undefined;
 
-  const meta = response.meta;
+  // Root meta berisi status code, message, dll (misal: { meta: { code: 200, message: "..." } })
+  const meta = isRecord(response.meta) ? response.meta : undefined;
 
-  if (!("code" in meta || "status" in meta || "message" in meta)) {
+  if (!meta || !("code" in meta || "status" in meta || "message" in meta)) {
     return undefined;
   }
 

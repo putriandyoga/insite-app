@@ -4,7 +4,6 @@ import {
   GitBranch,
   FileText,
   CheckSquare,
-  Building2,
   DownloadCloud,
 } from "lucide-react";
 
@@ -54,7 +53,7 @@ export const patientVerificationSidebar: SidebarItem[] = [
 
   // 4. Manajemen Staff (Campuran: menu staff umum & sub-menu khusus departemen)
   {
-    label: "Manajemen Staff",
+    label: "Master",
     icon: <Users size={20} />,
     children: [
       { label: "Daftar Staff", to: "/app/patient-verification/staffs" },
@@ -64,17 +63,9 @@ export const patientVerificationSidebar: SidebarItem[] = [
         enablePermission: true,
         permission: "staffs.my-department", // Hanya user dengan izin ini yang bisa melihat sub-menu ini
       },
-    ],
-  },
-
-  // 5. Departemen (Tanpa permission, terbuka untuk semua)
-  {
-    label: "Departemen",
-    icon: <Building2 size={20} />,
-    children: [
       {
         label: "Daftar Departemen",
-        to: "/app/patient-verification/departments",
+        to: "/app/patient-verification/departement",
       },
     ],
   },

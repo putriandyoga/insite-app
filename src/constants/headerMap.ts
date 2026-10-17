@@ -8,32 +8,12 @@ export const headerMap: Record<string, HeaderContent> = {
     title: "Insite",
     subtitle: "All systems in sight.",
   },
-  inventory: {
-    title: "Inventory Module",
-    subtitle: "Manage your stock efficiently",
+  iptv: {
+    title: "Insite Ciputra Mitra Hospital",
+    subtitle: "Manage your IPTV nurse call stations efficiently",
   },
-  cases: {
-    title: "Incident Management System",
-    subtitle: "Real-time monitoring and reporting",
-  },
-  event: {
-    title: "Event Management",
-    subtitle: "Manage all your events effortlessly",
-  },
-  ticketing: {
-    title: "Ticketing System",
-    subtitle: "Create, track, and manage requests efficiently",
-  },
-  survey: {
-    title: "Survey Dashboard",
-    subtitle: "Manage categories, questions, and analyze survey results",
-  },
-  queue: {
-    title: "Queue Management",
-    subtitle: "Manage and prioritize tasks effectively",
-  },
-  astra: {
-    title: "A S T R A",
-    subtitle: "Automated Site Testing and Reporting Application.",
+  "patient-verification": {
+    title: "Insite Ciputra Mitra Hospital",
+    subtitle: "Real-time patient verification and monitoring",
   },
 };

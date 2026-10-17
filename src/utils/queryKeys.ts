@@ -7,11 +7,13 @@ export const queryKeys = {
   bed: createQueryKeys("bed"),
   user: createQueryKeys("user"),
   stb: createQueryKeys("stb"),
-
   panel: {
     ...createQueryKeys("panel"),
     me: () => ["panel", "me"] as const,
     active: () => ["panel", "active"] as const,
     stbs: () => ["panel", "stbs"] as const,
   },
+
+  // Patient Verification
+  departement: createQueryKeys("departement"),
 };

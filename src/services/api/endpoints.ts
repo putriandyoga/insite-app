@@ -38,7 +38,7 @@ export const patientVerificationApi = createApiClient(
   {
     withCredentials: false,
     useLocalStorageToken: true,
-    tokenStorageKey: "patient_verification_token",
+    tokenStorageKey: "user",
     loginPath: "/app/patient-verification/login",
   },
 );

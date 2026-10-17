@@ -19,6 +19,6 @@ export function useLogin() {
       departemen_id: result.user.departemen_id,
     }),
 
-    redirectTo: "/app/patient-verification/instances",
+    redirectTo: "/app/patient-verification/dashboard",
   });
 }

@@ -52,13 +52,30 @@ export function normalizeApiError(error: unknown): ApiError {
 
     const meta = isRecord(payload.meta) ? payload.meta : {};
 
-    const message =
+    let message =
       (typeof meta.message === "string" && meta.message) ||
       (typeof meta.error === "string" && meta.error) ||
       (typeof payload.message === "string" && payload.message) ||
       (typeof payload.error === "string" && payload.error) ||
       error.message ||
       "Terjadi kesalahan saat menghubungi server.";
+
+    // Tangani error validasi backend di mana pesan detailnya ada di dalam payload.data (misal: status 422)
+    const errorData = payload.data;
+    if (isRecord(errorData)) {
+      const detailedMessages: string[] = [];
+      for (const [_key, val] of Object.entries(errorData)) {
+        if (Array.isArray(val)) {
+          detailedMessages.push(`${val.join(", ")}`);
+        } else if (typeof val === "string") {
+          detailedMessages.push(`${val}`);
+        }
+      }
+      if (detailedMessages.length > 0) {
+        // Gabungkan pesan utama dari meta/payload dengan detail error dari data
+        message = `${message} ${detailedMessages.join(" | ")}`;
+      }
+    }
 
     return new ApiError(message, {
       status: error.response?.status,

@@ -17,4 +17,5 @@ export const queryKeys = {
   // Patient Verification
   departement: createQueryKeys("departement"),
   staff: createQueryKeys("staff"),
+  context: createQueryKeys("context"),
 };

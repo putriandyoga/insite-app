@@ -44,7 +44,7 @@ export const patientVerificationSidebar: SidebarItem[] = [
     children: [
       {
         label: "Template",
-        to: "/app/patient-verification/context-templates",
+        to: "/app/patient-verification/context",
       },
     ],
   },

@@ -7,3 +7,8 @@ export const capitalizeEachWord = (text?: string): string => {
     .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : ""))
     .join(" ");
 };
+
+export const toAllUppercase = (text?: string): string => {
+  if (!text) return "";
+  return text.replace(/_/g, " ").toUpperCase();
+};

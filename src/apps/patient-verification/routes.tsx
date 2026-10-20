@@ -33,6 +33,16 @@ const StaffDetailPage = lazy(
   () => import("@patient-verification/pages/staff/StaffDetailPage"),
 );
 
+const ContextPage = lazy(
+  () => import("@patient-verification/pages/context/ContextPage"),
+);
+const ContextFormPage = lazy(
+  () => import("@patient-verification/pages/context/ContextFormPage"),
+);
+const ContextDetailPage = lazy(
+  () => import("@patient-verification/pages/context/ContextDetailPage"),
+);
+
 export const patientVerificationRoutes: RouteObject = {
   path: "patient-verification",
   element: <IptvSyncWrapper />,
@@ -56,6 +66,15 @@ export const patientVerificationRoutes: RouteObject = {
         { path: "create", element: <StaffFormPage /> },
         { path: ":staffId", element: <StaffDetailPage /> },
         { path: ":staffId/edit", element: <StaffFormPage /> },
+      ],
+    },
+    {
+      path: "context",
+      children: [
+        { index: true, element: <ContextPage /> },
+        { path: "create", element: <ContextFormPage /> },
+        { path: ":contextId", element: <ContextDetailPage /> },
+        { path: ":contextId/edit", element: <ContextFormPage /> },
       ],
     },
     {

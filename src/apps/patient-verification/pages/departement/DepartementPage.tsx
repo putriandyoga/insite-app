@@ -8,7 +8,7 @@ import DataSection from "@/components/DataSection";
 import Pagination from "@/components/Pagination";
 import TableBase from "@/components/TableBase";
 import { useTableFilters } from "@/hooks/use-table-filters";
-import { PenBox, Pencil, Trash } from "lucide-react";
+import { Eye, PenBox, Pencil, Trash } from "lucide-react";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
 
 const DepartementPage = () => {
@@ -90,6 +90,12 @@ const DepartementPage = () => {
                     header: "Aksi",
                     render: (row) => (
                       <div className="inline-flex justify-center gap-2">
+                        <ActionButton
+                          to={`/app/patient-verification/departement/${row.id}`}
+                          icon={Eye}
+                          color="primary"
+                          tooltip="Lihat Data"
+                        />
                         <ActionButton
                           to={`/app/patient-verification/departement/${row.id}/edit`}
                           icon={Pencil}

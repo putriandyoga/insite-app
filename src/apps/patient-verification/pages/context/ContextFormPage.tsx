@@ -8,6 +8,7 @@ import FormInput from "@/components/FormInput";
 import FormActions from "@/components/FormActions";
 import Card from "@/components/Card";
 import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
+import ActionButton from "@/components/ActionButton";
 
 const ContextFormPage = () => {
   const { contextId } = useParams<{ contextId: string }>();
@@ -115,11 +116,10 @@ const ContextFormPage = () => {
                   <Plus className="w-4 h-4" /> Tambah Field
                 </button>
               </div>
-
               <div className="divide-y divide-base-300/70 border border-base-300 rounded-lg p-3 bg-base-200/40">
                 {!data.fields_schema?.fields ||
                 data.fields_schema.fields.length === 0 ? (
-                  <div className="text-center py-6 text-sm text-gray-500">
+                  <div className="text-center py-6 text-body">
                     Belum ada field ditambahkan. Klik tombol "Tambah Field" di
                     atas.
                   </div>
@@ -127,145 +127,110 @@ const ContextFormPage = () => {
                   data.fields_schema.fields.map((field, index) => (
                     <div
                       key={index}
-                      className="flex flex-col md:flex-row items-start md:items-center gap-3 py-4 first:pt-0 last:pb-0"
+                      className="relative flex flex-col gap-4 py-5 px-3 first:pt-2 last:pb-2"
                     >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 flex-1 w-full">
+                      {/* Tombol Delete Sticky di Pojok Kanan Atas */}
+                      <div className="absolute top-3 right-3 z-10">
+                        <ActionButton
+                          onClick={() => handleRemoveField(index)}
+                          icon={Trash2}
+                          tooltip="Hapus Field"
+                          color="error"
+                          className="btn-sm"
+                        />
+                      </div>
+
+                      {/* Grid 5 Kolom (Label, Key, Type, Display Role, Placeholder) */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-start w-full pr-10 lg:pr-12">
                         {/* Label */}
-                        <div>
-                          <label className="text-xs text-base-content/60 block mb-1">
-                            Label
-                          </label>
-                          <input
-                            type="text"
-                            className="input input-bordered input-sm w-full"
-                            placeholder="cth: Nama Pasien"
-                            value={field.label}
-                            onChange={(e) =>
-                              handleFieldChange(index, "label", e.target.value)
-                            }
-                          />
-                        </div>
+                        <FormInput
+                          label="Label"
+                          type="text"
+                          required
+                          value={field.label}
+                          onChange={(val) =>
+                            handleFieldChange(index, "label", val)
+                          }
+                          placeholder="cth: Nama Pasien"
+                        />
 
                         {/* Key */}
-                        <div>
-                          <label className="text-xs text-base-content/60 block mb-1">
-                            Key
-                          </label>
-                          <input
-                            type="text"
-                            className="input input-bordered input-sm w-full font-mono"
-                            placeholder="cth: name"
-                            value={field.key}
-                            onChange={(e) =>
-                              handleFieldChange(index, "key", e.target.value)
-                            }
-                          />
-                        </div>
+                        <FormInput
+                          label="Key"
+                          type="text"
+                          required
+                          value={field.key}
+                          onChange={(val) =>
+                            handleFieldChange(index, "key", val)
+                          }
+                          placeholder="cth: name"
+                        />
 
                         {/* Type (Select) */}
-                        <div>
-                          <label className="text-xs text-base-content/60 block mb-1">
-                            Type
-                          </label>
-                          <select
-                            className="select select-bordered select-sm w-full"
-                            value={field.type}
-                            onChange={(e) =>
-                              handleFieldChange(index, "type", e.target.value)
-                            }
-                          >
-                            <option value="text">Text</option>
-                            <option value="number">Number</option>
-                            <option value="date">Date</option>
-                          </select>
-                        </div>
+                        <FormInput
+                          label="Type"
+                          dropdownType="select"
+                          value={field.type}
+                          required
+                          onChange={(val) =>
+                            handleFieldChange(index, "type", val)
+                          }
+                          options={[
+                            { label: "Text", value: "text" },
+                            { label: "Number", value: "number" },
+                            { label: "Date", value: "date" },
+                          ]}
+                        />
 
                         {/* Display Role (Select) */}
-                        <div>
-                          <label className="text-xs text-base-content/60 block mb-1">
-                            Display Role
-                          </label>
-                          <select
-                            className="select select-bordered select-sm w-full"
-                            value={field.display_role || "title"}
-                            onChange={(e) =>
-                              handleFieldChange(
-                                index,
-                                "display_role",
-                                e.target.value,
-                              )
-                            }
-                          >
-                            <option value="title">Title</option>
-                            <option value="subtitle">Subtitle</option>
-                            <option value="badge">Badge</option>
-                          </select>
-                        </div>
+                        <FormInput
+                          label="Display Role"
+                          dropdownType="select"
+                          required
+                          value={field.display_role || "title"}
+                          onChange={(val) =>
+                            handleFieldChange(index, "display_role", val)
+                          }
+                          options={[
+                            { label: "Title", value: "title" },
+                            { label: "Subtitle", value: "subtitle" },
+                            { label: "Badge", value: "badge" },
+                          ]}
+                        />
 
                         {/* Placeholder */}
-                        <div>
-                          <label className="text-xs text-base-content/60 block mb-1">
-                            Placeholder
-                          </label>
-                          <input
-                            type="text"
-                            className="input input-bordered input-sm w-full"
-                            placeholder="cth: Citra"
-                            value={field.placeholder}
-                            onChange={(e) =>
-                              handleFieldChange(
-                                index,
-                                "placeholder",
-                                e.target.value,
-                              )
+                        <FormInput
+                          label="Placeholder"
+                          type="text"
+                          required
+                          value={field.placeholder}
+                          onChange={(val) =>
+                            handleFieldChange(index, "placeholder", val)
+                          }
+                          placeholder="cth: Citra"
+                        />
+                        <div className="flex items-center gap-6 px-1 pt-1">
+                          <FormInput
+                            label="Required"
+                            type="checkbox"
+                            value={field.required}
+                            onChange={(val) =>
+                              handleFieldChange(index, "required", val)
                             }
                           />
-                        </div>
 
-                        {/* Checkboxes */}
-                        <div className="flex items-center gap-4 pt-5">
-                          <label className="cursor-pointer label gap-2 p-0">
-                            <input
-                              type="checkbox"
-                              className="checkbox checkbox-xs checkbox-primary"
-                              checked={field.required}
-                              onChange={(e) =>
-                                handleFieldChange(
-                                  index,
-                                  "required",
-                                  e.target.checked,
-                                )
-                              }
-                            />
-                            <span className="text-xs">Required</span>
-                          </label>
-
-                          <label className="cursor-pointer label gap-2 p-0">
-                            <input
-                              type="checkbox"
-                              className="checkbox checkbox-xs checkbox-primary"
-                              checked={field.unique_identifier}
-                              onChange={(e) =>
-                                handleFieldChange(
-                                  index,
-                                  "unique_identifier",
-                                  e.target.checked,
-                                )
-                              }
-                            />
-                            <span className="text-xs">Unique ID</span>
-                          </label>
+                          <FormInput
+                            label="Unique ID"
+                            type="checkbox"
+                            value={field.unique_identifier}
+                            onChange={(val) =>
+                              handleFieldChange(index, "unique_identifier", val)
+                            }
+                          />
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveField(index)}
-                        className="btn btn-sm btn-ghost text-error self-end md:self-center mt-2 md:mt-0"
-                        title="Hapus Field"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {/* Checkboxes (Required & Unique ID) di baris bawah */}
                     </div>
                   ))
                 )}

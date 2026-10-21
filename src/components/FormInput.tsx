@@ -102,7 +102,7 @@ const FormInput = ({
     : normalizedOptions;
 
   const baseClasses =
-    "w-full px-4 py-2.5 border border-base-300 rounded-lg text-data-body" +
+    "w-full px-4 py-2.5 border border-base-300 rounded-lg text-body" +
     (readOnly
       ? " bg-base-200 cursor-not-allowed"
       : " bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent");
@@ -151,7 +151,7 @@ const FormInput = ({
         </button>
 
         {label && (
-          <span className="text-data-body text-base-content select-none">
+          <span className="text-body text-base-content select-none">
             {label}
           </span>
         )}
@@ -191,7 +191,7 @@ const FormInput = ({
               strokeWidth={3}
             />
           </div>
-          <span className="text-data-body font-medium text-base-content group-hover:text-primary transition-colors select-none">
+          <span className="text-body font-medium text-base-content group-hover:text-primary transition-colors select-none">
             {label} {required && <span className="text-error ml-1">*</span>}
           </span>
         </label>
@@ -223,7 +223,7 @@ const FormInput = ({
 
     return (
       <div className={`relative ${className} space-y-2`}>
-        <label className="block text-data-body font-medium text-base-content mb-2">
+        <label className="block text-body font-medium text-base-content mb-2">
           {label} {required && <span className="text-error">*</span>}
         </label>
         <input
@@ -265,7 +265,7 @@ const FormInput = ({
   }, []);
   return (
     <div className={`relative ${className} space-y-2`}>
-      <label className="block text-data-body font-medium text-base-content mb-2">
+      <label className="block text-body font-medium text-base-content mb-2">
         {label} {required && <span className="text-error">*</span>}
       </label>
 
@@ -285,9 +285,7 @@ const FormInput = ({
                 disabled={disabled}
                 className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary"
               />
-              <span className="text-data-body text-base-content">
-                {opt.label}
-              </span>
+              <span className="text-body text-base-content">{opt.label}</span>
             </label>
           ))}
         </div>
@@ -349,7 +347,7 @@ const FormInput = ({
         />
       ) : options ? (
         dropdownType === "select" ? (
-          <div ref={selectRef} className="relative text-data-body">
+          <div ref={selectRef} className="relative text-body">
             <button
               type="button"
               disabled={disabled}

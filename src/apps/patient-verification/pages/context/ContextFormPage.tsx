@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Hospital, Plus, Trash2 } from "lucide-react";
+import { Hospital, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import { IndicatorLoading } from "@/components/IndicatorLoading";
 import { useContextForm } from "@patient-verification/hooks/context/use-context-form";
@@ -9,13 +9,19 @@ import FormActions from "@/components/FormActions";
 import Card from "@/components/Card";
 import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
 import ActionButton from "@/components/ActionButton";
-
 const ContextFormPage = () => {
   const { contextId } = useParams<{ contextId: string }>();
   const isEditMode = Boolean(contextId);
 
-  const { data, setField, loading, saving, handleSubmit } =
-    useContextForm(contextId);
+  const {
+    data,
+    setField,
+    loading,
+    saving,
+    handleSubmit,
+    validateSchema, // Langsung panggil dari hook
+    validating,
+  } = useContextForm(contextId);
 
   // Fungsi helper untuk mengatur dynamic fields
   const handleFieldChange = (index: number, key: string, value: any) => {
@@ -48,6 +54,11 @@ const ContextFormPage = () => {
       (_, i) => i !== index,
     );
     setField("fields_schema", { fields: updatedFields });
+  };
+
+  // Handler untuk tombol Validasi Schema dengan Alert Konfirmasi
+  const handleValidateClick = async () => {
+    await validateSchema();
   };
 
   if (loading) return <IndicatorLoading />;
@@ -104,18 +115,32 @@ const ContextFormPage = () => {
           {/* Bagian Fields Schema Dinamis */}
           <FormSection title="Fields Schema" icon={Plus} color="primary">
             <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <span className="text-sm text-base-content/70">
                   Atur kolom field yang dibutuhkan pada template ini.
                 </span>
-                <button
-                  type="button"
-                  onClick={handleAddField}
-                  className="btn btn-sm btn-primary gap-1"
-                >
-                  <Plus className="w-4 h-4" /> Tambah Field
-                </button>
+                <div className="flex items-center gap-2">
+                  {/* Tombol Validasi dengan Alert Konfirmasi */}
+                  <button
+                    type="button"
+                    onClick={handleValidateClick}
+                    disabled={validating}
+                    className="btn btn-sm btn-outline btn-primary gap-1"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {validating ? "Memvalidasi..." : "Validasi Schema"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleAddField}
+                    className="btn btn-sm btn-primary gap-1"
+                  >
+                    <Plus className="w-4 h-4" /> Tambah Field
+                  </button>
+                </div>
               </div>
+
               <div className="divide-y divide-base-300/70 border border-base-300 rounded-lg p-3 bg-base-200/40">
                 {!data.fields_schema?.fields ||
                 data.fields_schema.fields.length === 0 ? (
@@ -140,9 +165,8 @@ const ContextFormPage = () => {
                         />
                       </div>
 
-                      {/* Grid 5 Kolom (Label, Key, Type, Display Role, Placeholder) */}
+                      {/* Grid 5 Kolom Dinamis */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-start w-full pr-10 lg:pr-12">
-                        {/* Label */}
                         <FormInput
                           label="Label"
                           type="text"
@@ -154,7 +178,6 @@ const ContextFormPage = () => {
                           placeholder="cth: Nama Pasien"
                         />
 
-                        {/* Key */}
                         <FormInput
                           label="Key"
                           type="text"
@@ -166,7 +189,6 @@ const ContextFormPage = () => {
                           placeholder="cth: name"
                         />
 
-                        {/* Type (Select) */}
                         <FormInput
                           label="Type"
                           dropdownType="select"
@@ -182,12 +204,11 @@ const ContextFormPage = () => {
                           ]}
                         />
 
-                        {/* Display Role (Select) */}
                         <FormInput
                           label="Display Role"
                           dropdownType="select"
-                          required
                           value={field.display_role || "title"}
+                          required
                           onChange={(val) =>
                             handleFieldChange(index, "display_role", val)
                           }
@@ -198,7 +219,6 @@ const ContextFormPage = () => {
                           ]}
                         />
 
-                        {/* Placeholder */}
                         <FormInput
                           label="Placeholder"
                           type="text"
@@ -209,28 +229,28 @@ const ContextFormPage = () => {
                           }
                           placeholder="cth: Citra"
                         />
-                        <div className="flex items-center gap-6 px-1 pt-1">
-                          <FormInput
-                            label="Required"
-                            type="checkbox"
-                            value={field.required}
-                            onChange={(val) =>
-                              handleFieldChange(index, "required", val)
-                            }
-                          />
-
-                          <FormInput
-                            label="Unique ID"
-                            type="checkbox"
-                            value={field.unique_identifier}
-                            onChange={(val) =>
-                              handleFieldChange(index, "unique_identifier", val)
-                            }
-                          />
-                        </div>
                       </div>
 
-                      {/* Checkboxes (Required & Unique ID) di baris bawah */}
+                      {/* Checkboxes di bawah */}
+                      <div className="flex flex-wrap items-center gap-6 px-1 pt-1">
+                        <FormInput
+                          label="Required"
+                          type="checkbox"
+                          value={field.required}
+                          onChange={(val) =>
+                            handleFieldChange(index, "required", val)
+                          }
+                        />
+
+                        <FormInput
+                          label="Unique ID"
+                          type="checkbox"
+                          value={field.unique_identifier}
+                          onChange={(val) =>
+                            handleFieldChange(index, "unique_identifier", val)
+                          }
+                        />
+                      </div>
                     </div>
                   ))
                 )}

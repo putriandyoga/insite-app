@@ -11,9 +11,7 @@ export interface ContextItem extends BaseItem {
   created_by_name: string;
   used_by_processes?: UsedByProcess[];
   fields_summary?: FieldsSummary;
-  fields_schema?: {
-    fields: FormField[];
-  };
+  fields_schema?: FieldsSchema;
 }
 
 export const defaultContext: ContextItem = {
@@ -72,4 +70,8 @@ export interface FormField {
   placeholder: string;
   unique_identifier: boolean;
   display_role: string;
+}
+
+export interface FieldsSchema {
+  fields: FormField[];
 }

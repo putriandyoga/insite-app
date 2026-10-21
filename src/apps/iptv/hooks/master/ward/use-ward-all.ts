@@ -5,7 +5,7 @@ import { queryKeys } from "@/utils/queryKeys";
 
 export function useWardAll() {
   return useBaseAll<WardItem>({
-    queryKey: queryKeys.ward.all,
+    queryKey: queryKeys.ward.all(),
 
     fetcher: wardService.getAll,
   });

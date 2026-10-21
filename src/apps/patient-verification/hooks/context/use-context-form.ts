@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { contextService } from "@patient-verification/services/contextService";
 import {
   defaultContext,
@@ -45,24 +45,24 @@ export function useContextForm(contextId?: string) {
     },
   });
 
-  // Logika validasi beserta Alert Konfirmasi dipusatkan di sini
-  const handleValidateSchema = useCallback(async () => {
-    // 1. Munculkan alert konfirmasi terlebih dahulu
-    const confirm = await showAlert({
-      title: "Validasi Schema?",
-      text: "Apakah Anda ingin memvalidasi konfigurasi fields schema saat ini ke server?",
-      icon: "question",
-      showCancelButton: true,
-      showConfirmButton: true,
-      confirmButtonText: "Ya, Validasi",
-      cancelButtonText: "Batal",
-    });
-
-    if (!confirm) return { success: false, cancelled: true };
+  // Override atau kustomisasi proses submit untuk menyisipkan validasi backend
+  const handleCustomSubmit = async () => {
+    // 1. Jalankan validasi lokal terlebih dahulu (jika ada fungsi validate dari types)
+    const localErrors = validateContext ? validateContext(baseForm.data) : [];
+    if (localErrors.length > 0) {
+      await showAlert({
+        title: "Validasi Gagal",
+        html: localErrors.join("<br/>"),
+        icon: "warning",
+        showConfirmButton: true,
+      });
+      return false;
+    }
 
     try {
       setValidating(true);
 
+      // 2. Siapkan payload fields_schema untuk divalidasi ke backend
       const fieldsSchemaPayload = {
         fields: (baseForm.data.fields_schema?.fields || []).map((field) => ({
           key: field.key,
@@ -75,39 +75,34 @@ export function useContextForm(contextId?: string) {
         })),
       };
 
-      const result = await contextService.validateSchema(fieldsSchemaPayload);
+      // 3. Tembak endpoint validasi schema terlebih dahulu
+      await contextService.validateSchema(fieldsSchemaPayload);
 
-      // 2. Alert sukses
-      await showAlert({
-        title: "Berhasil!",
-        text: "Schema valid dan sesuai spesifikasi.",
-        icon: "success",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-
-      return { success: true, data: result };
+      // 4. Jika validasi backend BERHASIL, lanjutkan proses simpan (create/update) bawaan useBaseForm
+      const success = await baseForm.handleSubmit();
+      return success;
     } catch (error: any) {
-      console.error("Schema validation failed:", error);
-
-      // 3. Alert gagal
+      // 5. Jika validasi GAGAL, tampilkan alert error dan batalkan proses simpan
       await showAlert({
-        title: "Validasi Gagal",
-        text: error?.message || "Periksa kembali konfigurasi field Anda.",
+        title: "Validasi Schema Gagal",
+        text:
+          error?.message ||
+          "Konfigurasi fields schema belum valid menurut server. Periksa kembali inputan Anda.",
         icon: "error",
         showConfirmButton: true,
         confirmButtonText: "Mengerti",
       });
 
-      return { success: false, error };
+      return false;
     } finally {
       setValidating(false);
     }
-  }, [baseForm.data.fields_schema]);
+  };
 
   return {
     ...baseForm,
-    validating,
-    validateSchema: handleValidateSchema,
+    // Timpa fungsi handleSubmit bawaan dengan fungsi yang sudah disisipi validasi backend
+    handleSubmit: handleCustomSubmit,
+    validating: validating || baseForm.saving,
   };
 }

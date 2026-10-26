@@ -1,3 +1,4 @@
+import type { CallItem } from "./callTypes";
 import type { StationItem } from "./stationTypes";
 import type { WardItem } from "./wardTypes";
 
@@ -30,23 +31,6 @@ export const validatePanel = (_payload: PanelItem): string[] => {
 
   return errors;
 };
-
-export interface CallItem {
-  id: string;
-  kind: string;
-  status: string;
-  press_count: string;
-  bed_id: string;
-  room_id: string;
-  ward_id: string;
-  room_label: string;
-  ward_name: string;
-  acked_at: string;
-  acked_by: string;
-  resolved_at: string;
-  first_pressed_at: string;
-  last_pressed_at: string;
-}
 
 export interface PanelStbItem {
   devices: [];

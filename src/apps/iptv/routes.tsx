@@ -14,6 +14,8 @@ function IptvSyncWrapper() {
   );
 }
 
+// const DashboardPage = lazy(() => import("@iptv/pages/dashboard/DashboardPage"));
+
 const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 const StationFormPage = lazy(
   () => import("@iptv/pages/station/StationFormPage"),
@@ -39,14 +41,15 @@ const StbDetailPage = lazy(() => import("@iptv/pages/stb/StbDetailPage"));
 
 const PanelPage = lazy(() => import("@iptv/pages/panel/NurseCallMonitor"));
 
+const CallPage = lazy(() => import("@iptv/pages/call/CallPage"));
+
 export const iptvRoutes: RouteObject = {
   path: "iptv",
   element: <IptvSyncWrapper />,
   children: [
-    { index: true, element: <StationPage /> },
-    {
-      path: "dashboard",
-    },
+    // { index: true, element: <StationPage /> },
+    // { path: "dashboard", element: <DashboardPage /> },
+    { path: "dashboard", element: <StationPage /> },
     {
       path: "station",
       children: [
@@ -101,11 +104,8 @@ export const iptvRoutes: RouteObject = {
       ],
     },
     {
-      path: "schedule",
-      children: [],
-    },
-    {
-      path: "log-history",
+      path: "call",
+      children: [{ index: true, element: <CallPage /> }],
     },
   ],
 };

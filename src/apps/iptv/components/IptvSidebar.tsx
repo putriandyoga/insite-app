@@ -1,21 +1,18 @@
 import type { SidebarItem } from "@/components/SidebarItem";
 import {
-  LayoutDashboard,
   Tv,
   MapPin,
-  FileSpreadsheet,
   Cpu,
   Users,
+  MonitorPlay,
+  PhoneCallIcon,
 } from "lucide-react";
 
 export const iptvSidebar: SidebarItem[] = [
   {
-    label: "Health Check",
-    icon: <LayoutDashboard size={20} />,
-    children: [
-      { label: "Dashboard Health", to: "/app/iptv/health/dashboard" },
-      { label: "Device Health", to: "/app/iptv/health/device" },
-    ],
+    label: "Dashboard",
+    to: "/app/iptv/dashboard",
+    icon: <MonitorPlay size={20} />,
   },
   {
     label: "Station List",
@@ -36,15 +33,17 @@ export const iptvSidebar: SidebarItem[] = [
     to: "/app/iptv/stb",
     icon: <Cpu size={20} />,
   },
-
   {
-    label: "Import CSV",
-    icon: <FileSpreadsheet size={20} />,
-    children: [
-      { label: "Template Master", to: "/app/iptv/import/template" },
-      { label: "Import API", to: "/app/iptv/import/upload" },
-    ],
+    label: "Call Log",
+    icon: <PhoneCallIcon size={20} />,
+    to: "/app/iptv/call",
+    // children: [{ label: "Call", to: "/app/iptv/call" }],
   },
+  // {
+  //   label: "Panel & Call",
+  //   icon: <PhoneCallIcon size={20} />,
+  //   children: [{ label: "Call", to: "/app/iptv/call" }],
+  // },
   {
     label: "Manajemen User",
     to: "/app/iptv/user",

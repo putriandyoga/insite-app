@@ -2,8 +2,9 @@ import { createCrudService } from "@/services/core/createCrudService";
 import { iptvApi } from "@/services/api/endpoints";
 import { iptvAdapter } from "@/services/adapters/iptvAdapter";
 import { normalizeDetail } from "@/services/normalizers/responseNormalizer";
-import type { CallItem, PanelItem, PanelStbItem } from "../types/panelTypes";
+import type { PanelItem, PanelStbItem } from "../types/panelTypes";
 import type { StationItem } from "../types/stationTypes";
+import type { CallItem } from "../types/callTypes";
 
 export interface ActiveCallsResponse {
   calls: CallItem[];

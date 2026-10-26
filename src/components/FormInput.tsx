@@ -47,6 +47,7 @@ type FormInputProps = {
   searchable?: boolean;
   disablePast?: boolean;
   disableFuture?: boolean;
+  formatApi?: boolean;
 };
 
 const FormInput = ({
@@ -70,6 +71,7 @@ const FormInput = ({
   dropdownType,
   disablePast = false,
   disableFuture = false,
+  formatApi = false,
 }: FormInputProps) => {
   const normalizeOptions = () => {
     if (!options) return [];
@@ -95,9 +97,12 @@ const FormInput = ({
   const [selectOpen, setSelectOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
 
+  // FIX 1: Bungkus dengan String() agar aman dari number/undefined
   const filteredSelectOptions = searchText
     ? normalizedOptions.filter((o) =>
-        o.label.toLowerCase().includes(searchText.toLowerCase()),
+        String(o.label || "")
+          .toLowerCase()
+          .includes(String(searchText || "").toLowerCase()),
       )
     : normalizedOptions;
 
@@ -110,22 +115,28 @@ const FormInput = ({
   const [query, setQuery] = useState(value || "");
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const flattenOptions = (): string[] => {
     if (!options) return [];
     let list: string[] = [];
 
     options.forEach((opt) => {
       if (typeof opt === "string") list.push(opt);
-      else if ("value" in opt) list.push(opt.label);
-      else if ("options" in opt) opt.options.forEach((o) => list.push(o.label));
+      else if ("value" in opt) list.push(String(opt.label || ""));
+      else if ("options" in opt)
+        opt.options.forEach((o) => list.push(String(o.label || "")));
     });
 
     return list;
   };
 
   const flatOptions = flattenOptions();
+
+  // FIX 2: Baris 46 error aslinya ada di sini, bungkus juga dengan String()
   const filtered = flatOptions.filter((o) =>
-    o.toLowerCase().includes(query.toLowerCase()),
+    String(o || "")
+      .toLowerCase()
+      .includes(String(query || "").toLowerCase()),
   );
   if (type === "switch") {
     const isOn = value === true || value === "1" || value === 1;
@@ -221,6 +232,29 @@ const FormInput = ({
       maxDate = `${y}-${m}-${d}`;
     }
 
+    // Handler perubahan tanggal
+    const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      if (!val) {
+        onChange?.("");
+        return;
+      }
+
+      // HANYA UBAH ke format ISO jika prop formatApi bernilai true
+      if (formatApi) {
+        // Cek apakah ini tanggal akhir (bisa dibedakan lewat props tambahan jika perlu,
+        // tapi secara default kita pakai T00:00:00Z atau sesuaikan)
+        onChange?.(`${val}T00:00:00Z`);
+      } else {
+        // Normal kembali seperti biasa (YYYY-MM-DD)
+        onChange?.(val);
+      }
+    };
+
+    // Ambil string tanggal mentah (YYYY-MM-DD) untuk value di <input type="date">
+    // agar tetap aman dibaca meskipun state luarnya berisi format ISO lengkap
+    const rawValue = value ? String(value).split("T")[0] : "";
+
     return (
       <div className={`relative ${className} space-y-2`}>
         <label className="block text-body font-medium text-base-content mb-2">
@@ -228,10 +262,8 @@ const FormInput = ({
         </label>
         <input
           type="date"
-          value={value}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            onChange?.(e.target.value)
-          }
+          value={rawValue}
+          onChange={handleDateChange}
           placeholder={placeholder}
           required={required}
           disabled={disabled}

@@ -33,7 +33,6 @@ const createTableStore = <TFilters extends Record<string, any>>(
   }));
 };
 
-// Cache store sederhana agar state tidak hilang saat komponen unmount/mount kembali (navigasi detail)
 const storeRegistry: Record<string, ReturnType<typeof createTableStore>> = {};
 
 export function useTableFilters<TFilters extends Record<string, any>>(
@@ -46,7 +45,6 @@ export function useTableFilters<TFilters extends Record<string, any>>(
     storeKey = "default_table",
   } = options;
 
-  // Inisialisasi atau ambil store yang sudah ada berdasarkan storeKey agar state tersimpan saat kembali dari detail
   if (!storeRegistry[storeKey]) {
     storeRegistry[storeKey] = createTableStore(initialFilters);
   }
@@ -55,13 +53,20 @@ export function useTableFilters<TFilters extends Record<string, any>>(
   const { page, search, filters, setPage, setSearch, setFilter, resetTable } =
     useStore();
 
-  // Debounce untuk keyword pencarian
   const debouncedSearchValue = useDebounce(search, debounceDelay);
 
-  const activeFilters = {
+  // 1. Gabungkan semua filter dan search
+  const rawActiveFilters = {
     ...filters,
     [searchKey]: debouncedSearchValue,
   };
+
+  // 2. Bersihkan otomatis parameter yang kosong, null, atau undefined SEKALI SAJA DI SINI
+  const activeFilters = Object.fromEntries(
+    Object.entries(rawActiveFilters).filter(
+      ([_, value]) => value !== "" && value !== null && value !== undefined,
+    ),
+  );
 
   return {
     page,
@@ -69,7 +74,7 @@ export function useTableFilters<TFilters extends Record<string, any>>(
     searchTitle: search,
     debouncedSearch: debouncedSearchValue,
     filters,
-    activeFilters,
+    activeFilters, // <-- Ini sudah bersih dari nilai kosong secara otomatis!
     handleFilterChange: setFilter,
     handleSearchChange: setSearch,
     resetFilters: resetTable,

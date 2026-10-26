@@ -7,6 +7,7 @@ export const queryKeys = {
   bed: createQueryKeys("bed"),
   user: createQueryKeys("user"),
   stb: createQueryKeys("stb"),
+  call: createQueryKeys("call"),
   panel: {
     ...createQueryKeys("panel"),
     me: () => ["panel", "me"] as const,

@@ -31,7 +31,8 @@ const DashboardPage = () => {
     "Memuat ward...";
   const namaStation =
     resolvedMe?.station?.name || resolvedActive?.station?.name || "";
-  const calls = resolvedActive?.calls || [];
+  const rawCalls = resolvedActive?.calls || [];
+  const calls = rawCalls.filter((c: any) => c.status !== "ACKNOWLEDGED");
   const devices = resolvedStbs?.devices || [];
 
   const { tampilkanTombolSuara, bukaSuara } = useNurseAudio(calls);
@@ -99,10 +100,6 @@ const DashboardPage = () => {
               <p className="text-caption mt-0.5">
                 Pantau panggilan perawat secara real-time dari setiap ruangan.
               </p>
-            </div>
-            <div className="bg-primary/10 text-primary px-3 py-1.5 rounded-xl border border-primary/20 flex items-center gap-2">
-              <span className="text-data font-bold">AKTIF:</span>
-              <span className="text-sm font-bold">{calls.length}</span>
             </div>
           </div>
 

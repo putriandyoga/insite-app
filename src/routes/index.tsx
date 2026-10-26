@@ -32,7 +32,6 @@ const UnauthorizedPage = Loadable(
 
 // Portal page
 const PortalPage = Loadable(lazy(() => import("@/pages/PortalPage")));
-const DashboardPage = Loadable(lazy(() => import("@/pages/DashboardPage")));
 
 // IPTV page
 const IptvLoginPage = Loadable(
@@ -75,7 +74,6 @@ export const router = createBrowserRouter([
             path: "/app",
             element: <DashboardLayout />,
             children: [
-              { index: true, element: <DashboardPage /> },
               iptvRoutes, // Jalur /app/iptv/station
               patientVerificationRoutes,
             ],

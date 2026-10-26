@@ -1,3 +1,5 @@
+import { BellRing, CheckCircle2, UserCheck } from "lucide-react";
+
 interface CallItemCardProps {
   call: any;
   namaStation: string;
@@ -20,46 +22,70 @@ export const CallItemCard = ({
       call.acked_by && namaStation && call.acked_by === namaStation;
     infoDiambil = olehAnda
       ? "Ditangani oleh Anda"
-      : `Ditangani oleh ${call.acked_by || "perawat lain"}`;
+      : `Oleh: ${call.acked_by || "Perawat lain"}`;
   }
 
   return (
     <li
-      className={`bg-base-100 border border-base-300 rounded-xl p-4 flex items-center justify-between gap-4 flex-wrap shadow-sm transition-all hover:border-base-content/20 ${
+      className={`relative overflow-hidden bg-base-100 border rounded-lg p-3 flex items-center justify-between gap-3 transition-all shadow-2xs hover:shadow-xs ${
         isPending
-          ? "border-l-4 border-l-warning bg-warning/5"
-          : "border-l-4 border-l-success opacity-85"
+          ? "border-warning/60 bg-warning/5 border-l-4 border-l-warning"
+          : "border-success/40 bg-success/5 border-l-4 border-l-success opacity-90"
       }`}
     >
-      <div className="flex items-center gap-3 flex-wrap min-w-0">
-        <h3 className="heading-h3 text-base-content">{call.kind}</h3>
-        <span className="text-body text-base-content/70">
-          •{" "}
-          <span className="font-semibold text-base-content">
-            {call.room_label || "?"}
-          </span>{" "}
-          ({call.ward_name || "?"})
-        </span>
+      {/* Sisi Kiri: Ikon, Jenis Call, dan Lokasi */}
+      <div className="flex items-center gap-3 min-w-0">
+        <div
+          className={`p-2 rounded-lg shrink-0 ${
+            isPending
+              ? "bg-warning/15 text-warning"
+              : "bg-success/15 text-success"
+          }`}
+        >
+          {isPending ? (
+            <BellRing size={16} className="animate-bounce" />
+          ) : (
+            <CheckCircle2 size={16} />
+          )}
+        </div>
 
-        {sudahDijawab && (
-          <span className="text-error text-caption font-semibold px-3 py-1 rounded-full bg-error/10 border border-error/20">
-            {infoDiambil}
-          </span>
-        )}
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-bold text-sm tracking-tight text-base-content uppercase">
+              {call.kind}
+            </span>
+            <span className="text-body text-base-content/70">
+              •{" "}
+              <strong className="text-base-content">
+                {call.room_label || "?"}
+              </strong>{" "}
+              ({call.ward_name || "?"})
+            </span>
+          </div>
+
+          {/* Info Status / Ditangani Oleh */}
+          <div className="flex items-center gap-2 mt-0.5">
+            {sudahDijawab && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-info bg-info/10 px-2 py-0.5 rounded-md border border-info/20">
+                <UserCheck size={11} /> {infoDiambil}
+              </span>
+            )}
+            {call.press_count > 1 && (
+              <span className="text-data text-[11px] font-semibold text-warning bg-warning/10 px-2 py-0.5 rounded-md border border-warning/20">
+                {call.press_count}x ditekan
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center gap-3 ml-auto">
-        {call.press_count > 1 && (
-          <span className="text-data px-2.5 py-1 rounded-md bg-base-200 text-warning border border-base-300">
-            {call.press_count}x ditekan
-          </span>
-        )}
-
+      {/* Sisi Kanan: Tombol Aksi */}
+      <div className="flex items-center gap-2 shrink-0">
         <button
-          className={`px-5 py-2 rounded-lg font-semibold text-sm transition-all cursor-pointer border shadow-sm ${
+          className={`px-3.5 py-1.5 rounded-md font-semibold text-xs transition-all cursor-pointer border shadow-2xs ${
             isPending
-              ? "bg-warning text-warning-content border-warning hover:bg-warning/90"
-              : "bg-base-200 text-base-content border-base-300 hover:bg-base-300"
+              ? "bg-warning text-warning-content border-warning hover:bg-warning/90 active:scale-95"
+              : "bg-base-200 text-base-content border-base-300 hover:bg-base-300 active:scale-95"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
           disabled={loadingId === call.call_id}
           onClick={() => onAction(call.call_id, isPending)}

@@ -51,8 +51,13 @@ export default function DashboardLayout() {
     ],
     [],
   );
+  // Ambil data sidebar dari map
+  const rawSidebar = sidebarMap[lookupKey] ?? [];
 
-  const moduleSidebar = sidebarMap[lookupKey] ?? [];
+  // Jika berupa fungsi (seperti sidebar dinamis role), panggil fungsinya. Jika array, langsung gunakan.
+  const moduleSidebar =
+    typeof rawSidebar === "function" ? rawSidebar() : rawSidebar;
+  // const moduleSidebar = sidebarMap[lookupKey] ?? [];
   const moduleHeader = headerMap[lookupKey] ?? {
     title: "Insite Ciputra Mitra Hospital",
   };

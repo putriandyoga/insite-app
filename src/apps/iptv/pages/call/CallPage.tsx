@@ -82,7 +82,6 @@ const CallPage = () => {
             <ActionButton
               label={exporting ? `Exporting (${progress}%)` : "Export Excel"}
               onClick={() => exportCallExcel(data)}
-              color="success"
               icon={FileSpreadsheet}
               disabled={loading || data.length === 0 || exporting}
               className="h-9 text-xs sm:text-sm"

@@ -3,8 +3,18 @@ import { patientAuthService } from "@patient-verification/services/patientVerifi
 
 export function useLogin() {
   return useBaseLogin({
-    loginFn: (payload: { username: string; password: string }) =>
-      patientAuthService.login(payload),
+    loginFn: async (payload: { username: string; password: string }) => {
+      // 1. Hapus data sesi lama di localStorage sebelum proses login baru
+      try {
+        localStorage.removeItem("user");
+        // Tambahkan key storage lain jika ada yang perlu dibersihkan
+      } catch (error) {
+        console.warn("Gagal membersihkan storage lama:", error);
+      }
+
+      // 2. Lanjutkan proses request login ke API
+      return await patientAuthService.login(payload);
+    },
 
     transformUser: (result) => ({
       id: result.user.id.toString(),

@@ -19,4 +19,5 @@ export const queryKeys = {
   departement: createQueryKeys("departement"),
   staff: createQueryKeys("staff"),
   context: createQueryKeys("context"),
+  process: createQueryKeys("process"),
 };

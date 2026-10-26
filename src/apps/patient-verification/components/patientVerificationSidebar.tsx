@@ -32,7 +32,7 @@ export const patientVerificationSidebar: SidebarItem[] = [
   {
     label: "Manajemen Proses",
     icon: <GitBranch size={20} />,
-    children: [{ label: "Proses", to: "/app/patient-verification/processes" }],
+    children: [{ label: "Proses", to: "/app/patient-verification/process" }],
   },
 
   // 3. Template Konteks (Contoh diproteksi khusus admin/manager)

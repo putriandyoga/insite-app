@@ -2,6 +2,7 @@ import { ModuleLogoutSync } from "@/components/ModuleLogoutSync";
 import { lazy } from "react";
 import { Outlet, type RouteObject } from "react-router-dom";
 import { useIptvLogout } from "./hooks/auth/use-logout";
+import ProtectedRoute from "@/routes/ProtectedRoute";
 
 function IptvSyncWrapper() {
   const { logout } = useIptvLogout();
@@ -43,6 +44,10 @@ const ContextDetailPage = lazy(
   () => import("@patient-verification/pages/context/ContextDetailPage"),
 );
 
+const ProcessPage = lazy(
+  () => import("@patient-verification/pages/process/ProcessPage"),
+);
+
 export const patientVerificationRoutes: RouteObject = {
   path: "patient-verification",
   element: <IptvSyncWrapper />,
@@ -51,42 +56,49 @@ export const patientVerificationRoutes: RouteObject = {
       path: "dashboard",
     },
     {
-      path: "departement",
+      element: (
+        <ProtectedRoute requiredRole="admin">
+          <Outlet />
+        </ProtectedRoute>
+      ),
       children: [
-        { index: true, element: <DepartementPage /> },
-        { path: "create", element: <DepartementFormPage /> },
-        { path: ":departementId", element: <DepartementDetailPage /> },
-        { path: ":departementId/edit", element: <DepartementFormPage /> },
+        {
+          path: "departement",
+          children: [
+            { index: true, element: <DepartementPage /> },
+            { path: "create", element: <DepartementFormPage /> },
+            { path: ":departementId", element: <DepartementDetailPage /> },
+            { path: ":departementId/edit", element: <DepartementFormPage /> },
+          ],
+        },
+        {
+          path: "staff",
+          children: [
+            { index: true, element: <StaffPage /> },
+            { path: "create", element: <StaffFormPage /> },
+            { path: ":staffId", element: <StaffDetailPage /> },
+            { path: ":staffId/edit", element: <StaffFormPage /> },
+          ],
+        },
+        {
+          path: "context",
+          children: [
+            { index: true, element: <ContextPage /> },
+            { path: "create", element: <ContextFormPage /> },
+            { path: ":contextId", element: <ContextDetailPage /> },
+            { path: ":contextId/edit", element: <ContextFormPage /> },
+          ],
+        },
+        {
+          path: "process",
+          children: [
+            { index: true, element: <ProcessPage /> },
+            { path: "create", element: <ContextFormPage /> },
+            { path: ":processId", element: <ContextDetailPage /> },
+            { path: ":processId/edit", element: <ContextFormPage /> },
+          ],
+        },
       ],
-    },
-    {
-      path: "staff",
-      children: [
-        { index: true, element: <StaffPage /> },
-        { path: "create", element: <StaffFormPage /> },
-        { path: ":staffId", element: <StaffDetailPage /> },
-        { path: ":staffId/edit", element: <StaffFormPage /> },
-      ],
-    },
-    {
-      path: "context",
-      children: [
-        { index: true, element: <ContextPage /> },
-        { path: "create", element: <ContextFormPage /> },
-        { path: ":contextId", element: <ContextDetailPage /> },
-        { path: ":contextId/edit", element: <ContextFormPage /> },
-      ],
-    },
-    {
-      path: "device",
-      children: [],
-    },
-    {
-      path: "schedule",
-      children: [],
-    },
-    {
-      path: "log-history",
     },
   ],
 };

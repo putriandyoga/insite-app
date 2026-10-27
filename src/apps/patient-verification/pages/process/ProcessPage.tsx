@@ -8,9 +8,24 @@ import DataSection from "@/components/DataSection";
 import Pagination from "@/components/Pagination";
 import TableBase from "@/components/TableBase";
 import { useTableFilters } from "@/hooks/use-table-filters";
-import { Eye, PenBox, Pencil, Trash } from "lucide-react";
+import {
+  CheckCircle,
+  Copy,
+  Eye,
+  FolderArchive,
+  MoreHorizontal,
+  PenBox,
+  Pencil,
+  RotateCcw,
+  Trash,
+} from "lucide-react";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
-import { capitalizeEachWord } from "@/utils/capitalizer";
+import ActionDropdownButton from "@/components/ActionDropdownButton";
+import { useProcessPublish } from "@patient-verification/hooks/process/use-process-publish";
+import { useProcessArchive } from "@patient-verification/hooks/process/use-process-archive";
+import { useProcessRevertToDraft } from "@patient-verification/hooks/process/use-process-revert-draft";
+import { useProcessDuplicate } from "@patient-verification/hooks/process/use-process-duplicate";
+import { getProcessStatusInfo } from "@patient-verification/constants/processStatusMap";
 const ProcessPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
     {},
@@ -22,7 +37,10 @@ const ProcessPage = () => {
   const { data, loading, error, total, lastPage, perPage, isFetching } =
     useProcessList(page, activeFilters);
   const { handleDelete } = useProcessDelete();
-
+  const { createDuplicate, loading: loadingNewVersion } = useProcessDuplicate();
+  const { publishProcess, loading: loadingPublish } = useProcessPublish();
+  const { archiveProcess, loading: loadingArchive } = useProcessArchive();
+  const { revertToDraft, loading: loadingRevert } = useProcessRevertToDraft();
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden">
       <PageTop>
@@ -131,18 +149,13 @@ const ProcessPage = () => {
                   {
                     header: "Status",
                     render: (row) => {
-                      const isPublished =
-                        row.status?.toLowerCase() === "published";
+                      const statusInfo = getProcessStatusInfo(row.status);
 
                       return (
                         <span
-                          className={`badge badge-sm font-medium ${
-                            isPublished
-                              ? "badge-primary"
-                              : "badge-secondary text-base-content"
-                          }`}
+                          className={`badge badge-sm font-medium ${statusInfo.color}`}
                         >
-                          {capitalizeEachWord(row.status)}
+                          {statusInfo.label}
                         </span>
                       );
                     },
@@ -169,6 +182,37 @@ const ProcessPage = () => {
                           icon={Trash}
                           color="error"
                           tooltip="Hapus Data"
+                        />
+                        <ActionDropdownButton
+                          icon={MoreHorizontal}
+                          label="Aksi Lainnya"
+                          color="accent"
+                          items={[
+                            {
+                              label: "Publish",
+                              onClick: () => publishProcess(row.id),
+                              disabled: loadingPublish,
+                              icon: CheckCircle,
+                            },
+                            {
+                              label: "Duplicate",
+                              onClick: () => createDuplicate(row.id),
+                              disabled: loadingNewVersion,
+                              icon: Copy,
+                            },
+                            {
+                              label: "Archive",
+                              onClick: () => archiveProcess(row.id),
+                              disabled: loadingArchive,
+                              icon: FolderArchive,
+                            },
+                            {
+                              label: "Revert to Draft",
+                              onClick: () => revertToDraft(row.id),
+                              disabled: loadingRevert,
+                              icon: RotateCcw,
+                            },
+                          ]}
                         />
                       </div>
                     ),

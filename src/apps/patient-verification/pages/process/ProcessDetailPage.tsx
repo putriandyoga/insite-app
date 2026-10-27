@@ -9,6 +9,7 @@ import ActionButton from "@/components/ActionButton";
 import { PageMiddle, PageTop } from "@/components/PageLayout";
 import FormSection from "@/components/FormSection";
 import { capitalizeEachWord, toAllUppercase } from "@/utils/capitalizer";
+import { getProcessStatusInfo } from "@patient-verification/constants/processStatusMap";
 
 export default function ProcessDetailPage() {
   const { processId } = useParams<{ processId: string }>();
@@ -133,15 +134,19 @@ export default function ProcessDetailPage() {
                             Status
                           </div>
                           <div className="text-sm font-medium text-base-content sm:text-right">
-                            <span
-                              className={`badge ${
-                                data.status == "published"
-                                  ? "badge-primary"
-                                  : "badge-secondary text-base-content"
-                              } badge-sm`}
-                            >
-                              {capitalizeEachWord(data.status)}
-                            </span>
+                            {(() => {
+                              const statusInfo = getProcessStatusInfo(
+                                data.status,
+                              );
+
+                              return (
+                                <span
+                                  className={`badge badge-sm font-medium ${statusInfo.color}`}
+                                >
+                                  {statusInfo.label}
+                                </span>
+                              );
+                            })()}
                           </div>
                         </div>
                         <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

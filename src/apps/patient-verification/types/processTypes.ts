@@ -8,7 +8,7 @@ export interface ProcessItem extends BaseItem {
   status: string;
   is_current: boolean;
   description: string;
-  context_template_id: string;
+  context_template_id: number;
   context_template: ContextItem;
   total_stages: number;
   total_departements: number;
@@ -26,7 +26,7 @@ export const defaultProcess: ProcessItem = {
   version: "",
   status: "",
   is_current: false,
-  context_template_id: "",
+  context_template_id: 0,
   context_template: defaultContext,
   total_stages: 0,
   total_departements: 0,

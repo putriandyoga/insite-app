@@ -48,7 +48,7 @@ const ProcessPage = lazy(
   () => import("@patient-verification/pages/process/ProcessPage"),
 );
 const ProcessFormPage = lazy(
-  () => import("@patient-verification/pages/process/ProcessDetailPage"),
+  () => import("@patient-verification/pages/process/ProcessFormPage"),
 );
 const ProcessDetailPage = lazy(
   () => import("@patient-verification/pages/process/ProcessDetailPage"),
@@ -99,9 +99,9 @@ export const patientVerificationRoutes: RouteObject = {
           path: "process",
           children: [
             { index: true, element: <ProcessPage /> },
-            { path: "create", element: <ContextFormPage /> },
+            { path: "create", element: <ProcessFormPage /> },
             { path: ":processId", element: <ProcessDetailPage /> },
-            { path: ":processId/edit", element: <ContextFormPage /> },
+            { path: ":processId/edit", element: <ProcessFormPage /> },
           ],
         },
       ],

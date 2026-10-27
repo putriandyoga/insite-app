@@ -1,7 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import DataSection from "@/components/DataSection";
 
-import { Info, ListTree, Pencil } from "lucide-react";
+import { Check, Eye, Info, Pencil, Workflow, X } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useProcessDetail } from "@patient-verification/hooks/process/use-process-detail";
 import Card from "@/components/Card";
@@ -66,127 +66,151 @@ export default function ProcessDetailPage() {
                   </h1>
                 </div>
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <div>
+                    <FormSection
+                      title="Informasi Template"
+                      icon={Info}
+                      color="primary"
+                    >
+                      <div className="divide-y divide-base-300/70">
+                        <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="text-sm text-base-content/60">
+                            Nama Template
+                          </div>
+                          <dd className="text-sm font-semibold text-base-content sm:text-right">
+                            {data.name || "-"}
+                          </dd>
+                        </div>
+                        <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="text-sm text-base-content/60">
+                            Version
+                          </div>
+                          <div className="text-sm font-medium text-base-content sm:text-right">
+                            V {data.version || "-"}
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="text-sm text-base-content/60">
+                            Deskripsi
+                          </div>
+                          <div className="text-sm font-medium text-base-content sm:text-right">
+                            {data.description || "-"}
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="text-sm text-base-content/60">
+                            Context Template
+                          </div>
+                          <div className="text-sm font-medium text-base-content sm:text-right">
+                            <div className="flex items-center justify-between gap-4 w-full">
+                              {/* Nama Template atau Status Belum Diatur */}
+                              <div className="flex flex-col">
+                                {data.context_template ? (
+                                  <span>
+                                    {data.context_template.name || "Tanpa Nama"}
+                                  </span>
+                                ) : (
+                                  <span className="italic text-base-content/40">
+                                    Belum diatur
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Tombol Detail (Hanya muncul jika template dan ID-nya benar-benar ada) */}
+                              {data.context_template?.id && (
+                                <ActionButton
+                                  to={`/app/patient-verification/context/${data.context_template.id}`}
+                                  icon={Eye}
+                                  color="primary"
+                                  tooltip="Lihat Context"
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="text-sm text-base-content/60">
+                            Status
+                          </div>
+                          <div className="text-sm font-medium text-base-content sm:text-right">
+                            <span
+                              className={`badge ${
+                                data.status == "published"
+                                  ? "badge-primary"
+                                  : "badge-secondary text-base-content"
+                              } badge-sm`}
+                            >
+                              {capitalizeEachWord(data.status)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="text-sm text-base-content/60">
+                            Dibuat Oleh
+                          </div>
+                          <div className="text-sm font-medium text-base-content sm:text-right">
+                            {toAllUppercase(data.created_by_name) || "-"}
+                          </div>
+                        </div>
+                      </div>
+                    </FormSection>
+                  </div>
                   <FormSection
-                    title="Informasi Template"
-                    icon={Info}
-                    color="primary"
-                  >
-                    <div className="divide-y divide-base-300/70">
-                      <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <div className="text-sm text-base-content/60">
-                          Nama Template
-                        </div>
-                        <dd className="text-sm font-semibold text-base-content sm:text-right">
-                          {data.name || "-"}
-                        </dd>
-                      </div>
-                      <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <div className="text-sm text-base-content/60">
-                          Deskripsi
-                        </div>
-                        <div className="text-sm font-medium text-base-content sm:text-right">
-                          {data.description || "-"}
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <div className="text-sm text-base-content/60">
-                          Status
-                        </div>
-                        <div className="text-sm font-medium text-base-content sm:text-right">
-                          <span
-                            className={`badge ${
-                              data.is_active === true
-                                ? "badge-primary"
-                                : "badge-error"
-                            } badge-sm`}
-                          >
-                            {data.is_active ? "Aktif" : "Non Aktif"}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <div className="text-sm text-base-content/60">
-                          Dibuat Oleh
-                        </div>
-                        <div className="text-sm font-medium text-base-content sm:text-right">
-                          {toAllUppercase(data.created_by_name) || "-"}
-                        </div>
-                      </div>{" "}
-                      <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <div className="text-sm text-base-content/60">
-                          Digunakan oleh Proses:
-                        </div>
-                        <div className="text-sm font-medium text-base-content sm:text-right">
-                          {!data.used_by_processes ||
-                          data.used_by_processes.length === 0 ? (
-                            <span className="text-gray-500">Belum diatur</span>
-                          ) : (
-                            <ul className="list-disc list-inside space-y-1">
-                              {data.used_by_processes.map((process, idx) => (
-                                <li key={idx}>
-                                  {capitalizeEachWord(process.name)}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </FormSection>{" "}
-                  <FormSection
-                    title="Daftar Fields"
-                    icon={ListTree}
+                    title="Daftar Stages"
+                    icon={Workflow}
                     color="primary"
                   >
                     <div className="divide-y divide-base-300/70">
                       <div className="hidden sm:grid sm:grid-cols-5 gap-4 py-2 text-xs font-semibold uppercase tracking-wider text-base-content/60">
-                        <div>Key / Label</div>
-                        <div>Type</div>
-                        <div>Placeholder</div>
+                        <div className="text-center">Urutan</div>
+                        <div>Nama Stage</div>
+                        <div>Departemen</div>
                         <div className="text-center">Required</div>
-                        <div className="text-center">Unique Identifier</div>
+                        <div className="text-center">Mandatory Dept</div>
                       </div>
 
                       <div className="divide-y divide-base-300/50">
-                        {data.fields_schema?.fields?.map((field, idx) => (
+                        {data.stages?.map((stage) => (
                           <div
-                            key={idx}
+                            key={stage.id}
                             className="flex flex-col gap-2 py-3 sm:grid sm:grid-cols-5 sm:items-center sm:gap-4"
                           >
+                            {/* Kolom 1: Urutan (Stage Order) */}
+                            <div className="text-center">
+                              {stage.stage_order}
+                            </div>
+
+                            {/* Kolom 2: Nama Stage & ID */}
                             <div>
                               <div className="text-sm font-medium text-base-content">
-                                {field.label}
-                              </div>
-                              <div className="text-xs text-base-content/60 font-mono">
-                                {field.key}
+                                {stage.stage_name}
                               </div>
                             </div>
-                            <div className="text-sm text-base-content/80">
-                              {field.type}
+
+                            {/* Kolom 3: Departemen */}
+                            <div className="text-sm">
+                              {stage.departments?.map((dept) => (
+                                <div key={dept.id}>{dept.departemen_name}</div>
+                              ))}
                             </div>
-                            <div className="text-sm text-base-content/80 font-mono">
-                              {field.placeholder || "-"}
-                            </div>
-                            <div className="text-sm sm:text-center">
-                              {field.required ? (
-                                <span className="badge badge-sm badge-success badge-soft">
-                                  Ya
-                                </span>
+
+                            {/* Kolom 4: Wajib (Required) */}
+                            <div className="text-sm sm:flex sm:justify-center">
+                              {stage.is_required ? (
+                                <Check className="w-4 h-4 text-primary" />
                               ) : (
-                                <span className="badge badge-sm badge-ghost">
-                                  Tidak
-                                </span>
+                                <X className="w-4 h-4 text-base-content/40" />
                               )}
                             </div>
-                            <div className="text-sm sm:text-center">
-                              {field.unique_identifier ? (
-                                <span className="badge badge-sm badge-primary badge-soft">
-                                  Ya
-                                </span>
+
+                            {/* Kolom 5: Mandatory Dept */}
+                            <div className="text-sm sm:flex sm:justify-center">
+                              {stage.departments?.some(
+                                (d) => d.is_mandatory,
+                              ) ? (
+                                <Check className="w-4 h-4 text-primary" />
                               ) : (
-                                <span className="badge badge-sm badge-ghost">
-                                  Tidak
-                                </span>
+                                <X className="w-4 h-4 text-base-content/40" />
                               )}
                             </div>
                           </div>

@@ -4,6 +4,15 @@ import { patientVerificationAdapter } from "@/services/adapters/patientVerificat
 import { patientVerificationApi } from "@/services/api/endpoints";
 import { normalizeDetail } from "@/services/normalizers/responseNormalizer";
 
+interface ExportPayload {
+  date_from: string;
+  date_to: string;
+}
+
+interface BulkExportPayload extends ExportPayload {
+  process_ids: (string | number)[];
+}
+
 export const processService = {
   ...createCrudService<ProcessItem>("/processes", {
     api: patientVerificationApi,
@@ -44,5 +53,25 @@ export const processService = {
       `/processes/${processId}/revert-to-draft`,
     );
     return normalizeDetail<ProcessItem>(response);
+  },
+
+  // Export 1 process saja
+  async exportProcess(processId: string | number, data: ExportPayload) {
+    const response = await patientVerificationApi.apiRequest<unknown>(
+      "POST",
+      `/reports/processes/${processId}/export`,
+      data,
+    );
+    return response;
+  },
+
+  // Bulk export beberapa process (Payload dikirim langsung sebagai argumen ke-3)
+  async exportBulk(data: BulkExportPayload) {
+    const response = await patientVerificationApi.apiRequest<unknown>(
+      "POST",
+      `/reports/bulk/export`,
+      data,
+    );
+    return response;
   },
 };

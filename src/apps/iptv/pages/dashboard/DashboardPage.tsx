@@ -10,6 +10,7 @@ import { useNurseAudio } from "@iptv/hooks/panel/use-nurse-audio";
 import { useNurseRealtime } from "@iptv/hooks/panel/use-nurse-realtime";
 import { AudioAlertBanner } from "@iptv/components/AudioAlertBanner";
 import { CallItemCard } from "@iptv/components/CallItemCard";
+import { StbDeviceCard } from "../../components/StbDeviceCard";
 
 const DashboardPage = () => {
   const [status] = useState<string>("Terhubung");
@@ -32,9 +33,11 @@ const DashboardPage = () => {
   const namaStation =
     resolvedMe?.station?.name || resolvedActive?.station?.name || "";
   const rawCalls = resolvedActive?.calls || [];
+  // const calls = rawCalls.filter((c: any) => c.status !== "");
   const calls = rawCalls.filter((c: any) => c.status !== "ACKNOWLEDGED");
   const devices = resolvedStbs?.devices || [];
 
+  // --- PEMANGGILAN HOOK AUDIO DI SINI ---
   const { tampilkanTombolSuara, bukaSuara } = useNurseAudio(calls);
   useNurseRealtime(refetchActive);
 
@@ -85,7 +88,7 @@ const DashboardPage = () => {
       {/* Main Content Area */}
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-5 overflow-y-auto md:overflow-hidden h-full p-6 shadow-md border border-base-300 bg-base-100">
-          {/* Audio Alert Banner */}
+          {/* --- PEMANGGILAN BANNER TOMBOL AUDIO DI SINI --- */}
           <AudioAlertBanner
             tampilkan={tampilkanTombolSuara}
             onBukaSuara={bukaSuara}
@@ -101,6 +104,34 @@ const DashboardPage = () => {
                 Pantau panggilan perawat secara real-time dari setiap ruangan.
               </p>
             </div>
+          </div>
+
+          {/* --- STATUS STB / TV (BENTUK GRID DI BAWAH HEADER, SEBELUM CALLS) --- */}
+          <div className="shrink-0 space-y-2">
+            <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-wider">
+              Perangkat TV
+            </h3>
+
+            {sortedDevices.length === 0 ? (
+              <div className="text-caption italic py-2 text-base-content/50">
+                Belum ada perangkat terdaftar
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+                {sortedDevices.map((d: any) => {
+                  const lalu = d.last_seen_at
+                    ? sejakRelative(d.last_seen_at)
+                    : "Tidak pernah";
+                  return (
+                    <StbDeviceCard
+                      key={d.id || d.serial || d.room_label}
+                      device={d}
+                      lalu={lalu}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Daftar Panggilan (Scrollable) */}
@@ -128,41 +159,6 @@ const DashboardPage = () => {
                   />
                 ))}
               </ol>
-            )}
-          </div>
-
-          {/* Footer Section: Daftar Perangkat TV / STB */}
-          <div className="border-t border-base-200 pt-4 flex flex-wrap gap-2.5 items-center shrink-0">
-            <span className="heading-h4 text-base-content/80 mr-2">
-              Status STB/TV:
-            </span>
-            {sortedDevices.length === 0 ? (
-              <span className="text-caption italic">
-                Belum ada perangkat terdaftar
-              </span>
-            ) : (
-              sortedDevices.map((d: any) => {
-                const lalu = d.last_seen_at
-                  ? sejakRelative(d.last_seen_at)
-                  : "Tidak pernah";
-                return (
-                  <span
-                    key={d.serial || d.room_label}
-                    className={`px-3 py-1 rounded-full text-data border flex items-center gap-1.5 shadow-2xs ${
-                      d.online
-                        ? "text-success border-success/30 bg-success/10"
-                        : "text-error border-error/40 bg-error/15 font-semibold animate-pulse"
-                    }`}
-                    title={`${d.serial}${d.online ? "" : ` — Terakhir dilihat ${lalu}`}`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${d.online ? "bg-success" : "bg-error"}`}
-                    ></span>
-                    {d.room_label || d.serial} •{" "}
-                    {d.online ? "Online" : `Offline (${lalu})`}
-                  </span>
-                );
-              })
             )}
           </div>
         </Card>

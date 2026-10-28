@@ -360,9 +360,15 @@
             tombol.disabled = true;
             try {
               const aksi = sudahDijawab ? "resolve" : "ack";
-              const r = await fetch("/panel/calls/" + c.call_id + "/" + aksi, {
-                method: "POST",
-              });
+              const r = await fetch(
+                "http://192.168.101.207:3020/panel/calls/" +
+                  c.call_id +
+                  "/" +
+                  aksi,
+                {
+                  method: "POST",
+                },
+              );
               if (!r.ok) {
                 const body = await r.json().catch(function () {
                   return {};
@@ -415,7 +421,7 @@
 
       function mulaiHeartbeat() {
         const kirim = () => {
-          fetch("/panel/heartbeat", {
+          fetch("http://192.168.101.207:3020/panel/heartbeat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: "{}",
@@ -446,7 +452,9 @@
        */
       async function muatPerangkat() {
         try {
-          const r = await fetch("/panel/stbs", { credentials: "same-origin" });
+          const r = await fetch("http://192.168.101.207:3020/panel/stbs", {
+            credentials: "same-origin",
+          });
           if (!r.ok) return;
           const b = await r.json();
           const devices = (b.data && b.data.devices) || [];
@@ -511,7 +519,7 @@
 
       async function muatUlang() {
         try {
-          const r = await fetch("/panel/active");
+          const r = await fetch("http://192.168.101.207:3020/panel/active");
           if (r.ok) {
             const b = await r.json();
             if (b.data && b.data.station)
@@ -526,7 +534,7 @@
       }
 
       function hubung() {
-        const es = new EventSource("/panel/events");
+        const es = new EventSource("http://192.168.101.207:3020/panel/events");
 
         es.addEventListener("open", function () {
           setStatus("terhubung", "#3fb950");
@@ -578,7 +586,7 @@
         });
       }
 
-      fetch("/panel/me")
+      fetch("http://192.168.101.207:3020/panel/me")
         .then(function (r) {
           return r.json();
         })

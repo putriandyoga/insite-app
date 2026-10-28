@@ -26,6 +26,7 @@ import { useProcessArchive } from "@patient-verification/hooks/process/use-proce
 import { useProcessRevertToDraft } from "@patient-verification/hooks/process/use-process-revert-draft";
 import { useProcessDuplicate } from "@patient-verification/hooks/process/use-process-duplicate";
 import { getProcessStatusInfo } from "@patient-verification/constants/processStatusMap";
+
 const ProcessPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
     {},

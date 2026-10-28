@@ -35,12 +35,12 @@ const DashboardPage = () => {
   const rawCalls = resolvedActive?.calls ?? [];
 
   const calls = useMemo(
-    () => rawCalls.filter((call: any) => call.status !== "ACKNOWLEDGED"),
+    // () => rawCalls.filter((call: any) => call.status !== "ACKNOWLEDGED"),
+    () => rawCalls.filter((call: any) => call.status !== ""),
     [rawCalls],
   );
   const devices = resolvedStbs?.devices || [];
 
-  // --- PEMANGGILAN HOOK AUDIO DI SINI ---
   const { tampilkanTombolSuara, bukaSuara } = useNurseAudio(calls);
   useNurseRealtime(refetchActive);
 

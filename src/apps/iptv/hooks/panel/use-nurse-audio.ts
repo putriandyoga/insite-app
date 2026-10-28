@@ -1,113 +1,53 @@
-// hooks/panel/use-nurse-audio.ts
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-export function useNurseAudio(calls: any[]) {
-  const [suaraTersedia, setSuaraTersedia] = useState<boolean>(() => {
-    return localStorage.getItem("nurse_audio_unlocked") === "true";
-  });
-  const [berbunyi, setBerbunyi] = useState<boolean>(false);
-  const [tampilkanTombolSuara, setTampilkanTombolSuara] = useState<boolean>(
-    () => {
-      return localStorage.getItem("nurse_audio_unlocked") !== "true";
-    },
-  );
+interface NurseCall {
+  call_id?: string;
+  status: string;
+  room_label?: string;
+}
+
+const AUDIO_STORAGE_KEY = "nurse_audio_unlocked";
+const ALARM_PATH = "/assets/alarm.mp3";
+
+export function useNurseAudio(calls: NurseCall[]) {
+  const [suaraTersedia, setSuaraTersedia] = useState(false);
+  const [berbunyi, setBerbunyi] = useState(false);
+  const [tampilkanTombolSuara, setTampilkanTombolSuara] = useState(true);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const unlockedRef = useRef(false);
+  const callsRef = useRef(calls);
+  const playRequestRef = useRef(false);
+  const notifiedCallsRef = useRef(new Set<string>());
+  const previousPendingRef = useRef(new Set<string>());
 
-  // Minta izin Notification API saat pertama kali dimuat
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
+  // Selalu gunakan data panggilan paling baru.
+  callsRef.current = calls;
 
-  // Inisialisasi Audio
+  // Siapkan audio satu kali.
   useEffect(() => {
-    const audio = new Audio("/assets/alarm.mp3");
+    const audio = new Audio(ALARM_PATH);
     audio.loop = true;
+    audio.preload = "auto";
     audioRef.current = audio;
 
-    const handleGlobalClick = async () => {
-      if (audioRef.current && !suaraTersedia) {
-        try {
-          audioRef.current.muted = true;
-          await audioRef.current.play();
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-          audioRef.current.muted = false;
+    const unlocked = localStorage.getItem(AUDIO_STORAGE_KEY) === "true";
 
-          setSuaraTersedia(true);
-          setTampilkanTombolSuara(false);
-          localStorage.setItem("nurse_audio_unlocked", "true");
-          window.removeEventListener("click", handleGlobalClick);
-        } catch (e) {
-          // Abaikan
-        }
-      }
-    };
-
-    if (!suaraTersedia) {
-      window.addEventListener("click", handleGlobalClick);
-    }
+    unlockedRef.current = unlocked;
+    setSuaraTersedia(unlocked);
+    setTampilkanTombolSuara(!unlocked);
 
     return () => {
-      window.removeEventListener("click", handleGlobalClick);
       audio.pause();
+      audio.currentTime = 0;
       audioRef.current = null;
     };
-  }, [suaraTersedia]);
+  }, []);
 
-  // Pantau panggilan aktif (Termasuk saat di tab lain)
-  useEffect(() => {
-    const adaYangMenunggu = calls.some((c: any) => c.status === "PENDING");
-    const audio = audioRef.current;
-
-    if (!audio) return;
-
-    if (adaYangMenunggu) {
-      // Jika ada call baru, tampilkan juga Notifikasi Desktop OS (Muncul walau di tab lain)
-      if (
-        !berbunyi &&
-        "Notification" in window &&
-        Notification.permission === "granted"
-      ) {
-        const pendingCalls = calls.filter((c: any) => c.status === "PENDING");
-        const latestCall = pendingCalls[pendingCalls.length - 1];
-
-        new Notification("Panggilan Perawat Masuk!", {
-          body: `Ruangan: ${latestCall?.room_label || "Unknown"} membutuhkan bantuan.`,
-          icon: "/favicon.svg", // Sesuaikan icon app Anda
-          requireInteraction: true, // Agar notifikasi tidak hilang sendiri sebelum diklik
-        });
-      }
-
-      if (!berbunyi && suaraTersedia) {
-        audio
-          .play()
-          .then(() => {
-            setBerbunyi(true);
-          })
-          .catch(() => {
-            // Browser memblokir karena tab di-background
-            setTampilkanTombolSuara(true);
-          });
-      }
-    } else {
-      if (berbunyi) {
-        audio.pause();
-        audio.currentTime = 0;
-        setBerbunyi(false);
-      }
-    }
-  }, [calls, berbunyi, suaraTersedia]);
-
-  const bukaSuara = async () => {
+  // Aktifkan audio lewat interaksi langsung pengguna.
+  const bukaSuara = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    // Minta izin notifikasi juga saat tombol diklik
-    if ("Notification" in window && Notification.permission !== "granted") {
-      await Notification.requestPermission();
-    }
 
     try {
       audio.muted = true;
@@ -116,19 +56,174 @@ export function useNurseAudio(calls: any[]) {
       audio.currentTime = 0;
       audio.muted = false;
 
+      unlockedRef.current = true;
+      localStorage.setItem(AUDIO_STORAGE_KEY, "true");
+
       setSuaraTersedia(true);
       setTampilkanTombolSuara(false);
-      localStorage.setItem("nurse_audio_unlocked", "true");
 
-      const adaYangMenunggu = calls.some((c: any) => c.status === "PENDING");
-      if (adaYangMenunggu) {
+      if ("Notification" in window && Notification.permission === "default") {
+        try {
+          await Notification.requestPermission();
+        } catch {
+          // Audio tetap dapat digunakan tanpa notifikasi.
+        }
+      }
+
+      // Jika ada panggilan menunggu, bunyikan sekarang.
+      if (callsRef.current.some((call) => call.status === "PENDING")) {
         await audio.play();
         setBerbunyi(true);
       }
-    } catch (err) {
+    } catch (error) {
+      audio.muted = false;
       setTampilkanTombolSuara(true);
+      console.error("Gagal mengaktifkan suara alarm:", error);
     }
-  };
+  }, []);
 
-  return { tampilkanTombolSuara, bukaSuara };
+  // Pemantauan panggilan aktif.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    let aktif = true;
+    let retryTimer: number | undefined;
+
+    const getPendingCalls = () =>
+      callsRef.current.filter((call) => call.status === "PENDING");
+
+    const putarAlarm = async () => {
+      if (!aktif || !unlockedRef.current || !audio.paused) return;
+      if (playRequestRef.current) return;
+
+      playRequestRef.current = true;
+
+      try {
+        audio.muted = false;
+        await audio.play();
+
+        if (aktif) {
+          setBerbunyi(true);
+          setTampilkanTombolSuara(false);
+        }
+      } catch (error) {
+        if (aktif) {
+          setBerbunyi(false);
+          setTampilkanTombolSuara(true);
+        }
+
+        console.warn("Alarm gagal diputar:", error);
+      } finally {
+        playRequestRef.current = false;
+      }
+    };
+
+    const periksaPanggilan = () => {
+      if (!aktif) return;
+
+      const pendingCalls = getPendingCalls();
+      const pendingIds = new Set(
+        pendingCalls.map(
+          (call) =>
+            call.call_id ?? `${call.room_label ?? "unknown"}-${call.status}`,
+        ),
+      );
+
+      if (pendingCalls.length === 0) {
+        audio.pause();
+        audio.currentTime = 0;
+        setBerbunyi(false);
+        previousPendingRef.current.clear();
+        notifiedCallsRef.current.clear();
+        return;
+      }
+
+      // Notifikasi untuk panggilan yang baru menjadi PENDING.
+      if ("Notification" in window && Notification.permission === "granted") {
+        for (const call of pendingCalls) {
+          const id =
+            call.call_id ?? `${call.room_label ?? "unknown"}-${call.status}`;
+
+          if (
+            !previousPendingRef.current.has(id) &&
+            !notifiedCallsRef.current.has(id)
+          ) {
+            try {
+              new Notification("Panggilan Perawat Masuk!", {
+                body: `Ruangan: ${call.room_label ?? "Unknown"} membutuhkan bantuan.`,
+                icon: "/favicon.svg",
+                requireInteraction: true,
+              });
+              notifiedCallsRef.current.add(id);
+            } catch (error) {
+              console.warn("Notifikasi gagal:", error);
+            }
+          }
+        }
+      }
+
+      previousPendingRef.current = pendingIds;
+
+      // Putar jika berhenti atau belum berjalan.
+      if (audio.paused) {
+        void putarAlarm();
+      }
+    };
+
+    const pulihkanAudio = () => {
+      if (document.visibilityState === "visible" || document.hasFocus()) {
+        periksaPanggilan();
+      }
+    };
+
+    const handleAudioPause = () => {
+      if (aktif && getPendingCalls().length > 0) {
+        void putarAlarm();
+      }
+    };
+
+    const handleAudioEnded = () => {
+      if (aktif && getPendingCalls().length > 0) {
+        audio.currentTime = 0;
+        void putarAlarm();
+      }
+    };
+
+    audio.addEventListener("pause", handleAudioPause);
+    audio.addEventListener("ended", handleAudioEnded);
+
+    document.addEventListener("visibilitychange", pulihkanAudio);
+    window.addEventListener("focus", pulihkanAudio);
+    window.addEventListener("pageshow", pulihkanAudio);
+
+    // SSE mengubah calls; timer ini hanya mencoba memulihkan audio.
+    retryTimer = window.setInterval(() => {
+      periksaPanggilan();
+    }, 2000);
+
+    periksaPanggilan();
+
+    return () => {
+      aktif = false;
+
+      if (retryTimer !== undefined) {
+        window.clearInterval(retryTimer);
+      }
+
+      audio.removeEventListener("pause", handleAudioPause);
+      audio.removeEventListener("ended", handleAudioEnded);
+
+      document.removeEventListener("visibilitychange", pulihkanAudio);
+      window.removeEventListener("focus", pulihkanAudio);
+      window.removeEventListener("pageshow", pulihkanAudio);
+    };
+  }, [calls]);
+
+  return {
+    tampilkanTombolSuara,
+    bukaSuara,
+    berbunyi,
+    suaraTersedia,
+  };
 }

@@ -1,7 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import Card from "@/components/Card";
 import { PageMiddle, PageTop } from "@/components/PageLayout";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { usePanelMe } from "@iptv/hooks/panel/use-panel-me";
 import { usePanelActiveCalls } from "@iptv/hooks/panel/use-panel-active-call";
 import { usePanelStbs } from "@iptv/hooks/panel/use-panel-stb";
@@ -32,9 +32,12 @@ const DashboardPage = () => {
     "Memuat ward...";
   const namaStation =
     resolvedMe?.station?.name || resolvedActive?.station?.name || "";
-  const rawCalls = resolvedActive?.calls || [];
-  // const calls = rawCalls.filter((c: any) => c.status !== "");
-  const calls = rawCalls.filter((c: any) => c.status !== "ACKNOWLEDGED");
+  const rawCalls = resolvedActive?.calls ?? [];
+
+  const calls = useMemo(
+    () => rawCalls.filter((call: any) => call.status !== "ACKNOWLEDGED"),
+    [rawCalls],
+  );
   const devices = resolvedStbs?.devices || [];
 
   // --- PEMANGGILAN HOOK AUDIO DI SINI ---

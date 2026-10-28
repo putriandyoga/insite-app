@@ -1,4 +1,3 @@
-// hooks/panel/use-nurse-realtime.ts
 import { useEffect } from "react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { decrypt } from "@/utils/secureStorage";
@@ -12,56 +11,92 @@ export function useNurseRealtime(refetchActive: () => void) {
   useEffect(() => {
     const encryptedData = localStorage.getItem("user");
     let token = "";
+
     if (encryptedData) {
       const decrypted = decrypt<StoredUser>(encryptedData);
-      if (decrypted && decrypted.token) {
+
+      if (decrypted?.token) {
         token = decrypted.token;
       }
     }
 
-    const heartbeatInterval = setInterval(() => {
+    if (!token) {
+      console.error("Token tidak ditemukan untuk koneksi Nurse SSE.");
+      return;
+    }
+
+    let disposed = false;
+
+    const heartbeatInterval = window.setInterval(() => {
       panelService.sendHeartbeat().catch(() => {});
     }, 30000);
 
     const controller = new AbortController();
-    fetchEventSource("/iptv-api/panel/events", {
+
+    void fetchEventSource("/iptv-api/panel/events", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
+        Accept: "text/event-stream",
       },
       signal: controller.signal,
+      openWhenHidden: true,
+
       async onopen(response) {
         if (!response.ok) {
           throw new Error(`Koneksi SSE bermasalah: ${response.status}`);
         }
       },
-      onmessage(msg) {
-        if (
-          [
-            "snapshot",
-            "call.created",
-            "call.updated",
-            "call.acked",
-            "call.resolved",
-            "presence",
-          ].includes(msg.event)
-        ) {
+
+      onmessage(message) {
+        if (disposed) return;
+
+        const relevantEvents = [
+          "snapshot",
+          "call.created",
+          "call.updated",
+          "call.acked",
+          "call.resolved",
+        ];
+
+        if (relevantEvents.includes(message.event)) {
+          // Data SSE menjadi pemicu pembaruan query.
           refetchActive();
         }
       },
-      onerror(err) {
-        throw err;
+
+      onclose() {
+        if (!disposed) {
+          throw new Error("Koneksi Nurse SSE terputus.");
+        }
       },
+
+      onerror(error) {
+        if (disposed) return;
+
+        // fetch-event-source akan mencoba menyambung ulang.
+        console.error("Nurse SSE terputus, mencoba menyambung ulang.", error);
+        throw error;
+      },
+    }).catch((error) => {
+      if (!disposed && !controller.signal.aborted) {
+        console.error("Nurse SSE gagal:", error);
+      }
     });
 
     const handleVisibilityChange = () => {
-      if (!document.hidden) refetchActive();
+      if (!document.hidden) {
+        refetchActive();
+      }
     };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
+      disposed = true;
       controller.abort();
-      clearInterval(heartbeatInterval);
+      window.clearInterval(heartbeatInterval);
+
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [refetchActive]);

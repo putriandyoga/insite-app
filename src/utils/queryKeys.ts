@@ -20,4 +20,5 @@ export const queryKeys = {
   staff: createQueryKeys("staff"),
   context: createQueryKeys("context"),
   process: createQueryKeys("process"),
+  instances: createQueryKeys("instances"),
 };

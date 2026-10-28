@@ -3,6 +3,7 @@ import { lazy } from "react";
 import { Outlet, type RouteObject } from "react-router-dom";
 import { useIptvLogout } from "./hooks/auth/use-logout";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import { useIsAdmin } from "@/utils/authHelper";
 
 function IptvSyncWrapper() {
   const { logout } = useIptvLogout();
@@ -13,7 +14,10 @@ function IptvSyncWrapper() {
     </>
   );
 }
-
+export const DashboardRouter = () => {
+  const isAdmin = useIsAdmin();
+  return isAdmin ? <ContextPage /> : <DashboardPage />;
+};
 const DepartementPage = lazy(
   () => import("@patient-verification/pages/departement/DepartementPage"),
 );
@@ -54,13 +58,19 @@ const ProcessDetailPage = lazy(
   () => import("@patient-verification/pages/process/ProcessDetailPage"),
 );
 
+const InstancesPage = lazy(
+  () => import("@patient-verification/pages/instances/InstancesPage"),
+);
+
+const DashboardPage = lazy(
+  () => import("@patient-verification/pages/dashboard/DashboardPage"),
+);
+
 export const patientVerificationRoutes: RouteObject = {
   path: "patient-verification",
   element: <IptvSyncWrapper />,
   children: [
-    {
-      path: "dashboard",
-    },
+    { path: "dashboard", element: <DashboardRouter /> },
     {
       element: (
         <ProtectedRoute requiredRole="admin">
@@ -99,6 +109,15 @@ export const patientVerificationRoutes: RouteObject = {
           path: "process",
           children: [
             { index: true, element: <ProcessPage /> },
+            { path: "create", element: <ProcessFormPage /> },
+            { path: ":processId", element: <ProcessDetailPage /> },
+            { path: ":processId/edit", element: <ProcessFormPage /> },
+          ],
+        },
+        {
+          path: "instances",
+          children: [
+            { index: true, element: <InstancesPage /> },
             { path: "create", element: <ProcessFormPage /> },
             { path: ":processId", element: <ProcessDetailPage /> },
             { path: ":processId/edit", element: <ProcessFormPage /> },

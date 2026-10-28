@@ -60,20 +60,32 @@ export function normalizeApiError(error: unknown): ApiError {
       error.message ||
       "Terjadi kesalahan saat menghubungi server.";
 
-    // Tangani error validasi backend di mana pesan detailnya ada di dalam payload.data (misal: status 422)
+    // Tangani error khusus jika terdapat 'empty_processes' di dalam payload.data
     const errorData = payload.data;
     if (isRecord(errorData)) {
-      const detailedMessages: string[] = [];
-      for (const [_key, val] of Object.entries(errorData)) {
-        if (Array.isArray(val)) {
-          detailedMessages.push(`${val.join(", ")}`);
-        } else if (typeof val === "string") {
-          detailedMessages.push(`${val}`);
+      if (Array.isArray(errorData.empty_processes)) {
+        // Ambil nama-nama process yang kosong dari array
+        const processNames = errorData.empty_processes
+          .map((p: any) => p.name)
+          .filter(Boolean)
+          .join(", ");
+
+        if (processNames) {
+          message = `${message} (${processNames})`;
         }
-      }
-      if (detailedMessages.length > 0) {
-        // Gabungkan pesan utama dari meta/payload dengan detail error dari data
-        message = `${message} ${detailedMessages.join(" | ")}`;
+      } else {
+        // Penanganan umum untuk objek data lainnya (jika ada)
+        const detailedMessages: string[] = [];
+        for (const [_key, val] of Object.entries(errorData)) {
+          if (Array.isArray(val)) {
+            detailedMessages.push(`${val.join(", ")}`);
+          } else if (typeof val === "string") {
+            detailedMessages.push(`${val}`);
+          }
+        }
+        if (detailedMessages.length > 0) {
+          message = `${message} | ${detailedMessages.join(" | ")}`;
+        }
       }
     }
 

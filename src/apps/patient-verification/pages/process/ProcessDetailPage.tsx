@@ -104,7 +104,6 @@ export default function ProcessDetailPage() {
                           </div>
                           <div className="text-sm font-medium text-base-content sm:text-right">
                             <div className="flex items-center justify-between gap-4 w-full">
-                              {/* Nama Template atau Status Belum Diatur */}
                               <div className="flex flex-col">
                                 {data.context_template ? (
                                   <span>
@@ -117,7 +116,6 @@ export default function ProcessDetailPage() {
                                 )}
                               </div>
 
-                              {/* Tombol Detail (Hanya muncul jika template dan ID-nya benar-benar ada) */}
                               {data.context_template?.id && (
                                 <ActionButton
                                   to={`/app/patient-verification/context/${data.context_template.id}`}
@@ -180,26 +178,22 @@ export default function ProcessDetailPage() {
                             key={stage.id}
                             className="flex flex-col gap-2 py-3 sm:grid sm:grid-cols-5 sm:items-center sm:gap-4"
                           >
-                            {/* Kolom 1: Urutan (Stage Order) */}
                             <div className="text-center">
                               {stage.stage_order}
                             </div>
 
-                            {/* Kolom 2: Nama Stage & ID */}
                             <div>
                               <div className="text-sm font-medium text-base-content">
                                 {stage.stage_name}
                               </div>
                             </div>
 
-                            {/* Kolom 3: Departemen */}
                             <div className="text-sm">
                               {stage.departments?.map((dept) => (
                                 <div key={dept.id}>{dept.departemen_name}</div>
                               ))}
                             </div>
 
-                            {/* Kolom 4: Wajib (Required) */}
                             <div className="text-sm sm:flex sm:justify-center">
                               {stage.is_required ? (
                                 <Check className="w-4 h-4 text-primary" />
@@ -208,7 +202,6 @@ export default function ProcessDetailPage() {
                               )}
                             </div>
 
-                            {/* Kolom 5: Mandatory Dept */}
                             <div className="text-sm sm:flex sm:justify-center">
                               {stage.departments?.some(
                                 (d) => d.is_mandatory,

@@ -92,7 +92,6 @@ const CallPage = () => {
 
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto md:overflow-hidden h-full p-4">
-          {/* Form Filter Sesuai Request: start_date, end_date, kind, ward_id */}
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 text-sm items-end shrink-0">
             <FormInput
               label="Ruang Perawatan"
@@ -172,8 +171,6 @@ const CallPage = () => {
               />
             )}
           </div>
-
-          {/* Kolom Pencarian Tambahan (Opsional jika masih dibutuhkan) */}
 
           <div className="flex flex-col lg:flex-1 lg:min-h-0 relative md:overflow-auto gap-4">
             <DataSection

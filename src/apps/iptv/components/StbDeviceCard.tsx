@@ -26,7 +26,6 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
       className={`p-3.5 rounded-xl border border-base-300 bg-base-100 flex flex-col justify-between gap-2.5 shadow-xs transition-all duration-200 hover:border-base-content/20`}
       title={`Serial: ${serial}${online ? "" : ` — Terakhir dilihat ${lalu}`}`}
     >
-      {/* Bagian Header: Ikon TV, Ruangan, & Status Titik Online */}
       <div className="flex items-center justify-between gap-2 border-b border-base-200 pb-2">
         <div className="flex items-center gap-2 min-w-0">
           <div className="p-1.5 rounded-lg bg-base-200 text-base-content/80 shrink-0">
@@ -44,7 +43,6 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
           </div>
         </div>
 
-        {/* Indikator Titik Online/Offline */}
         <span
           className={`w-2.5 h-2.5 rounded-full shrink-0 ${
             online
@@ -55,9 +53,7 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
         ></span>
       </div>
 
-      {/* Bagian Detail Informasi */}
       <div className="space-y-1.5 text-xs">
-        {/* Serial Number */}
         <div className="flex items-center justify-between gap-1">
           <span className="text-caption opacity-60">Serial:</span>
           <span className="text-data text-[11px] font-mono truncate max-w-32.5 text-base-content/80">
@@ -65,7 +61,6 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
           </span>
         </div>
 
-        {/* Status STB */}
         <div className="flex items-center justify-between gap-1">
           <span className="text-caption opacity-60">Status:</span>
           <span className="badge badge-xs badge-ghost font-mono font-medium">
@@ -73,7 +68,6 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
           </span>
         </div>
 
-        {/* Last Seen / Keterangan Online/Offline */}
         <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-base-200">
           <span className="text-caption opacity-60 flex items-center gap-1">
             <Clock className="w-3 h-3" /> Terakhir:

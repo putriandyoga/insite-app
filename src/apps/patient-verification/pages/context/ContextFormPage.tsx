@@ -80,7 +80,6 @@ const ContextFormPage = () => {
 
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-6 overflow-y-auto p-4 md:p-6 h-full">
-          {/* Bagian Informasi Utama */}
           <FormSection title="Data Context" icon={Hospital} color="primary">
             <div className="grid grid-cols-1 gap-4">
               <FormInput
@@ -102,7 +101,6 @@ const ContextFormPage = () => {
             </div>
           </FormSection>
 
-          {/* Bagian Fields Schema Dinamis */}
           <FormSection title="Fields Schema" icon={Plus} color="primary">
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center">
@@ -131,7 +129,6 @@ const ContextFormPage = () => {
                       key={index}
                       className="relative flex flex-col gap-4 py-5 px-3 first:pt-2 last:pb-2"
                     >
-                      {/* Tombol Delete Sticky di Pojok Kanan Atas */}
                       <div className="absolute top-3 right-3 z-10">
                         <ActionButton
                           onClick={() => handleRemoveField(index)}
@@ -142,9 +139,7 @@ const ContextFormPage = () => {
                         />
                       </div>
 
-                      {/* Grid 5 Kolom (Label, Key, Type, Display Role, Placeholder) */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-start w-full pr-10 lg:pr-12">
-                        {/* Label */}
                         <FormInput
                           label="Label"
                           type="text"
@@ -156,7 +151,6 @@ const ContextFormPage = () => {
                           placeholder="cth: Nama Pasien"
                         />
 
-                        {/* Key */}
                         <FormInput
                           label="Key"
                           type="text"
@@ -168,7 +162,6 @@ const ContextFormPage = () => {
                           placeholder="cth: name"
                         />
 
-                        {/* Type (Select) */}
                         <FormInput
                           label="Type"
                           dropdownType="select"
@@ -184,7 +177,6 @@ const ContextFormPage = () => {
                           ]}
                         />
 
-                        {/* Display Role (Select) */}
                         <FormInput
                           label="Display Role"
                           dropdownType="select"
@@ -200,7 +192,6 @@ const ContextFormPage = () => {
                           ]}
                         />
 
-                        {/* Placeholder */}
                         <FormInput
                           label="Placeholder"
                           type="text"
@@ -213,7 +204,6 @@ const ContextFormPage = () => {
                         />
                       </div>
 
-                      {/* Checkboxes (Required & Unique ID) di baris bawah */}
                       <div className="flex items-center gap-6 px-1 pt-1">
                         <FormInput
                           label="Required"

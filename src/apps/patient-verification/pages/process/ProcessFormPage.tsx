@@ -118,7 +118,6 @@ const ProcessFormPage = () => {
 
       <PageMiddle>
         <Card className="flex-1 min-h-0 flex flex-col gap-6 overflow-y-auto p-4 md:p-6 h-full">
-          {/* Bagian Informasi Utama Process */}
           <FormSection title="Data Process" icon={Hospital} color="primary">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormInput
@@ -130,7 +129,6 @@ const ProcessFormPage = () => {
                 placeholder="Masukkan nama proses"
               />
 
-              {/* Dropdown Context Template */}
               <FormInput
                 label="Context Template"
                 dropdownType="select"
@@ -163,7 +161,6 @@ const ProcessFormPage = () => {
             </div>
           </FormSection>
 
-          {/* Bagian Daftar Stages Dinamis */}
           <FormSection title="Daftar Stages" icon={Workflow} color="primary">
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center">
@@ -193,7 +190,6 @@ const ProcessFormPage = () => {
                       key={index}
                       className="relative flex flex-col gap-4 py-5 px-3 first:pt-2 last:pb-2 border-b border-base-300/60 last:border-b-0"
                     >
-                      {/* Tombol Hapus Stage */}
                       <div className="absolute top-3 right-3 z-10">
                         <ActionButton
                           onClick={() => handleRemoveStage(index)}
@@ -204,9 +200,7 @@ const ProcessFormPage = () => {
                         />
                       </div>
 
-                      {/* Baris Input Utama Stage */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start w-full pr-10 lg:pr-12">
-                        {/* Nama Tahap */}
                         <FormInput
                           label={`Tahap #${stage.stage_order || index + 1} - Nama Tahap`}
                           type="text"
@@ -240,7 +234,6 @@ const ProcessFormPage = () => {
                           disabled={loadingDepartement}
                         />
 
-                        {/* Deskripsi Tahap */}
                         <FormInput
                           label="Deskripsi Tahap"
                           type="text"
@@ -252,7 +245,6 @@ const ProcessFormPage = () => {
                         />
                       </div>
 
-                      {/* Baris Checkbox (Required & Mandatory Dept) */}
                       <div className="flex items-center gap-8 px-1 pt-1 bg-base-100/50 p-3 rounded-md">
                         <FormInput
                           label="Stage Required"

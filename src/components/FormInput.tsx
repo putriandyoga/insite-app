@@ -413,7 +413,6 @@ const FormInput = ({
                 />
 
                 <ul className="max-h-60 overflow-auto flex flex-col gap-1">
-                  {/* Opsi untuk mengosongkan pilihan */}
                   <li
                     onMouseDown={() => {
                       onChange?.("");

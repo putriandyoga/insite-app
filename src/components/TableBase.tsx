@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 type Column<T> = {
-  header: string;
+  header: ReactNode;
   accessor?: keyof T;
   render?: (row: T, index: number) => ReactNode;
   className?: string;

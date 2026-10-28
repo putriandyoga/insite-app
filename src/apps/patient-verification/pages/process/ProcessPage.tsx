@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useProcessDelete } from "@patient-verification/hooks/process/use-process-delete";
 import { useProcessList } from "@patient-verification/hooks/process/use-process-list";
 import { PageTop, PageMiddle, PageBottom } from "@/components/PageLayout";
@@ -11,6 +12,7 @@ import { useTableFilters } from "@/hooks/use-table-filters";
 import {
   CheckCircle,
   Copy,
+  Download,
   Eye,
   FolderArchive,
   MoreHorizontal,
@@ -26,7 +28,11 @@ import { useProcessArchive } from "@patient-verification/hooks/process/use-proce
 import { useProcessRevertToDraft } from "@patient-verification/hooks/process/use-process-revert-draft";
 import { useProcessDuplicate } from "@patient-verification/hooks/process/use-process-duplicate";
 import { getProcessStatusInfo } from "@patient-verification/constants/processStatusMap";
-
+import {
+  useProcessBulkExport,
+  useProcessExport,
+} from "@patient-verification/hooks/process/use-process-export";
+import FormInput from "@/components/FormInput";
 const ProcessPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
     {},
@@ -42,6 +48,93 @@ const ProcessPage = () => {
   const { publishProcess, loading: loadingPublish } = useProcessPublish();
   const { archiveProcess, loading: loadingArchive } = useProcessArchive();
   const { revertToDraft, loading: loadingRevert } = useProcessRevertToDraft();
+
+  // Hook Export & Bulk Export
+  const { exportProcess, loading: loadingSingleExport } = useProcessExport(
+    () => {
+      setIsModalOpen(false);
+    },
+  );
+  const { exportBulk, loading: loadingBulkExport } = useProcessBulkExport(
+    () => {
+      setSelectedIds([]);
+      setIsModalOpen(false);
+    },
+  );
+
+  // State untuk checkbox pilihan baris (Bulk)
+  const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+
+  // State untuk Modal & Rentang Tanggal Export
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [exportType, setExportType] = useState<"single" | "bulk">("single");
+  const [targetId, setTargetId] = useState<string | number | null>(null);
+
+  // Form input tanggal export
+  const [exportFilters, setExportFilters] = useState({
+    start_date: "",
+    end_date: "",
+  });
+
+  const handleFilterChange = (field: string, val: any) => {
+    setExportFilters((prev) => ({ ...prev, [field]: val }));
+  };
+
+  // Trigger buka modal untuk single export
+  const openSingleExportModal = (id: string | number) => {
+    setExportType("single");
+    setTargetId(id);
+    setIsModalOpen(true);
+  };
+
+  // Trigger buka modal untuk bulk export
+  const openBulkExportModal = () => {
+    if (selectedIds.length === 0) return;
+    setExportType("bulk");
+    setTargetId(null);
+    setIsModalOpen(true);
+  };
+
+  // Eksekusi Submit Export dari dalam Modal
+  const handleConfirmExport = () => {
+    const payload = {
+      // Tambahkan suffix jam agar tanggal akhir mencakup sampai akhir hari
+      date_from: `${exportFilters.start_date}`,
+      date_to: `${exportFilters.end_date}`,
+    };
+
+    if (exportType === "single" && targetId !== null) {
+      exportProcess(targetId, payload);
+    } else if (exportType === "bulk") {
+      exportBulk({
+        process_ids: selectedIds,
+        ...payload,
+      });
+    }
+  };
+
+  // Handler Select All Checkbox
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIds = data.map((item) => item.id);
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  // Handler Checkbox per Baris
+  const handleCheckboxChange = (id: string | number) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter((item) => item !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const isAllSelected = data.length > 0 && selectedIds.length === data.length;
+  const isExporting = loadingSingleExport || loadingBulkExport;
+
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden">
       <PageTop>
@@ -64,6 +157,14 @@ const ProcessPage = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <ActionButton
+              onClick={openBulkExportModal}
+              disabled={selectedIds.length === 0 || isExporting}
+              icon={Download}
+              label={`Bulk Export (${selectedIds.length})`}
+              color="accent"
+            />
+
             <ActionButton
               to="/app/patient-verification/process/create"
               icon={PenBox}
@@ -88,6 +189,25 @@ const ProcessPage = () => {
               <TableBase
                 columns={[
                   {
+                    header: (
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-sm"
+                        checked={isAllSelected}
+                        onChange={handleSelectAll}
+                      />
+                    ),
+                    render: (row) => (
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-sm"
+                        checked={selectedIds.includes(row.id)}
+                        onChange={() => handleCheckboxChange(row.id)}
+                      />
+                    ),
+                    className: "text-center w-12",
+                  },
+                  {
                     header: "No",
                     render: (_, index) => (page - 1) * perPage + index + 1,
                     className: "text-center w-12",
@@ -98,7 +218,7 @@ const ProcessPage = () => {
                       <div className="flex flex-col">
                         {row.name}
                         <span className="text-xs text-base-content/60 font-mono">
-                          {row.process_code} • v{row.version}
+                          {row.process_code}v{row.version}
                         </span>
                       </div>
                     ),
@@ -117,7 +237,6 @@ const ProcessPage = () => {
 
                       return (
                         <div className="flex items-center justify-between gap-4 w-full">
-                          {/* Nama Template atau Status Belum Diatur */}
                           <div className="flex flex-col">
                             {hasTemplate ? (
                               <span>{template.name || "Tanpa Nama"}</span>
@@ -128,7 +247,6 @@ const ProcessPage = () => {
                             )}
                           </div>
 
-                          {/* Tombol Detail (Hanya muncul jika template dan ID-nya benar-benar ada) */}
                           {template?.id && (
                             <ActionButton
                               to={`/app/patient-verification/context/${template.id}`}
@@ -146,7 +264,6 @@ const ProcessPage = () => {
                     render: (row) => <span>{row.total_stages} Tahap</span>,
                     className: "text-center",
                   },
-
                   {
                     header: "Status",
                     render: (row) => {
@@ -189,6 +306,11 @@ const ProcessPage = () => {
                           label="Aksi Lainnya"
                           color="accent"
                           items={[
+                            {
+                              label: "Export Report",
+                              onClick: () => openSingleExportModal(row.id),
+                              icon: Download,
+                            },
                             {
                               label: "Publish",
                               onClick: () => publishProcess(row.id),
@@ -236,6 +358,63 @@ const ProcessPage = () => {
           onPageChange={(newPage) => setPage(newPage)}
         />
       </PageBottom>
+
+      {isModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box max-w-md space-y-4">
+            <h3 className="font-bold text-lg">
+              {exportType === "single"
+                ? "Export Process Report"
+                : `Bulk Export (${selectedIds.length} Process)`}
+            </h3>
+            <p className="text-sm text-base-content/70">
+              Silakan pilih rentang tanggal (start date & end date) untuk data
+              laporan yang ingin diexport.
+            </p>
+
+            <div className="space-y-3 py-2">
+              <FormInput
+                label="Tanggal Mulai"
+                type="date"
+                value={exportFilters.start_date}
+                onChange={(val) => handleFilterChange("start_date", val)}
+                className="w-full"
+                disableFuture
+                // Hapus formatApi={true} atau biarkan default (false)
+              />
+
+              <FormInput
+                label="Tanggal Akhir"
+                type="date"
+                value={exportFilters.end_date}
+                onChange={(val) => handleFilterChange("end_date", val)}
+                className="w-full"
+                disableFuture
+                // Hapus formatApi={true} atau biarkan default (false)
+              />
+            </div>
+
+            <div className="modal-action">
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setIsModalOpen(false)}
+                disabled={isExporting}
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleConfirmExport}
+                disabled={isExporting}
+              >
+                {isExporting ? "Mengexport..." : "Download Export"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

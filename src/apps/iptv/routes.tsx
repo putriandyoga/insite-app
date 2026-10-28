@@ -16,13 +16,11 @@ function IptvSyncWrapper() {
 }
 
 const AdminDashboardPage = lazy(() => import("@iptv/pages/call/CallPage"));
-const NurseCallMonitorPage = lazy(
-  () => import("@iptv/pages/dashboard/DashboardPage"),
-);
+const PanelPage = lazy(() => import("@iptv/pages/dashboard/DashboardPage"));
 
 export const DashboardRouter = () => {
   const isAdmin = useIsAdmin();
-  return isAdmin ? <AdminDashboardPage /> : <NurseCallMonitorPage />;
+  return isAdmin ? <AdminDashboardPage /> : <PanelPage />;
 };
 
 const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
@@ -48,7 +46,6 @@ const StbFormPage = lazy(() => import("@iptv/pages/stb/StbFormPage"));
 const StbBindPage = lazy(() => import("@iptv/pages/stb/StbBindPage"));
 const StbDetailPage = lazy(() => import("@iptv/pages/stb/StbDetailPage"));
 
-const PanelPage = lazy(() => import("@iptv/pages/panel/NurseCallMonitor"));
 const CallPage = lazy(() => import("@iptv/pages/call/CallPage"));
 
 export const iptvRoutes: RouteObject = {
@@ -115,12 +112,7 @@ export const iptvRoutes: RouteObject = {
         },
         {
           path: "panel",
-          children: [
-            { index: true, element: <PanelPage /> },
-            { path: "create", element: <StbFormPage /> },
-            { path: ":stbId", element: <StbDetailPage /> },
-            { path: ":stbId/bind", element: <StbBindPage /> },
-          ],
+          children: [{ index: true, element: <PanelPage /> }],
         },
         {
           path: "call",

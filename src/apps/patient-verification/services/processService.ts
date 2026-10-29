@@ -19,6 +19,14 @@ export const processService = {
     adapter: patientVerificationAdapter,
   }),
 
+  async getAll() {
+    const response = await patientVerificationApi.apiRequest<any>(
+      "GET",
+      "/processes",
+    );
+    // Mengembalikan response mentah atau data terstruktur dari API
+    return response;
+  },
   // Membuat versi baru dari process berdasarkan process-id
   async createNewVersion(processId: string | number) {
     const response = await patientVerificationApi.apiRequest<unknown>(

@@ -2,6 +2,7 @@ import React from "react";
 import { CheckCircle2 } from "lucide-react";
 import type { StageTimelineItem } from "@patient-verification/types/instancesTypes";
 import { getInstanceStatusInfo } from "@patient-verification/constants/instancesStatusMap";
+import { formatDateTimeNumeric } from "@/utils/dateFormater";
 
 interface InstanceTimelineProps {
   timeline: StageTimelineItem[];
@@ -39,19 +40,21 @@ export const InstanceTimeline: React.FC<InstanceTimelineProps> = ({
               <div className="space-y-1">
                 <div className="font-bold text-sm text-base-content flex items-center gap-2">
                   <span>
-                    #{stage.stage_order} - {stage.stage_name}
+                    {stage.stage_order}. {stage.stage_name}
                   </span>
+                  {isCompleted && stage.first_verified_at && (
+                    <p className="text-body text-success font-medium flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Diverifikasi{" "}
+                      {formatDateTimeNumeric(stage.first_verified_at)}
+                      {/* •{" "}
+                      {stage.verified_count}x verifikasi */}
+                    </p>
+                  )}
                 </div>
                 <p className="text-body text-base-content/60">
                   Unit verifikator:{" "}
                   {stage.departments?.map((d) => `${d.name}`).join(", ")}
                 </p>
-                {isCompleted && stage.first_verified_at && (
-                  <p className="text-body text-success font-medium flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Diverifikasi •{" "}
-                    {stage.verified_count}x verifikasi
-                  </p>
-                )}
               </div>
 
               {/* Menggunakan styling & label langsung dari getInstanceStatusInfo */}

@@ -1,8 +1,7 @@
-// hooks/instance/use-instance-verify-next.ts
+// hooks/instances/use-instances-verify-next.ts
 import { useState } from "react";
 import { instancesService } from "@patient-verification/services/instancesService";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/utils/queryKeys";
 import { showAlert } from "@/components/Alert";
 import { handleApiError } from "@/utils/errorHandler";
 
@@ -28,15 +27,11 @@ export function useInstanceVerifyNext(onSuccess?: () => void) {
         showConfirmButton: false,
       });
 
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.instances?.lists?.() ?? ["instances"],
+      // INVALIDASI SELURUH QUERY INSTANCE AGAR CACHE BERSIH TOTAL
+      await queryClient.invalidateQueries({
+        queryKey: ["instances"],
       });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.instances?.detail?.(String(id)) ?? [
-          "instances",
-          String(id),
-        ],
-      });
+
       if (onSuccess) onSuccess();
     } catch (err) {
       await handleApiError(err, "Terjadi kesalahan saat verifikasi lanjutan");

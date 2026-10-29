@@ -21,6 +21,7 @@ import SideMenu from "@/components/SideMenu";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useBaseGlobalLogout } from "@/hooks/core/use-base-global-logout";
 import { useModuleKey } from "@/hooks/use-module-key";
+import { toAllUppercase } from "@/utils/capitalizer";
 
 export default function DashboardLayout() {
   useAutoModuleTheme();
@@ -201,7 +202,8 @@ export default function DashboardLayout() {
                       Signed in as
                     </span>
                     <span className="text-sm font-semibold text-base-content truncate">
-                      {user.username || user.email}
+                      {toAllUppercase(user.username) ||
+                        toAllUppercase(user.email)}
                     </span>
                   </li>
                 )}

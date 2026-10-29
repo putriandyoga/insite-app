@@ -6,9 +6,9 @@ import { instancesService } from "@patient-verification/services/instancesServic
 export function useInstancesDetail(instancesId?: string) {
   return useBaseDetail<InstancesItem>({
     id: instancesId,
-
-    queryKey: queryKeys.instances.detail(instancesId || ""),
-
+    queryKey: queryKeys.instances?.detail
+      ? queryKeys.instances.detail(instancesId || "")
+      : ["instances", "detail", instancesId || ""],
     fetcher: instancesService.getDetail,
   });
 }

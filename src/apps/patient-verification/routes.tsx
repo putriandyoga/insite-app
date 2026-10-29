@@ -118,9 +118,9 @@ export const patientVerificationRoutes: RouteObject = {
           path: "instances",
           children: [
             { index: true, element: <InstancesPage /> },
-            { path: "create", element: <ProcessFormPage /> },
-            { path: ":processId", element: <ProcessDetailPage /> },
-            { path: ":processId/edit", element: <ProcessFormPage /> },
+            // { path: "create", element: <ProcessFormPage /> },
+            // { path: ":processId", element: <ProcessDetailPage /> },
+            // { path: ":processId/edit", element: <ProcessFormPage /> },
           ],
         },
       ],

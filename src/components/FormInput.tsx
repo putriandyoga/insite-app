@@ -506,7 +506,7 @@ const FormInput = ({
         <div ref={selectRef} className="relative">
           {Icon && (
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content">
-              <Icon />
+              <Icon size={16} />
             </span>
           )}
           <input

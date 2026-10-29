@@ -56,7 +56,7 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
       <div className="space-y-1.5 text-xs">
         <div className="flex items-center justify-between gap-1">
           <span className="text-caption opacity-60">Serial:</span>
-          <span className="text-data text-[11px] font-mono truncate max-w-32.5 text-base-content/80">
+          <span className="text-data text-body font-mono truncate max-w-32.5 text-base-content/80">
             {serial}
           </span>
         </div>
@@ -74,11 +74,11 @@ export const StbDeviceCard: React.FC<StbDeviceCardProps> = ({
           </span>
           <span className="font-medium">
             {online ? (
-              <span className="text-success flex items-center gap-1 text-[11px]">
+              <span className="text-success flex items-center gap-1 text-body">
                 <Wifi className="w-3 h-3" /> Online
               </span>
             ) : (
-              <span className="text-error flex items-center gap-1 text-[11px]">
+              <span className="text-error flex items-center gap-1 text-body">
                 <WifiOff className="w-3 h-3" /> {lalu}
               </span>
             )}

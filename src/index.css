@@ -94,10 +94,12 @@ body {
   @apply text-base sm:text-lg text-base-content font-header font-semibold leading-snug;
 }
 
-@utility text-body {
+/* @utility text-body {
   @apply text-sm md:text-base font-body text-base-content/90 leading-relaxed;
+} */
+@utility text-body {
+  @apply text-sm font-body text-base-content/90 leading-relaxed;
 }
-
 @utility text-caption {
   @apply text-[11px] md:text-xs font-caption text-base-content/60 tracking-wide leading-normal;
 }

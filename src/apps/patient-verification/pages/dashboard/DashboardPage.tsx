@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Check,
   PlusCircle,
+  HelpCircle,
 } from "lucide-react";
 import { getInstanceStatusInfo } from "@patient-verification/constants/instancesStatusMap";
 import { InstanceTimeline } from "@patient-verification/components/InstanceTimeline";
@@ -16,71 +17,63 @@ import FormInput from "@/components/FormInput";
 import { DetailRowItem } from "@/components/DetailRowItem";
 import { formatDateIndo, formatTime } from "@/utils/dateFormater";
 import ActionButton from "@/components/ActionButton";
-import { useInstanceVerificationDashboard } from "@patient-verification/hooks/instances/use-instance-verification-dashboard";
-import { useInstanceVerifyFirst } from "@patient-verification/hooks/instances/use-instances-verify-first";
-import { useMemo, useState } from "react";
-import { useProcessAll } from "@patient-verification/hooks/process/use-process-all";
 
+import { useEffect } from "react";
+import { useInstanceList } from "@patient-verification/hooks/dashboard/use-instance-list";
+import { useInstanceDetail } from "@patient-verification/hooks/dashboard/use-instance-detail";
+import { useInstanceVerifyModal } from "@patient-verification/hooks/dashboard/use-instance-verify-modal";
+import { IndicatorLoading } from "@/components/IndicatorLoading";
+import { IndicatorEmpty } from "@/components/IndicatorEmptyData";
 const DashboardPage = () => {
   const {
     loadingInstance,
-    dataStaff,
-    loadingStaff,
+    refetchInstance,
     searchQuery,
     setSearchQuery,
     selectedId,
+    filteredData,
+    handleSelectInstance,
+    statusFilter,
+    setStatusFilter,
+  } = useInstanceList();
+
+  const {
+    dataStaff,
+    loadingStaff,
+    refetchStaff,
     selectedStaffId,
     setSelectedStaffId,
     selectedInstance,
     loadingDetail,
     verifying,
-    filteredData,
     isMyTurn,
-    handleSelectInstance,
     handleVerifySubmit,
-  } = useInstanceVerificationDashboard();
+  } = useInstanceDetail(selectedId, refetchInstance);
 
-  const { data: dataProcess, loading: loadingProcess } = useProcessAll();
-  // State untuk Modal Verifikasi Pertama (First Verification)
-  const [contextData, setContextData] = useState<Record<string, string>>({});
-  const [isFirstVerifyModalOpen, setIsFirstVerifyModalOpen] = useState(false);
-  const [firstVerifyProcessId, setFirstVerifyProcessId] = useState<
-    string | number
-  >("");
-  const [firstVerifyStaffId, setFirstVerifyStaffId] = useState<string | number>(
-    "",
-  );
-  const [firstVerifyNotes, setFirstVerifyNotes] = useState("");
+  const {
+    dataProcess,
+    loadingProcess,
+    isFirstVerifyModalOpen,
+    setIsFirstVerifyModalOpen,
+    firstVerifyProcessId,
+    handleTemplateChange,
+    firstVerifyStaffId,
+    setFirstVerifyStaffId,
+    firstVerifyNotes,
+    setFirstVerifyNotes,
+    contextData,
+    setContextData,
+    contextFields,
+    hasMissingRequiredContext,
+    loadingFirstVerify,
+    handleConfirmFirstVerify,
+  } = useInstanceVerifyModal(refetchInstance);
 
-  // Hook Verifikasi Pertama
-  const { verifyFirst, loading: loadingFirstVerify } = useInstanceVerifyFirst(
-    () => {
-      setIsFirstVerifyModalOpen(false);
-      setFirstVerifyNotes("");
-      setFirstVerifyStaffId("");
-    },
-  );
+  useEffect(() => {
+    refetchInstance();
+    refetchStaff();
+  }, [refetchInstance, refetchStaff]);
 
-  const handleConfirmFirstVerify = () => {
-    if (!firstVerifyProcessId || !firstVerifyStaffId) return;
-    verifyFirst(firstVerifyProcessId, {
-      staff_id: firstVerifyStaffId,
-      notes: firstVerifyNotes,
-      context_data: contextData,
-    });
-  };
-  // Cari data proses yang sedang dipilih di dropdown
-  const selectedProcessObj = useMemo(() => {
-    if (!dataProcess?.initiable_processes) return null;
-    return dataProcess.initiable_processes.find(
-      (item: any) => String(item.id) === String(firstVerifyProcessId),
-    );
-  }, [dataProcess, firstVerifyProcessId]);
-
-  // Ambil daftar schema field dari context_template proses tersebut
-  const contextFields =
-    selectedProcessObj?.context_template?.fields_schema?.fields || [];
-  console.log(dataProcess);
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden bg-base-100/50">
       <PageTop>
@@ -90,18 +83,17 @@ const DashboardPage = () => {
               items={[{ label: "Home", path: "/" }, { label: "Dashboard" }]}
             />
           </div>
-
           <div className="flex items-center gap-2 shrink-0">
             <ActionButton
-              label="Verifikasi Pertama"
+              label="Inisiasi Proses Baru"
               onClick={() => setIsFirstVerifyModalOpen(true)}
               icon={PlusCircle}
-              color="accent"
-              className="h-9 text-xs sm:text-sm"
+              color="primary"
             />
           </div>
         </div>
       </PageTop>
+
       <PageMiddle>
         <div className="grid grid-cols-4 lg:grid-cols-8 gap-4 h-full min-h-0 overflow-hidden">
           {/* Kolom Kiri: List Pasien */}
@@ -116,29 +108,46 @@ const DashboardPage = () => {
                 </span>
               </div>
               <FormInput
+                label=""
+                dropdownType="select"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { label: "Sedang Berjalan", value: "process" },
+                  { label: "Selesai", value: "completed" },
+                  { label: "Semua Status", value: "all" },
+                ]}
+              />
+              <FormInput
                 placeholder="Cari nama pasien / RM"
                 value={searchQuery}
                 onChange={setSearchQuery}
                 label=""
                 icon={Search}
               />
-              <div className="flex-1 overflow-y-auto space-y-2.5">
+              <div className="flex-1 overflow-y-auto">
                 {loadingInstance ? (
-                  <div className="flex justify-center items-center py-10 text-body text-base-content/50">
-                    Memuat data...
+                  <div className="pt-2">
+                    <IndicatorLoading />
                   </div>
                 ) : filteredData.length === 0 ? (
-                  <div className="text-center py-10 text-body text-base-content/50 italic">
-                    Tidak ada data pasien ditemukan.
+                  <div className="pt-2">
+                    <IndicatorEmpty
+                      message="Data Tidak Ditemukan"
+                      description="Coba ubah kata kunci atau filter pencarian."
+                      icon={HelpCircle}
+                      color="primary"
+                    />
                   </div>
                 ) : (
                   filteredData.map((item: any) => (
-                    <InstanceCardItem
-                      key={item.id}
-                      item={item}
-                      isSelected={selectedId === item.id}
-                      onSelect={handleSelectInstance}
-                    />
+                    <div key={item.id} className="pt-2">
+                      <InstanceCardItem
+                        item={item}
+                        isSelected={selectedId === item.id}
+                        onSelect={handleSelectInstance}
+                      />
+                    </div>
                   ))
                 )}
               </div>
@@ -308,28 +317,24 @@ const DashboardPage = () => {
           </div>
         </div>
       </PageMiddle>
+
+      {/* MODAL INISIASI PROSES BARU */}
       {isFirstVerifyModalOpen && (
         <div className="modal modal-open">
-          <div className="modal-box max-w-lg space-y-4">
-            <h3 className="font-bold text-lg">
-              Verifikasi Pertama (Buat Instance Baru)
-            </h3>
+          <div className="modal-box max-w-2xl space-y-2">
+            <h3 className="font-bold text-lg">Inisiasi Proses Baru</h3>
             <p className="text-sm text-base-content/70">
               Pilih Process Template terlebih dahulu untuk memunculkan form data
               pasien.
             </p>
 
-            <div className="space-y-3 py-2 max-h-[60vh] overflow-y-auto pr-1">
-              {/* 1. Dropdown Pilih Process Template */}
+            <div className="space-y-3 p-2 overflow-y-auto">
               <FormInput
                 label="Process Template"
                 dropdownType="select"
                 required
                 value={firstVerifyProcessId}
-                onChange={(val) => {
-                  setFirstVerifyProcessId(val);
-                  setContextData({}); // Reset data context saat template diganti
-                }}
+                onChange={handleTemplateChange}
                 options={
                   Array.isArray(dataProcess?.initiable_processes)
                     ? dataProcess.initiable_processes.map((item: any) => ({
@@ -342,7 +347,6 @@ const DashboardPage = () => {
                 placeholder="Pilih process template"
               />
 
-              {/* 2. Dropdown Pilih Staff Verifikator */}
               <FormInput
                 label="Staff Verifikator"
                 options={
@@ -361,7 +365,6 @@ const DashboardPage = () => {
                 placeholder="Pilih staff verifikator"
               />
 
-              {/* 3. DINAMIS FORM INPUT BERDASARKAN CONTEXT TEMPLATE (Hanya muncul jika process dipilih) */}
               {contextFields.length > 0 && (
                 <div className="divider text-xs text-base-content/50 uppercase tracking-wider my-2">
                   Data Context Pasien
@@ -391,7 +394,6 @@ const DashboardPage = () => {
                 ))}
               </div>
 
-              {/* 4. Catatan Opsional */}
               <FormInput
                 label="Catatan (Opsional)"
                 type="text"
@@ -402,28 +404,26 @@ const DashboardPage = () => {
             </div>
 
             <div className="modal-action">
-              <button
-                type="button"
-                className="btn"
+              <ActionButton
+                label="Batal"
                 onClick={() => setIsFirstVerifyModalOpen(false)}
-                disabled={loadingFirstVerify}
-              >
-                Batal
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
+                color="base-300"
+              />
+              <ActionButton
+                label={
+                  loadingFirstVerify
+                    ? "Menyimpan..."
+                    : "Simpan Verifikasi Pertama"
+                }
                 onClick={handleConfirmFirstVerify}
+                color="primary"
                 disabled={
                   !firstVerifyProcessId ||
                   !firstVerifyStaffId ||
+                  hasMissingRequiredContext ||
                   loadingFirstVerify
                 }
-              >
-                {loadingFirstVerify
-                  ? "Menyimpan..."
-                  : "Simpan Verifikasi Pertama"}
-              </button>
+              />
             </div>
           </div>
         </div>

@@ -1,42 +1,78 @@
-import { useState, useMemo } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import Card from "@/components/Card";
 import { PageMiddle, PageTop } from "@/components/PageLayout";
-import { useInstanceMyDepartment } from "@patient-verification/hooks/instances/use-instances-my-departement";
-import { useInstancesDetail } from "@patient-verification/hooks/instances/use-instances-detail";
-import { UserCheck, Clock, Search } from "lucide-react";
+import {
+  UserCheck,
+  Clock,
+  Search,
+  CheckCircle2,
+  Check,
+  PlusCircle,
+  HelpCircle,
+} from "lucide-react";
 import { getInstanceStatusInfo } from "@patient-verification/constants/instancesStatusMap";
 import { InstanceTimeline } from "@patient-verification/components/InstanceTimeline";
 import { InstanceCardItem } from "@patient-verification/components/InstanceCardItem";
 import FormInput from "@/components/FormInput";
 import { DetailRowItem } from "@/components/DetailRowItem";
 import { formatDateIndo, formatTime } from "@/utils/dateFormater";
+import ActionButton from "@/components/ActionButton";
 
+import { useEffect } from "react";
+import { useInstanceList } from "@patient-verification/hooks/dashboard/use-instance-list";
+import { useInstanceDetail } from "@patient-verification/hooks/dashboard/use-instance-detail";
+import { useInstanceVerifyModal } from "@patient-verification/hooks/dashboard/use-instance-verify-modal";
+import { IndicatorLoading } from "@/components/IndicatorLoading";
+import { IndicatorEmpty } from "@/components/IndicatorEmptyData";
 const InstancesPage = () => {
-  const { data: listData, loading: loadingList } = useInstanceMyDepartment();
+  const {
+    loadingInstance,
+    refetchInstance,
+    searchQuery,
+    setSearchQuery,
+    selectedId,
+    filteredData,
+    handleSelectInstance,
+    statusFilter,
+    setStatusFilter,
+  } = useInstanceList();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedId, setSelectedId] = useState<string | number | undefined>(
-    undefined,
-  );
+  const {
+    dataStaff,
+    loadingStaff,
+    refetchStaff,
+    selectedStaffId,
+    setSelectedStaffId,
+    selectedInstance,
+    loadingDetail,
+    verifying,
+    isMyTurn,
+    handleVerifySubmit,
+  } = useInstanceDetail(selectedId, refetchInstance);
 
-  const { data: selectedInstance, loading: loadingDetail } = useInstancesDetail(
-    selectedId ? String(selectedId) : undefined,
-  );
+  const {
+    dataProcess,
+    loadingProcess,
+    isFirstVerifyModalOpen,
+    setIsFirstVerifyModalOpen,
+    firstVerifyProcessId,
+    handleTemplateChange,
+    firstVerifyStaffId,
+    setFirstVerifyStaffId,
+    firstVerifyNotes,
+    setFirstVerifyNotes,
+    contextData,
+    setContextData,
+    contextFields,
+    hasMissingRequiredContext,
+    loadingFirstVerify,
+    handleConfirmFirstVerify,
+  } = useInstanceVerifyModal(refetchInstance);
 
-  const filteredData = useMemo(() => {
-    if (!listData) return [];
-    return listData.filter((item: any) => {
-      const query = searchQuery.toLowerCase();
-      const name = (
-        item.context_data?.name ||
-        item.ticket_code ||
-        ""
-      ).toLowerCase();
-      const rm = (item.context_data?.medical_record || "").toLowerCase();
-      return name.includes(query) || rm.includes(query);
-    });
-  }, [listData, searchQuery]);
+  useEffect(() => {
+    refetchInstance();
+    refetchStaff();
+  }, [refetchInstance, refetchStaff]);
 
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden bg-base-100/50">
@@ -44,7 +80,15 @@ const InstancesPage = () => {
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full py-1">
           <div className="overflow-x-auto min-w-0">
             <Breadcrumb
-              items={[{ label: "Home", path: "/" }, { label: "Dashboard" }]}
+              items={[{ label: "Home", path: "/" }, { label: "Instances" }]}
+            />
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <ActionButton
+              label="Inisiasi Proses Baru"
+              onClick={() => setIsFirstVerifyModalOpen(true)}
+              icon={PlusCircle}
+              color="primary"
             />
           </div>
         </div>
@@ -52,7 +96,7 @@ const InstancesPage = () => {
 
       <PageMiddle>
         <div className="grid grid-cols-4 lg:grid-cols-8 gap-4 h-full min-h-0 overflow-hidden">
-          {/* KOLOM KIRI: DAFTAR INSTANCE (4 Kolom) */}
+          {/* Kolom Kiri: List Pasien */}
           <div className="col-span-1 lg:col-span-2 flex flex-col h-full min-h-0">
             <Card className="flex flex-col h-full overflow-hidden gap-2">
               <div className="flex items-center justify-between border-b border-base-300 pb-2 shrink-0">
@@ -64,36 +108,53 @@ const InstancesPage = () => {
                 </span>
               </div>
               <FormInput
+                label=""
+                dropdownType="select"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { label: "Sedang Berjalan", value: "process" },
+                  { label: "Selesai", value: "completed" },
+                  { label: "Semua Status", value: "all" },
+                ]}
+              />
+              <FormInput
                 placeholder="Cari nama pasien / RM"
                 value={searchQuery}
                 onChange={setSearchQuery}
                 label=""
                 icon={Search}
               />
-              <div className="flex-1 overflow-y-auto space-y-2.5">
-                {loadingList ? (
-                  <div className="flex justify-center items-center py-10 text-body text-base-content/50">
-                    Memuat data...
+              <div className="flex-1 overflow-y-auto">
+                {loadingInstance ? (
+                  <div className="pt-2">
+                    <IndicatorLoading />
                   </div>
                 ) : filteredData.length === 0 ? (
-                  <div className="text-center py-10 text-body text-base-content/50 italic">
-                    Tidak ada data pasien ditemukan.
+                  <div className="pt-2">
+                    <IndicatorEmpty
+                      message="Data Tidak Ditemukan"
+                      description="Coba ubah kata kunci atau filter pencarian."
+                      icon={HelpCircle}
+                      color="primary"
+                    />
                   </div>
                 ) : (
                   filteredData.map((item: any) => (
-                    <InstanceCardItem
-                      key={item.id}
-                      item={item}
-                      isSelected={selectedId === item.id}
-                      onSelect={(id) => setSelectedId(id)}
-                    />
+                    <div key={item.id} className="pt-2">
+                      <InstanceCardItem
+                        item={item}
+                        isSelected={selectedId === item.id}
+                        onSelect={handleSelectInstance}
+                      />
+                    </div>
                   ))
                 )}
               </div>
             </Card>
           </div>
 
-          {/* KOLOM KANAN: DETAIL & TIMELINE (8 Kolom) */}
+          {/* Kolom Kanan: Detail & Aksi */}
           <div className="col-span-3 lg:col-span-6 flex flex-col h-full min-h-0">
             <Card className="flex flex-col h-full p-6 shadow-md border border-base-300 bg-base-100 overflow-hidden">
               {!selectedId ? (
@@ -121,7 +182,6 @@ const InstancesPage = () => {
                 </div>
               ) : (
                 <>
-                  {/* Header Detail & Status Badge */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-200 pb-4 shrink-0">
                     <div>
                       <h2 className="text-xl font-bold text-base-content">
@@ -153,49 +213,85 @@ const InstancesPage = () => {
                       </div>
                     </div>
 
-                    {/* Menggunakan helper getInstanceStatusInfo */}
                     {(() => {
                       const statusInfo = getInstanceStatusInfo(
                         selectedInstance.status,
                       );
                       return (
-                        <span
-                          className={`badge px-3 py-2  ${statusInfo.color}`}
-                        >
+                        <span className={`badge px-3 py-2 ${statusInfo.color}`}>
                           {statusInfo.label}
                         </span>
                       );
                     })()}
                   </div>
-                  <div className="flex flex-col h-full min-h-0 gap-5 overflow-y-auto pr-2">
-                    {/* Banner Info Tahapan Saat Ini */}
-                    {selectedInstance.current_stage && (
+
+                  <div className="flex flex-col h-full min-h-0 gap-5 overflow-y-auto pr-2 mt-4">
+                    {selectedInstance.status?.toLowerCase() === "completed" ||
+                    selectedInstance.completed_at ? (
+                      <div className="alert alert-success py-3 rounded-xl border border-success/30 bg-success/10 text-success-content flex items-center gap-2 shrink-0">
+                        <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
+                        <span className="text-sm font-medium">
+                          Semua tahapan verifikasi telah selesai.
+                        </span>
+                      </div>
+                    ) : !isMyTurn ? (
                       <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-warning-content flex items-center gap-3 shrink-0 shadow-2xs">
                         <Clock className="w-5 h-5 text-warning shrink-0" />
                         <span className="text-body font-medium text-base-content/90">
-                          Menunggu verifikasi tahap #
-                          {selectedInstance.current_stage.stage_order} —{" "}
+                          Menunggu verifikasi dari unit:{" "}
                           <strong>
-                            {selectedInstance.current_stage.stage_name}
-                          </strong>{" "}
-                          (
-                          {selectedInstance.current_stage.departments
-                            ?.map((d) => d.name)
-                            .join(", ")}
-                          )
+                            {selectedInstance.current_stage?.departments
+                              ?.map((d: any) => d.name)
+                              .join(", ") || "-"}
+                          </strong>
                         </span>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex flex-col gap-3 shrink-0">
+                        <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                          Aksi Verifikasi Tahap Ini (
+                          {selectedInstance.current_stage?.stage_name})
+                        </span>
+
+                        <div className="flex flex-row gap-2 items-end">
+                          <div className="flex-1">
+                            <FormInput
+                              label=""
+                              options={
+                                Array.isArray(dataStaff)
+                                  ? dataStaff.map((item: any) => ({
+                                      label: item.name,
+                                      value: item.id,
+                                    }))
+                                  : []
+                              }
+                              dropdownType="select"
+                              value={selectedStaffId}
+                              onChange={(val) => setSelectedStaffId(val)}
+                              disabled={loadingStaff}
+                              placeholder="Pilih staff verifikator"
+                            />
+                          </div>
+                          <ActionButton
+                            disabled={!selectedStaffId || verifying}
+                            onClick={handleVerifySubmit}
+                            icon={Check}
+                            color="primary"
+                            label={verifying ? "Memproses..." : "Verifikasi"}
+                            className="h-11"
+                          />
+                        </div>
                       </div>
                     )}
 
-                    {/* Komponen Timeline Terpisah */}
                     <InstanceTimeline
                       timeline={selectedInstance.stages_timeline || []}
                       processName={selectedInstance.process?.name}
                     />
                   </div>
-                  <div className="flex flex-col gap-4 mt-4 border-t-2 border-base-300">
+
+                  <div className="flex flex-col gap-4 mt-4 border-t-2 border-base-300 pt-3">
                     <div className="divide-y divide-base-300/70">
-                      {/* 1. Nama Template */}
                       <DetailRowItem label="Nama Proses">
                         <span>{selectedInstance.process?.name}</span>
                       </DetailRowItem>
@@ -221,6 +317,117 @@ const InstancesPage = () => {
           </div>
         </div>
       </PageMiddle>
+
+      {/* MODAL INISIASI PROSES BARU */}
+      {isFirstVerifyModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box max-w-2xl space-y-2">
+            <h3 className="font-bold text-lg">Inisiasi Proses Baru</h3>
+            <p className="text-sm text-base-content/70">
+              Pilih Process Template terlebih dahulu untuk memunculkan form data
+              pasien.
+            </p>
+
+            <div className="space-y-3 p-2 overflow-y-auto">
+              <FormInput
+                label="Process Template"
+                dropdownType="select"
+                required
+                value={firstVerifyProcessId}
+                onChange={handleTemplateChange}
+                options={
+                  Array.isArray(dataProcess?.initiable_processes)
+                    ? dataProcess.initiable_processes.map((item: any) => ({
+                        label: item.name,
+                        value: item.id,
+                      }))
+                    : []
+                }
+                disabled={loadingProcess}
+                placeholder="Pilih process template"
+              />
+
+              <FormInput
+                label="Staff Verifikator"
+                options={
+                  Array.isArray(dataStaff)
+                    ? dataStaff.map((item: any) => ({
+                        label: item.name,
+                        value: item.id,
+                      }))
+                    : []
+                }
+                dropdownType="select"
+                required
+                value={firstVerifyStaffId}
+                onChange={(val) => setFirstVerifyStaffId(val)}
+                disabled={loadingStaff}
+                placeholder="Pilih staff verifikator"
+              />
+
+              {contextFields.length > 0 && (
+                <div className="divider text-xs text-base-content/50 uppercase tracking-wider my-2">
+                  Data Context Pasien
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 py-2">
+                {contextFields.map((field: any) => (
+                  <div key={field.key} className="w-full">
+                    <FormInput
+                      label={field.label}
+                      type={field.type || "text"}
+                      required={field.required}
+                      placeholder={
+                        field.placeholder ||
+                        `Masukkan ${field.label.toLowerCase()}...`
+                      }
+                      value={contextData[field.key] || ""}
+                      onChange={(val) =>
+                        setContextData((prev: Record<string, string>) => ({
+                          ...prev,
+                          [field.key]: val,
+                        }))
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <FormInput
+                label="Catatan (Opsional)"
+                type="text"
+                value={firstVerifyNotes}
+                onChange={(val) => setFirstVerifyNotes(val)}
+                placeholder="Catatan tambahan..."
+              />
+            </div>
+
+            <div className="modal-action">
+              <ActionButton
+                label="Batal"
+                onClick={() => setIsFirstVerifyModalOpen(false)}
+                color="base-300"
+              />
+              <ActionButton
+                label={
+                  loadingFirstVerify
+                    ? "Menyimpan..."
+                    : "Simpan Verifikasi Pertama"
+                }
+                onClick={handleConfirmFirstVerify}
+                color="primary"
+                disabled={
+                  !firstVerifyProcessId ||
+                  !firstVerifyStaffId ||
+                  hasMissingRequiredContext ||
+                  loadingFirstVerify
+                }
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

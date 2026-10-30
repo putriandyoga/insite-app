@@ -20,6 +20,7 @@ export function IndicatorEmpty({
   color = "primary",
 }: IndicatorEmptyProps) {
   const scheme = getColorScheme(color);
+  const SelectedIcon = Icon || FileX;
 
   return (
     <div
@@ -39,9 +40,11 @@ export function IndicatorEmpty({
           rounded-full
           p-4 sm:p-5
           animate-pulse
+          flex items-center justify-center
         `}
       >
-        <Icon size={32} className={scheme.iconColor} />
+        {/* Ubah className icon agar tidak transparan/senada dengan background */}
+        <SelectedIcon size={32} className="text-primary-content" />
       </div>
 
       <div className="space-y-2">

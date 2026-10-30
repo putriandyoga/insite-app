@@ -16,7 +16,7 @@ function IptvSyncWrapper() {
 }
 export const DashboardRouter = () => {
   const isAdmin = useIsAdmin();
-  return isAdmin ? <ContextPage /> : <DashboardPage />;
+  return isAdmin ? <DashboardAdminPage /> : <DashboardPage />;
 };
 const DepartementPage = lazy(
   () => import("@patient-verification/pages/departement/DepartementPage"),
@@ -64,6 +64,9 @@ const InstancesPage = lazy(
 
 const DashboardPage = lazy(
   () => import("@patient-verification/pages/dashboard/DashboardPage"),
+);
+const DashboardAdminPage = lazy(
+  () => import("@patient-verification/pages/dashboard/DashboardAdminPage"),
 );
 
 export const patientVerificationRoutes: RouteObject = {
@@ -117,7 +120,7 @@ export const patientVerificationRoutes: RouteObject = {
         {
           path: "instances",
           children: [
-            { index: true, element: <InstancesPage /> },
+            { index: true, element: <DashboardPage /> },
             // { path: "create", element: <ProcessFormPage /> },
             // { path: ":processId", element: <ProcessDetailPage /> },
             // { path: ":processId/edit", element: <ProcessFormPage /> },

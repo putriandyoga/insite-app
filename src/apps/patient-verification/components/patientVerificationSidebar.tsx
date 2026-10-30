@@ -36,11 +36,6 @@ export const getPatientVerificationSidebar = (): SidebarItem[] => {
             to: "/app/patient-verification/instances",
             permission: "instances.list",
           },
-          {
-            label: "Verifikasi Saya",
-            to: "/app/patient-verification/instances/my-department",
-            permission: "instances.my-department",
-          },
         ],
       },
 

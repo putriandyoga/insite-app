@@ -24,7 +24,7 @@ import { useInstanceDetail } from "@patient-verification/hooks/dashboard/use-ins
 import { useInstanceVerifyModal } from "@patient-verification/hooks/dashboard/use-instance-verify-modal";
 import { IndicatorLoading } from "@/components/IndicatorLoading";
 import { IndicatorEmpty } from "@/components/IndicatorEmptyData";
-const InstancesPage = () => {
+const DashboardPage = () => {
   const {
     loadingInstance,
     refetchInstance,
@@ -80,7 +80,7 @@ const InstancesPage = () => {
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full py-1">
           <div className="overflow-x-auto min-w-0">
             <Breadcrumb
-              items={[{ label: "Home", path: "/" }, { label: "Instances" }]}
+              items={[{ label: "Home", path: "/" }, { label: "Dashboard" }]}
             />
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -107,24 +107,30 @@ const InstancesPage = () => {
                   {filteredData.length}
                 </span>
               </div>
-              <FormInput
-                label=""
-                dropdownType="select"
-                value={statusFilter}
-                onChange={setStatusFilter}
-                options={[
-                  { label: "Sedang Berjalan", value: "process" },
-                  { label: "Selesai", value: "completed" },
-                  { label: "Semua Status", value: "all" },
-                ]}
-              />
-              <FormInput
-                placeholder="Cari nama pasien / RM"
-                value={searchQuery}
-                onChange={setSearchQuery}
-                label=""
-                icon={Search}
-              />
+              <div className="grid grid-cols-3 gap-2">
+                <div className="col-span-1">
+                  <FormInput
+                    label="Status"
+                    dropdownType="select"
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    options={[
+                      { label: "Process", value: "process" },
+                      { label: "Done", value: "completed" },
+                      { label: "All", value: "all" },
+                    ]}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <FormInput
+                    placeholder="Cari nama pasien / RM"
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    label="Cari Pasien"
+                    icon={Search}
+                  />
+                </div>
+              </div>
               <div className="flex-1 overflow-y-auto">
                 {loadingInstance ? (
                   <div className="pt-2">
@@ -432,4 +438,4 @@ const InstancesPage = () => {
   );
 };
 
-export default InstancesPage;
+export default DashboardPage;

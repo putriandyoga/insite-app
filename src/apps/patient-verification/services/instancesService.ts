@@ -47,7 +47,7 @@ export const instancesService = {
       "GET",
       `/instances/${instancesId}/context-logs`,
     );
-    return response; // Sesuaikan dengan normalizer jika diperlukan
+    return normalizeDetail<InstancesItem>(response);
   },
 
   // GET /instances/my-department - Get instances khusus departemen saya

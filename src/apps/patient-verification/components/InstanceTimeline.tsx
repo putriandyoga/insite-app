@@ -1,4 +1,3 @@
-import React from "react";
 import { CheckCircle2 } from "lucide-react";
 import type { StageTimelineItem } from "@patient-verification/types/instancesTypes";
 import { getInstanceStatusInfo } from "@patient-verification/constants/instancesStatusMap";
@@ -7,16 +6,20 @@ import { formatDateTimeNumeric } from "@/utils/dateFormater";
 interface InstanceTimelineProps {
   timeline: StageTimelineItem[];
   processName?: string;
+  withHeader?: boolean;
 }
 
-export const InstanceTimeline: React.FC<InstanceTimelineProps> = ({
+export function InstanceTimeline({
   timeline,
-}) => {
+  withHeader = true,
+}: InstanceTimelineProps) {
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-bold text-base-content/80 tracking-wide uppercase">
-        Timeline Tahapan Proses
-      </h3>
+      {withHeader && (
+        <h3 className="text-sm font-bold text-base-content/80 tracking-wide uppercase">
+          Timeline Tahapan Proses
+        </h3>
+      )}
 
       <div className="space-y-2.5">
         {timeline?.map((stage, idx) => {
@@ -46,8 +49,6 @@ export const InstanceTimeline: React.FC<InstanceTimelineProps> = ({
                     <p className="text-body text-success font-medium flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" /> Diverifikasi{" "}
                       {formatDateTimeNumeric(stage.first_verified_at)}
-                      {/* •{" "}
-                      {stage.verified_count}x verifikasi */}
                     </p>
                   )}
                 </div>
@@ -69,4 +70,4 @@ export const InstanceTimeline: React.FC<InstanceTimelineProps> = ({
       </div>
     </div>
   );
-};
+}

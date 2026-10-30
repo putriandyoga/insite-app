@@ -107,24 +107,32 @@ const DashboardPage = () => {
                   {filteredData.length}
                 </span>
               </div>
-              <FormInput
-                label=""
-                dropdownType="select"
-                value={statusFilter}
-                onChange={setStatusFilter}
-                options={[
-                  { label: "Sedang Berjalan", value: "process" },
-                  { label: "Selesai", value: "completed" },
-                  { label: "Semua Status", value: "all" },
-                ]}
-              />
-              <FormInput
-                placeholder="Cari nama pasien / RM"
-                value={searchQuery}
-                onChange={setSearchQuery}
-                label=""
-                icon={Search}
-              />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                <div className="col-span-1 ">
+                  <FormInput
+                    label=""
+                    dropdownType="select"
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    showEmptyOption={false}
+                    showSearch={false}
+                    options={[
+                      { label: "Process", value: "process" },
+                      { label: "Done", value: "completed" },
+                      { label: "All", value: "all" },
+                    ]}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <FormInput
+                    placeholder="Cari pasien / RM"
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    label=""
+                    icon={Search}
+                  />
+                </div>
+              </div>
               <div className="flex-1 overflow-y-auto">
                 {loadingInstance ? (
                   <div className="pt-2">

@@ -1,4 +1,3 @@
-import React from "react";
 import { CheckCircle2 } from "lucide-react";
 import { CopyButton } from "@/components/CopyButton";
 
@@ -8,16 +7,14 @@ interface InstanceCardItemProps {
   onSelect: (id: string | number) => void;
 }
 
-export const InstanceCardItem: React.FC<InstanceCardItemProps> = ({
+export function InstanceCardItem({
   item,
   isSelected,
   onSelect,
-}) => {
+}: InstanceCardItemProps) {
   const pasienName =
     item.context_data?.name || item.ticket_code || "Tanpa Nama";
   const rm = item.context_data?.medical_record || "-";
-  // const unit = item.context_data?.unit || item.process?.name || "-";
-  // const insurance = item.context_data?.insurance || "-";
 
   const progress = Math.min(
     100,
@@ -46,7 +43,7 @@ export const InstanceCardItem: React.FC<InstanceCardItemProps> = ({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h4
-            className="text-body truncate  font-semibold leading-snug"
+            className="text-body truncate font-semibold leading-snug"
             title={pasienName}
           >
             {pasienName}
@@ -64,7 +61,7 @@ export const InstanceCardItem: React.FC<InstanceCardItemProps> = ({
       {/* Baris Rekam Medis (Compact with CopyButton) */}
       <div className="flex items-center justify-between gap-2 rounded-lg border border-base-300/50 bg-base-200/40 px-2.5 py-1.5">
         <div className="min-w-0 flex items-center gap-1.5">
-          <span className="text-caption text-base-content/50 ">RM:</span>
+          <span className="text-caption text-base-content/50">RM:</span>
           <span className="truncate text-caption text-base-content">{rm}</span>
         </div>
         <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -72,48 +69,33 @@ export const InstanceCardItem: React.FC<InstanceCardItemProps> = ({
         </div>
       </div>
 
-      {/* Informasi Unit & Penjamin (Inline Grid) */}
-      {/* <div className="hidden lg:grid lg:grid-cols-2 gap-2 text-body text-base-content/70">
-        <div className="flex items-center gap-1.5 truncate">
-          <Building2 size={14} className="opacity-60 shrink-0 text-primary" />
-          <span className="truncate" title={unit}>
-            {unit}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5 truncate">
-          <Shield size={14} className="opacity-60 shrink-0 text-info" />
-          <span className="truncate" title={insurance}>
-            {insurance}
-          </span>
-        </div>
-      </div> */}
+      {progress < 100 && (
+        <div className="border-t border-base-300/50 pt-2 mt-0.5">
+          <div className="mb-1 flex items-center justify-between gap-2 text-caption">
+            <span className="text-base-content/60">Progress</span>
+            <span className="font-bold tabular-nums text-base-content">
+              {progress}%
+            </span>
+          </div>
 
-      {/* Progress Bar (Compact) */}
-      <div className="border-t border-base-300/50 pt-2 mt-0.5">
-        <div className="mb-1 flex items-center justify-between gap-2 text-caption">
-          <span className="text-base-content/60 ">Progress</span>
-          <span className="font-bold tabular-nums text-base-content">
-            {progress}%
-          </span>
-        </div>
-
-        <div
-          className="h-1.5 w-full overflow-hidden rounded-full bg-base-200"
-          role="progressbar"
-          aria-label={`Progress pelayanan ${pasienName}`}
-          aria-valuenow={progress}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
           <div
-            className={`
+            className="h-1.5 w-full overflow-hidden rounded-full bg-base-200"
+            role="progressbar"
+            aria-label={`Progress pelayanan ${pasienName}`}
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className={`
               h-full rounded-full transition-all duration-300
               ${progress === 100 ? "bg-success" : "bg-primary"}
-            `}
-            style={{ width: `${progress}%` }}
-          />
+              `}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
-};
+}

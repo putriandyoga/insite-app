@@ -48,6 +48,8 @@ type FormInputProps = {
   disablePast?: boolean;
   disableFuture?: boolean;
   formatApi?: boolean;
+  showEmptyOption?: boolean;
+  showSearch?: boolean;
 };
 
 const FormInput = ({
@@ -72,6 +74,8 @@ const FormInput = ({
   disablePast = false,
   disableFuture = false,
   formatApi = false,
+  showEmptyOption = true,
+  showSearch = true,
 }: FormInputProps) => {
   const normalizeOptions = () => {
     if (!options) return [];
@@ -403,26 +407,29 @@ const FormInput = ({
 
             {selectOpen && (
               <div className="absolute z-99 mt-2 p-2 w-full bg-base-100 border border-base-300 rounded-lg shadow-md flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="Cari..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  className="
-                    w-full px-3 py-2 bg-base-100 text-base-content border-b border-base-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-
+                {showSearch && (
+                  <input
+                    type="text"
+                    placeholder="Cari..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    className="w-full px-3 py-2 bg-base-100 text-base-content border-b border-base-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                )}
                 <ul className="max-h-60 overflow-auto flex flex-col gap-1">
-                  <li
-                    onMouseDown={() => {
-                      onChange?.("");
-                      setSelectOpen(false);
-                      setSearchText("");
-                    }}
-                    className="px-3 py-2 rounded-md cursor-pointer text-base-content/60 hover:bg-base-200 italic border-b border-base-300/50 mb-1"
-                  >
-                    Empty Value
-                  </li>
+                  {/* Bungkus dengan showEmptyOption */}
+                  {showEmptyOption && (
+                    <li
+                      onMouseDown={() => {
+                        onChange?.("");
+                        setSelectOpen(false);
+                        setSearchText("");
+                      }}
+                      className="px-3 py-2 rounded-md cursor-pointer text-base-content/60 hover:bg-base-200 italic border-b border-base-300/50 mb-1"
+                    >
+                      Empty Value
+                    </li>
+                  )}
 
                   {filteredSelectOptions.length > 0 ? (
                     filteredSelectOptions.map((opt) => (
@@ -434,12 +441,12 @@ const FormInput = ({
                           setSearchText("");
                         }}
                         className={`px-3 py-2 rounded-md cursor-pointer text-base-content hover:bg-base-200
-                  ${
-                    String(value) === opt.value
-                      ? "bg-primary/30 font-semibold"
-                      : ""
-                  }
-                `}
+                    ${
+                      String(value) === opt.value
+                        ? "bg-primary/30 font-semibold"
+                        : ""
+                    }
+                  `}
                       >
                         {opt.label}
                       </li>

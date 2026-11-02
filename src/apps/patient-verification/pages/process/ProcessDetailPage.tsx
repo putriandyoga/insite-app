@@ -1,7 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import DataSection from "@/components/DataSection";
 
-import { Check, Eye, Info, Pencil, Workflow, X } from "lucide-react";
+import { Check, Eye, Info, ListTree, Pencil, Workflow, X } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useProcessDetail } from "@patient-verification/hooks/process/use-process-detail";
 import Card from "@/components/Card";
@@ -67,7 +67,7 @@ export default function ProcessDetailPage() {
                   </h1>
                 </div>
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                  <div>
+                  <div className="flex flex-col gap-6">
                     <FormSection
                       title="Informasi Template"
                       icon={Info}
@@ -157,65 +157,132 @@ export default function ProcessDetailPage() {
                         </div>
                       </div>
                     </FormSection>
-                  </div>
-                  <FormSection
-                    title="Daftar Stages"
-                    icon={Workflow}
-                    color="primary"
-                  >
-                    <div className="divide-y divide-base-300/70">
-                      <div className="hidden sm:grid sm:grid-cols-5 gap-4 py-2 text-xs font-semibold uppercase tracking-wider text-base-content/60">
-                        <div className="text-center">Urutan</div>
-                        <div>Nama Stage</div>
-                        <div>Departemen</div>
-                        <div className="text-center">Required</div>
-                        <div className="text-center">Mandatory Dept</div>
+                    <FormSection
+                      title="Daftar Fields"
+                      icon={ListTree}
+                      color="primary"
+                    >
+                      <div className="divide-y divide-base-300/70">
+                        <div className="hidden sm:grid sm:grid-cols-5 gap-4 py-2 text-xs font-semibold uppercase tracking-wider text-base-content/60">
+                          <div>Key / Label</div>
+                          <div>Type</div>
+                          <div>Placeholder</div>
+                          <div className="text-center">Required</div>
+                          <div className="text-center">Unique Identifier</div>
+                        </div>
+
+                        <div className="divide-y divide-base-300/50">
+                          {data.context_template?.fields_schema?.fields?.map(
+                            (field, idx) => (
+                              <div
+                                key={idx}
+                                className="flex flex-col gap-2 py-3 sm:grid sm:grid-cols-5 sm:items-center sm:gap-4"
+                              >
+                                <div>
+                                  <div className="text-sm font-medium text-base-content">
+                                    {field.label}
+                                  </div>
+                                  <div className="text-xs text-base-content/60 font-mono">
+                                    {field.key}
+                                  </div>
+                                </div>
+                                <div className="text-sm text-base-content/80">
+                                  {field.type}
+                                </div>
+                                <div className="text-sm text-base-content/80 font-mono">
+                                  {field.placeholder || "-"}
+                                </div>
+                                <div className="text-sm sm:text-center">
+                                  {field.required ? (
+                                    <span className="badge badge-sm badge-success badge-soft">
+                                      Ya
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-sm badge-ghost">
+                                      Tidak
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-sm sm:text-center">
+                                  {field.unique_identifier ? (
+                                    <span className="badge badge-sm badge-primary badge-soft">
+                                      Ya
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-sm badge-ghost">
+                                      Tidak
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
                       </div>
+                    </FormSection>
+                  </div>
+                  <div className="flex flex-col gap-6">
+                    <FormSection
+                      title="Daftar Stages"
+                      icon={Workflow}
+                      color="primary"
+                    >
+                      <div className="divide-y divide-base-300/70">
+                        <div className="hidden sm:grid sm:grid-cols-5 gap-4 py-2 text-xs font-semibold uppercase tracking-wider text-base-content/60">
+                          <div className="text-center">Urutan</div>
+                          <div>Nama Stage</div>
+                          <div>Departemen</div>
+                          <div className="text-center">Required</div>
+                          <div className="text-center">Mandatory Dept</div>
+                        </div>
 
-                      <div className="divide-y divide-base-300/50">
-                        {data.stages?.map((stage) => (
-                          <div
-                            key={stage.id}
-                            className="flex flex-col gap-2 py-3 sm:grid sm:grid-cols-5 sm:items-center sm:gap-4"
-                          >
-                            <div className="text-center">
-                              {stage.stage_order}
-                            </div>
+                        <div className="divide-y divide-base-300/50">
+                          {data.stages?.map((stage) => (
+                            <div
+                              key={stage.id}
+                              className="flex flex-col gap-2 py-3 sm:grid sm:grid-cols-5 sm:items-center sm:gap-4"
+                            >
+                              <div className="text-center">
+                                {stage.stage_order}
+                              </div>
 
-                            <div>
-                              <div className="text-sm font-medium text-base-content">
-                                {stage.stage_name}
+                              <div>
+                                <div className="text-sm font-medium text-base-content">
+                                  {stage.stage_name}
+                                </div>
+                              </div>
+
+                              <div className="text-sm">
+                                {stage.departments?.map((dept) => (
+                                  <div key={dept.id}>
+                                    {dept.departemen_name}
+                                  </div>
+                                ))}
+                              </div>
+
+                              <div className="text-sm sm:flex sm:justify-center">
+                                {stage.is_required ? (
+                                  <Check className="w-4 h-4 text-primary" />
+                                ) : (
+                                  <X className="w-4 h-4 text-base-content/40" />
+                                )}
+                              </div>
+
+                              <div className="text-sm sm:flex sm:justify-center">
+                                {stage.departments?.some(
+                                  (d) => d.is_mandatory,
+                                ) ? (
+                                  <Check className="w-4 h-4 text-primary" />
+                                ) : (
+                                  <X className="w-4 h-4 text-base-content/40" />
+                                )}
                               </div>
                             </div>
-
-                            <div className="text-sm">
-                              {stage.departments?.map((dept) => (
-                                <div key={dept.id}>{dept.departemen_name}</div>
-                              ))}
-                            </div>
-
-                            <div className="text-sm sm:flex sm:justify-center">
-                              {stage.is_required ? (
-                                <Check className="w-4 h-4 text-primary" />
-                              ) : (
-                                <X className="w-4 h-4 text-base-content/40" />
-                              )}
-                            </div>
-
-                            <div className="text-sm sm:flex sm:justify-center">
-                              {stage.departments?.some(
-                                (d) => d.is_mandatory,
-                              ) ? (
-                                <Check className="w-4 h-4 text-primary" />
-                              ) : (
-                                <X className="w-4 h-4 text-base-content/40" />
-                              )}
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </FormSection>
+                    </FormSection>
+                  </div>
                 </div>
               </>
             )}

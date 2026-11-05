@@ -17,7 +17,7 @@ import { formatDateIndo, formatTime } from "@/utils/dateFormater";
 import ActionButton from "@/components/ActionButton";
 import { IndicatorLoading } from "@/components/IndicatorLoading";
 import { IndicatorEmpty } from "@/components/IndicatorEmptyData";
-import { useAdminInstanceList } from "@patient-verification/hooks/dashboard/use-admin-instance-list";
+import { useAdminInstanceHistory } from "@/apps/patient-verification/hooks/dashboard/use-admin-instance-history";
 import { useAdminInstanceDetail } from "@patient-verification/hooks/dashboard/use-admin-instance-detail";
 import { InstanceHistoryTimeline } from "@patient-verification/components/InstanceHistoryTimeline";
 import { InstanceContextLogsCard } from "@patient-verification/components/InstanceContextLogsCard";
@@ -34,7 +34,7 @@ const DashboardAdminPage = () => {
     handleSelectInstance,
     statusFilter,
     setStatusFilter,
-  } = useAdminInstanceList();
+  } = useAdminInstanceHistory();
 
   const {
     selectedInstance,

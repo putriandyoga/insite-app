@@ -17,14 +17,12 @@ import FormInput from "@/components/FormInput";
 import { DetailRowItem } from "@/components/DetailRowItem";
 import { formatDateIndo, formatTime } from "@/utils/dateFormater";
 import ActionButton from "@/components/ActionButton";
-
-import { useEffect } from "react";
-import { useInstanceList } from "@patient-verification/hooks/dashboard/use-instance-list";
+import { useAdminInstanceList } from "@patient-verification/hooks/dashboard/use-admin-instance-list";
 import { useInstanceDetail } from "@patient-verification/hooks/dashboard/use-instance-detail";
 import { useInstanceVerifyModal } from "@patient-verification/hooks/dashboard/use-instance-verify-modal";
 import { IndicatorLoading } from "@/components/IndicatorLoading";
 import { IndicatorEmpty } from "@/components/IndicatorEmptyData";
-const DashboardPage = () => {
+const InstancesPage = () => {
   const {
     loadingInstance,
     refetchInstance,
@@ -35,12 +33,11 @@ const DashboardPage = () => {
     handleSelectInstance,
     statusFilter,
     setStatusFilter,
-  } = useInstanceList();
+  } = useAdminInstanceList();
 
   const {
     dataStaff,
     loadingStaff,
-    refetchStaff,
     selectedStaffId,
     setSelectedStaffId,
     selectedInstance,
@@ -69,18 +66,13 @@ const DashboardPage = () => {
     handleConfirmFirstVerify,
   } = useInstanceVerifyModal(refetchInstance);
 
-  useEffect(() => {
-    refetchInstance();
-    refetchStaff();
-  }, [refetchInstance, refetchStaff]);
-
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden bg-base-100/50">
       <PageTop>
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full py-1">
           <div className="overflow-x-auto min-w-0">
             <Breadcrumb
-              items={[{ label: "Home", path: "/" }, { label: "Dashboard" }]}
+              items={[{ label: "Home", path: "/" }, { label: "Instance" }]}
             />
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -107,13 +99,15 @@ const DashboardPage = () => {
                   {filteredData.length}
                 </span>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="col-span-1">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                <div className="col-span-1 ">
                   <FormInput
-                    label="Status"
+                    label=""
                     dropdownType="select"
                     value={statusFilter}
                     onChange={setStatusFilter}
+                    showEmptyOption={false}
+                    showSearch={false}
                     options={[
                       { label: "Process", value: "process" },
                       { label: "Done", value: "completed" },
@@ -123,10 +117,10 @@ const DashboardPage = () => {
                 </div>
                 <div className="col-span-2">
                   <FormInput
-                    placeholder="Cari nama pasien / RM"
+                    placeholder="Cari pasien / RM"
                     value={searchQuery}
                     onChange={setSearchQuery}
-                    label="Cari Pasien"
+                    label=""
                     icon={Search}
                   />
                 </div>
@@ -188,108 +182,114 @@ const DashboardPage = () => {
                 </div>
               ) : (
                 <>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-200 pb-4 shrink-0">
-                    <div>
-                      <h2 className="text-xl font-bold text-base-content">
-                        {selectedInstance.context_data?.name ||
-                          selectedInstance.ticket_code}
-                      </h2>
-                      <div className="text-body text-base-content/60 flex items-center gap-3 mt-1">
-                        <span>
-                          RM:{" "}
-                          <strong className="font-mono">
-                            {selectedInstance.context_data?.medical_record ||
-                              "-"}
-                          </strong>
-                        </span>
-                        <span>•</span>
-                        <span>
-                          Unit:{" "}
-                          <strong className="font-medium">
-                            {selectedInstance.context_data?.unit || "-"}
-                          </strong>
-                        </span>
-                        <span>•</span>
-                        <span>
-                          Penjamin:{" "}
-                          <strong className="font-medium">
-                            {selectedInstance.context_data?.insurance || "-"}
-                          </strong>
-                        </span>
+                  <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-200 pb-4 shrink-0">
+                      <div className="flex flex-col gap-2">
+                        <h2 className="text-xl font-bold text-base-content">
+                          {selectedInstance.context_data?.name ||
+                            selectedInstance.ticket_code}
+                        </h2>
+                        <div className="text-body text-base-content/60 flex items-center gap-3 mt-1">
+                          <span>
+                            RM:{" "}
+                            <strong className="font-mono">
+                              {selectedInstance.context_data?.medical_record ||
+                                "-"}
+                            </strong>
+                          </span>
+                          <span>•</span>
+                          <span>
+                            Unit:{" "}
+                            <strong className="font-medium">
+                              {selectedInstance.context_data?.unit || "-"}
+                            </strong>
+                          </span>
+                          <span>•</span>
+                          <span>
+                            Penjamin:{" "}
+                            <strong className="font-medium">
+                              {selectedInstance.context_data?.insurance || "-"}
+                            </strong>
+                          </span>
+                        </div>
                       </div>
+
+                      {(() => {
+                        const statusInfo = getInstanceStatusInfo(
+                          selectedInstance.status,
+                        );
+                        return (
+                          <span
+                            className={`badge px-3 py-2 ${statusInfo.color}`}
+                          >
+                            {statusInfo.label}
+                          </span>
+                        );
+                      })()}
                     </div>
 
-                    {(() => {
-                      const statusInfo = getInstanceStatusInfo(
-                        selectedInstance.status,
-                      );
-                      return (
-                        <span className={`badge px-3 py-2 ${statusInfo.color}`}>
-                          {statusInfo.label}
-                        </span>
-                      );
-                    })()}
+                    <div>
+                      {selectedInstance.status?.toLowerCase() === "completed" ||
+                      selectedInstance.completed_at ? (
+                        <div className="alert alert-success py-3 rounded-xl border border-success/30 bg-success/10 text-success-content flex items-center gap-2 shrink-0">
+                          <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
+                          <span className="text-sm font-medium">
+                            Semua tahapan verifikasi telah selesai.
+                          </span>
+                        </div>
+                      ) : !isMyTurn ? (
+                        <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-warning-content flex items-center gap-3 shrink-0 shadow-2xs">
+                          <Clock className="w-5 h-5 text-warning shrink-0" />
+                          <span className="text-body font-medium text-base-content/90">
+                            Menunggu verifikasi dari unit:{" "}
+                            <strong>
+                              {selectedInstance.current_stage?.departments
+                                ?.map((d: any) => d.name)
+                                .join(", ") || "-"}
+                            </strong>
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex flex-col gap-3 shrink-0">
+                          <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                            Aksi Verifikasi Tahap Ini (
+                            {selectedInstance.current_stage?.stage_name})
+                          </span>
+
+                          <div className="flex flex-row gap-2 items-end">
+                            <div className="flex-1">
+                              <FormInput
+                                label=""
+                                options={
+                                  Array.isArray(dataStaff)
+                                    ? dataStaff.map((item: any) => ({
+                                        label: item.name,
+                                        value: item.id,
+                                      }))
+                                    : []
+                                }
+                                dropdownType="select"
+                                value={selectedStaffId}
+                                onChange={(val) => setSelectedStaffId(val)}
+                                disabled={loadingStaff}
+                                placeholder="Pilih staff verifikator"
+                              />
+                            </div>
+                            <ActionButton
+                              disabled={!selectedStaffId || verifying}
+                              onClick={handleVerifySubmit}
+                              icon={Check}
+                              color="primary"
+                              label={verifying ? "Memproses..." : "Verifikasi"}
+                              className="h-11"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex flex-col h-full min-h-0 gap-5 overflow-y-auto pr-2 mt-4">
-                    {selectedInstance.status?.toLowerCase() === "completed" ||
-                    selectedInstance.completed_at ? (
-                      <div className="alert alert-success py-3 rounded-xl border border-success/30 bg-success/10 text-success-content flex items-center gap-2 shrink-0">
-                        <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
-                        <span className="text-sm font-medium">
-                          Semua tahapan verifikasi telah selesai.
-                        </span>
-                      </div>
-                    ) : !isMyTurn ? (
-                      <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-warning-content flex items-center gap-3 shrink-0 shadow-2xs">
-                        <Clock className="w-5 h-5 text-warning shrink-0" />
-                        <span className="text-body font-medium text-base-content/90">
-                          Menunggu verifikasi dari unit:{" "}
-                          <strong>
-                            {selectedInstance.current_stage?.departments
-                              ?.map((d: any) => d.name)
-                              .join(", ") || "-"}
-                          </strong>
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex flex-col gap-3 shrink-0">
-                        <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                          Aksi Verifikasi Tahap Ini (
-                          {selectedInstance.current_stage?.stage_name})
-                        </span>
-
-                        <div className="flex flex-row gap-2 items-end">
-                          <div className="flex-1">
-                            <FormInput
-                              label=""
-                              options={
-                                Array.isArray(dataStaff)
-                                  ? dataStaff.map((item: any) => ({
-                                      label: item.name,
-                                      value: item.id,
-                                    }))
-                                  : []
-                              }
-                              dropdownType="select"
-                              value={selectedStaffId}
-                              onChange={(val) => setSelectedStaffId(val)}
-                              disabled={loadingStaff}
-                              placeholder="Pilih staff verifikator"
-                            />
-                          </div>
-                          <ActionButton
-                            disabled={!selectedStaffId || verifying}
-                            onClick={handleVerifySubmit}
-                            icon={Check}
-                            color="primary"
-                            label={verifying ? "Memproses..." : "Verifikasi"}
-                            className="h-11"
-                          />
-                        </div>
-                      </div>
-                    )}
-
                     <InstanceTimeline
                       timeline={selectedInstance.stages_timeline || []}
                       processName={selectedInstance.process?.name}
@@ -438,4 +438,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default InstancesPage;

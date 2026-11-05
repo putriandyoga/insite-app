@@ -2,7 +2,6 @@ import type { SidebarItem } from "@/components/SidebarItem";
 import { getCurrentUser } from "@/utils/authHelper";
 import {
   Users,
-  DownloadCloud,
   FileText,
   GitBranch,
   CheckSquare,
@@ -70,13 +69,6 @@ export const getPatientVerificationSidebar = (): SidebarItem[] => {
             to: "/app/patient-verification/departement",
           },
         ],
-      },
-      {
-        label: "Laporan & Ekspor",
-        to: "/app/patient-verification/reports",
-        icon: <DownloadCloud size={20} />,
-        enablePermission: true,
-        permission: "reports.export",
       },
     ];
   }

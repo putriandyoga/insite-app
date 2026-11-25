@@ -1,0 +1,1 @@
+import{o as e}from"./Card-BDSMXzR2.js";import{o as t}from"./index-CycltRJA.js";import{t as n}from"./iptvAdapter-BLHtIVR5.js";var r={...e(`/admin/rooms`,{api:t,adapter:n})};export{r as t};

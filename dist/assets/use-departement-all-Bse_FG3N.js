@@ -1,0 +1,1 @@
+import{c as e}from"./Card-BDSMXzR2.js";import{t}from"./use-base-all-C7ULX92e.js";import{t as n}from"./departementService-4ipLMYyn.js";function r(){return t({queryKey:e.departement.all(),fetcher:n.getAll})}export{r as t};

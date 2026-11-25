@@ -1,1 +1,0 @@
-import{c as e}from"./Card-BqnAxVDo.js";import{t}from"./use-base-detail-BI--GEnT.js";import{t as n}from"./userService-B4M6-K_Q.js";function r(r){return t({id:r,queryKey:e.user.detail(r||``),fetcher:n.getDetail})}export{r as t};

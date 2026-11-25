@@ -1,0 +1,1 @@
+import{o as e}from"./Card-BDSMXzR2.js";import{o as t,r as n}from"./index-CycltRJA.js";import{t as r}from"./iptvAdapter-BLHtIVR5.js";var i={...e(`/admin/stations`,{api:t,adapter:r}),async rebootStation(e){let r=await t.apiRequest(`POST`,`/admin/stations/${e}/reboot`);return n(r)}};export{i as t};

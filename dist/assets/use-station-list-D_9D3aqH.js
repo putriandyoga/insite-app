@@ -1,0 +1,1 @@
+import{c as e}from"./Card-BDSMXzR2.js";import{t}from"./use-base-list-DSWfnRPM.js";import{t as n}from"./stationService-BmUbWXjO.js";function r(r=1,i={},a=20){let o={page:r,per_page:a,...i};return t({queryKey:e.station.list(o),fetcher:e=>n.getPaginated(e),params:o})}export{r as t};

@@ -1,1 +1,0 @@
-import{s as e}from"./Card-BqnAxVDo.js";import{i as t,r as n}from"./index-BzqFj-jt.js";var r={normalizePagination(t,n){return e(t,n?.page??1,n?.per_page??10)},normalizeList:t,normalizeDetail:n};export{r as t};

@@ -1,1 +1,0 @@
-import{c as e}from"./Card-BqnAxVDo.js";import{t}from"./use-base-all-CsbOUZ-O.js";import{t as n}from"./departementService-9HQJiHu3.js";function r(){return t({queryKey:e.departement.all(),fetcher:n.getAll})}export{r as t};

@@ -1,0 +1,1 @@
+import{o as e}from"./Card-BDSMXzR2.js";import{s as t}from"./index-CycltRJA.js";import{t as n}from"./patientVerificationAdapter-BLHtIVR5.js";var r={...e(`/departments`,{api:t,adapter:n})};export{r as t};

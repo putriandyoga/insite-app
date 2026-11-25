@@ -7,7 +7,10 @@ import { usePanelActiveCalls } from "@iptv/hooks/panel/use-panel-active-call";
 import { usePanelStbs } from "@iptv/hooks/panel/use-panel-stb";
 import { usePanelCallAction } from "@iptv/hooks/panel/use-panel-action";
 import { useNurseAudio } from "@iptv/hooks/panel/use-nurse-audio";
-import { useNurseRealtime } from "@iptv/hooks/panel/use-nurse-realtime";
+import {
+  useNurseRealtime,
+  type RealtimeStatus,
+} from "@iptv/hooks/panel/use-nurse-realtime";
 import { AudioAlertBanner } from "@iptv/components/AudioAlertBanner";
 import { CallItemCard } from "@iptv/components/CallItemCard";
 import { StbDeviceCard } from "../../components/StbDeviceCard";
@@ -25,8 +28,31 @@ function formatRelativeSeconds(iso: string, referenceNowMs: number): string {
   return `${Math.round(jam / 24)}h lalu`;
 }
 
+function getRealtimeBadgeConfig(status: RealtimeStatus) {
+  switch (status) {
+    case "connected":
+      return {
+        label: "Terhubung",
+        pingClass: "bg-success",
+        dotClass: "bg-success",
+      };
+    case "connecting":
+      return {
+        label: "Menyambung…",
+        pingClass: "bg-warning",
+        dotClass: "bg-warning",
+      };
+    case "offline":
+    default:
+      return {
+        label: "Terputus",
+        pingClass: "bg-error",
+        dotClass: "bg-error",
+      };
+  }
+}
+
 const DashboardPage = () => {
-  const [status] = useState<string>("Terhubung");
   const [nowMs, setNowMs] = useState<number>(() => Date.now());
 
   const { data: meData } = usePanelMe();
@@ -65,7 +91,8 @@ const DashboardPage = () => {
   );
 
   const { tampilkanTombolSuara, bukaSuara } = useNurseAudio(calls);
-  useNurseRealtime(refetchActive);
+  const { status } = useNurseRealtime(refetchActive);
+  const badgeConfig = getRealtimeBadgeConfig(status);
 
   const sejakRelative = useCallback(
     (iso: string) => formatRelativeSeconds(iso, nowMs),
@@ -91,11 +118,15 @@ const DashboardPage = () => {
 
           <div className="flex items-center gap-3 bg-base-200/60 px-3.5 py-1.5 rounded-full border border-base-300">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success"></span>
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full ${badgeConfig.pingClass} opacity-75`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-2.5 w-2.5 ${badgeConfig.dotClass}`}
+              />
             </span>
             <span className="text-caption font-medium text-base-content">
-              {status}
+              {badgeConfig.label}
             </span>
             <span className="text-caption border-l border-base-300 pl-3">
               {wardName}

@@ -1,1 +1,0 @@
-import{o as e}from"./Card-BPhMROMQ.js";import{a as t,r as n}from"./index-Br10peio.js";import{t as r}from"./iptvAdapter-BQpgvd_D.js";var i={...e(`/admin/stations`,{api:t,adapter:r}),async rebootStation(e){let r=await t.apiRequest(`POST`,`/admin/stations/${e}/reboot`);return n(r)}};export{i as t};

@@ -1,1 +1,0 @@
-import{c as e,o as t}from"./Card-BPhMROMQ.js";import{a as n}from"./index-Br10peio.js";import{t as r}from"./use-base-list-KKrykumj.js";import{t as i}from"./iptvAdapter-BQpgvd_D.js";var a={...t(`/admin/beds`,{api:n,adapter:i})};function o(t=1,n={},i=20){let o={page:t,per_page:i,...n};return r({queryKey:e.bed.list(o),fetcher:e=>a.getPaginated(e),params:o})}export{o as t};

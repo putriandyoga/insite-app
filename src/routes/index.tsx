@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
 import { Loadable } from "@/components/Loadable";
-
+import { Navigate } from "react-router-dom";
 // Rute & Layout Pendukung
 import GuestRoute from "./GuestRoute";
 // import PermissionRoute from "./PermissionRoute"; // Dimatikan
@@ -69,4 +69,5 @@ export const router = createBrowserRouter([
     ],
   },
   { path: "/401", element: <UnauthorizedPage /> },
+  { path: "*", element: <Navigate to="/" replace /> },
 ]);

@@ -1,1 +1,0 @@
-import{o as e}from"./Card-BPhMROMQ.js";import{a as t}from"./index-Br10peio.js";import{t as n}from"./iptvAdapter-BQpgvd_D.js";var r={...e(`/admin/rooms`,{api:t,adapter:n})};export{r as t};

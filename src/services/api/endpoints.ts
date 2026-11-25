@@ -3,15 +3,16 @@ import { createApiClient } from "./apiClient";
 
 export const authApi = createApiClient(getEnv("VITE_AUTH_API", "/api/v1"));
 
-export const iptvApi = createApiClient(
-  import.meta.env.DEV ? "/iptv-api" : getEnv("VITE_IPTV_API", ""),
-  {
-    withCredentials: false,
-    useLocalStorageToken: true,
-    tokenStorageKey: "user",
-    loginPath: "/app/iptv/login",
-  },
-);
+export const IPTV_BASE_URL = import.meta.env.DEV
+  ? "/iptv-api"
+  : getEnv("VITE_IPTV_API", "");
+
+export const iptvApi = createApiClient(IPTV_BASE_URL, {
+  withCredentials: false,
+  useLocalStorageToken: true,
+  tokenStorageKey: "user",
+  loginPath: "/app/iptv/login",
+});
 // IPTV with cookies
 // export const iptvApi = createApiClient(
 //   import.meta.env.DEV ? "/iptv-api" : getEnv("VITE_IPTV_API", ""),

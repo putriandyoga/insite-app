@@ -1,12 +1,9 @@
-import { useLocation } from "react-router-dom";
 import { useModuleLogoutStore } from "@/store/useModuleLogoutStore";
+import { useModuleKey } from "@/hooks/use-module-key";
 import { useBaseLogout } from "./use-base-logout";
 
 export function useBaseGlobalLogout() {
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const currentModule = pathSegments[0] || "default";
-
+  const currentModule = useModuleKey() || "default"; // "iptv" / "patient-verification"
   const { getHandler } = useModuleLogoutStore();
   const specificLogoutFn = getHandler(currentModule);
 

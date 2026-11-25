@@ -1,1 +1,0 @@
-import{l as e}from"./Card-BPhMROMQ.js";function t({queryKey:t,fetcher:n,enabled:r=!0}){let i=e({queryKey:t,queryFn:n,enabled:r});return{data:i.data??[],loading:i.isLoading,error:i.isError,refetch:i.refetch}}export{t};

@@ -16,32 +16,18 @@ export function useExportExcel<T>({
   const [progress, setProgress] = useState(0);
 
   const exportExcel = async (items: T[]) => {
-    if (!items || items.length === 0) return;
-
+    if (!items?.length) return;
     setLoading(true);
-    setProgress(0);
-
-    const sheetData: Record<string, any>[] = [];
-
-    for (let i = 0; i < items.length; i++) {
-      // Petakan tiap item menggunakan mapper function dari spesifik hook
-      sheetData.push(mapper(items[i], i));
-
-      // Simulasi jeda progress bar (bisa dihapus jika datanya besar & ingin proses instan)
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
-      const percent = Math.round(((i + 1) / items.length) * 100);
-      setProgress(percent);
+    try {
+      const sheetData = items.map((item, i) => mapper(item, i));
+      const worksheet = utils.json_to_sheet(sheetData);
+      const workbook = utils.book_new();
+      utils.book_append_sheet(workbook, worksheet, sheetName);
+      writeFile(workbook, `${filename}.xlsx`);
+    } finally {
+      setLoading(false);
+      setProgress(0);
     }
-
-    const worksheet = utils.json_to_sheet(sheetData);
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, sheetName);
-
-    writeFile(workbook, `${filename}.xlsx`);
-
-    setLoading(false);
-    setProgress(0);
   };
 
   return { exportExcel, loading, progress };

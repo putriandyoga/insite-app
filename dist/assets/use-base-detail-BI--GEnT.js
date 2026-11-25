@@ -1,0 +1,1 @@
+import{l as e}from"./Card-BqnAxVDo.js";function t({id:t,queryKey:n,fetcher:r}){let i=e({queryKey:[...n,t],queryFn:()=>r(String(t)),enabled:!!t});return{data:i.data??null,loading:i.isLoading,error:i.isError,refetch:i.refetch}}export{t};

@@ -1,0 +1,1 @@
+import{o as e}from"./Card-BqnAxVDo.js";import{o as t,r as n}from"./index-BzqFj-jt.js";import{t as r}from"./iptvAdapter-CI6xRMsU.js";var i={...e(`/admin/wards`,{api:t,adapter:r}),async archive(e){let r=await t.apiRequest(`POST`,`/admin/wards/${e}/archive`);return n(r)}};export{i as t};

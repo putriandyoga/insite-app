@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useProcessDelete } from "@patient-verification/hooks/process/use-process-delete";
 import { useProcessList } from "@patient-verification/hooks/process/use-process-list";
 import { PageTop, PageMiddle, PageBottom } from "@/components/PageLayout";
@@ -33,6 +33,7 @@ import {
   useProcessExport,
 } from "@patient-verification/hooks/process/use-process-export";
 import FormInput from "@/components/FormInput";
+
 const ProcessPage = () => {
   const { page, setPage, activeFilters } = useTableFilters(
     {},
@@ -49,19 +50,6 @@ const ProcessPage = () => {
   const { archiveProcess, loading: loadingArchive } = useProcessArchive();
   const { revertToDraft, loading: loadingRevert } = useProcessRevertToDraft();
 
-  // Hook Export & Bulk Export
-  const { exportProcess, loading: loadingSingleExport } = useProcessExport(
-    () => {
-      setIsModalOpen(false);
-    },
-  );
-  const { exportBulk, loading: loadingBulkExport } = useProcessBulkExport(
-    () => {
-      setSelectedIds([]);
-      setIsModalOpen(false);
-    },
-  );
-
   // State untuk checkbox pilihan baris (Bulk)
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
@@ -69,6 +57,23 @@ const ProcessPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [exportType, setExportType] = useState<"single" | "bulk">("single");
   const [targetId, setTargetId] = useState<string | number | null>(null);
+
+  const handleSingleExportSuccess = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  const handleBulkExportSuccess = useCallback(() => {
+    setSelectedIds([]);
+    setIsModalOpen(false);
+  }, []);
+
+  // Hook Export & Bulk Export
+  const { exportProcess, loading: loadingSingleExport } = useProcessExport(
+    handleSingleExportSuccess,
+  );
+  const { exportBulk, loading: loadingBulkExport } = useProcessBulkExport(
+    handleBulkExportSuccess,
+  );
 
   // Form input tanggal export
   const [exportFilters, setExportFilters] = useState({
@@ -125,11 +130,9 @@ const ProcessPage = () => {
 
   // Handler Checkbox per Baris
   const handleCheckboxChange = (id: string | number) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((item) => item !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
   };
 
   const isAllSelected = data.length > 0 && selectedIds.length === data.length;
@@ -380,7 +383,6 @@ const ProcessPage = () => {
                 onChange={(val) => handleFilterChange("start_date", val)}
                 className="w-full"
                 disableFuture
-                // Hapus formatApi={true} atau biarkan default (false)
               />
 
               <FormInput
@@ -390,7 +392,6 @@ const ProcessPage = () => {
                 onChange={(val) => handleFilterChange("end_date", val)}
                 className="w-full"
                 disableFuture
-                // Hapus formatApi={true} atau biarkan default (false)
               />
             </div>
 

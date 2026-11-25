@@ -1,0 +1,1 @@
+var e={id:``,name:``,staffs_count:0,users_count:0,createdAt:``,updatedAt:``,deletedAt:null},t=e=>{let t=[];return e.name||t.push(`Departement name is required.`),t};export{t as n,e as t};

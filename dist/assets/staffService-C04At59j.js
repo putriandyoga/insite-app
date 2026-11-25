@@ -1,0 +1,1 @@
+import{o as e}from"./Card-BPhMROMQ.js";import{i as t,o as n}from"./index-Br10peio.js";import{t as r}from"./patientVerificationAdapter-BQpgvd_D.js";var i={...e(`/staffs`,{api:n,adapter:r}),async getMyDepartment(){let e=await n.apiRequest(`GET`,`/staffs/my-department`);return t(e)}};export{i as t};

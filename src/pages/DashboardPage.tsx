@@ -4,7 +4,7 @@ import { getRoutePermission } from "@/routes/matchRoutePermission";
 import { useMemo } from "react";
 import { dashboardCards } from "@/constants/dashboardCardMap";
 import ActionCard from "@/components/ActionCard";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 
 const DashboardPage = () => {
   const { user } = useAuthStore();

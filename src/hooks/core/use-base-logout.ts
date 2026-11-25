@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ApiError } from "@/services/api/apiError";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 
 interface UseBaseLogoutOptions {
   logoutFn?: () => Promise<unknown>;

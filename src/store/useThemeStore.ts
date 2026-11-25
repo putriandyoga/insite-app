@@ -29,7 +29,8 @@ const getInitialTheme = (): Theme => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && DEFAULT_THEMES.includes(saved)) return saved;
     return DEFAULT_THEME;
-  } catch {
+  } catch (error) {
+    console.warn("Gagal membaca tema dari localStorage:", error);
     return DEFAULT_THEME;
   }
 };
@@ -40,7 +41,9 @@ export const useThemeStore = create<ThemeState>((set) => ({
   setTheme: (theme) => {
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-    } catch {}
+    } catch (error) {
+      console.warn("Gagal menyimpan tema ke localStorage:", error);
+    }
     set({ theme });
   },
 }));

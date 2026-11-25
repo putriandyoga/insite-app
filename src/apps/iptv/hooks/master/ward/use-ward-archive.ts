@@ -3,8 +3,8 @@ import { wardService } from "@iptv/services/wardService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys";
 import type { DaisyColor } from "@/utils/color";
-import { showAlert } from "@/components/Alert";
 import { handleApiError } from "@/utils/errorHandler";
+import { showAlert } from "@/utils/showAlert";
 
 export function useWardArchive(onSuccess?: () => void) {
   const [loading, setLoading] = useState(false);

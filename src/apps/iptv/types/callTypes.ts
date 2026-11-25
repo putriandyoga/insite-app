@@ -33,13 +33,3 @@ export const defaultCall: CallItem = {
   last_pressed_at: "",
   created_at: "",
 };
-
-export const validateCall = (_payload: CallItem): string[] => {
-  const errors: string[] = [];
-
-  // if (!payload.station_id || payload.station_id.trim() === "") {
-  //   errors.push("Station is required.");
-  // }
-
-  return errors;
-};

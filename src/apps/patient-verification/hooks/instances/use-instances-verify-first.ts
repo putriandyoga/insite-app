@@ -3,7 +3,7 @@ import { useState } from "react";
 import { instancesService } from "@patient-verification/services/instancesService"; // Sesuaikan path import service Anda
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys"; // Sesuaikan path queryKeys Anda
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { handleApiError } from "@/utils/errorHandler";
 
 interface VerifyFirstPayload {

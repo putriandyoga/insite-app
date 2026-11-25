@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { userService } from "@iptv/services/userService";
 import type { DaisyColor } from "@/utils/color";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { handleApiError } from "@/utils/errorHandler";
 
 export function useUserResetPassword(onSuccess?: () => void) {

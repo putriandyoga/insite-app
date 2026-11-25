@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import { lazy, Suspense } from "react";
-import { IndicatorLoading } from "@/components/IndicatorLoading";
+import { lazy } from "react";
+import { Loadable } from "@/components/Loadable";
 
 // Rute & Layout Pendukung
 import GuestRoute from "./GuestRoute";
@@ -8,22 +8,8 @@ import GuestRoute from "./GuestRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardLayout from "@/layout/DashboardLayout";
 import PortalLayout from "@/layout/PortalLayout";
-import { iptvRoutes } from "@iptv/routes";
+import { iptvRoutes } from "@/apps/iptv/router";
 import { patientVerificationRoutes } from "@/apps/patient-verification/routes";
-
-function Loadable<T extends React.ComponentType<any>>(
-  Component: React.LazyExoticComponent<T>,
-) {
-  return function WrappedLoadable(props: React.ComponentProps<T>) {
-    return (
-      <Suspense
-        fallback={<IndicatorLoading fullscreen text="Memuat Halaman..." />}
-      >
-        <Component {...props} />
-      </Suspense>
-    );
-  };
-}
 
 // Error page
 const UnauthorizedPage = Loadable(

@@ -21,7 +21,7 @@ import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";
 import IndicatorFetching from "@/components/IndicatorFetchingData";
 import { formatDateIndoWithTime, formatTimeAgo } from "@/utils/dateFormater";
 import { CopyButton } from "@/components/CopyButton";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { useStbCreateEnrollmentCode } from "@iptv/hooks/stb/use-stb-create-enroll";
 import { useStbDeleteEnrollmentCode } from "@iptv/hooks/stb/use-stb-delete-enroll";
 import { useStbRevoke } from "@iptv/hooks/stb/use-stb-revoke";

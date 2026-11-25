@@ -1,7 +1,7 @@
 import { Save, Send, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { showAlert } from "./Alert";
+import { showAlert } from "@/utils/showAlert";
 
 interface FormActionsProps {
   /** submit */

@@ -1,8 +1,8 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { defaultCrudMessages, type CrudMessages } from "@/utils/crudMessages";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { handleApiError } from "@/utils/errorHandler";
 
 interface UseBaseFormProps<T> {
@@ -39,6 +39,18 @@ export function useBaseForm<T>({
   const isEdit = Boolean(id);
 
   const [data, setData] = useState<T>(defaultValues);
+  const defaultValuesRef = useRef<T>(defaultValues);
+  const hydratedIdRef = useRef<string | number | null>(null);
+
+  useEffect(() => {
+    defaultValuesRef.current = defaultValues;
+  }, [defaultValues]);
+
+  useEffect(() => {
+    if (!id) {
+      hydratedIdRef.current = null;
+    }
+  }, [id]);
 
   const msg = useMemo(
     () => ({
@@ -59,13 +71,14 @@ export function useBaseForm<T>({
   });
 
   useEffect(() => {
-    if (detailQuery.data) {
+    if (id && detailQuery.data && hydratedIdRef.current !== id) {
+      hydratedIdRef.current = id;
       setData({
-        ...defaultValues,
+        ...defaultValuesRef.current,
         ...detailQuery.data,
       });
     }
-  }, [detailQuery.data]);
+  }, [id, detailQuery.data]);
 
   const setField = <K extends keyof T>(field: K, value: T[K]) => {
     setData((prev) => ({ ...prev, [field]: value }));
@@ -76,7 +89,8 @@ export function useBaseForm<T>({
   };
 
   const resetForm = () => {
-    setData(defaultValues);
+    hydratedIdRef.current = null;
+    setData(defaultValuesRef.current);
   };
 
   const mutation = useMutation({
@@ -133,7 +147,8 @@ export function useBaseForm<T>({
     try {
       await mutation.mutateAsync();
       return true;
-    } catch {
+    } catch (submitError) {
+      console.warn("Submit form gagal:", submitError);
       return false;
     }
   };

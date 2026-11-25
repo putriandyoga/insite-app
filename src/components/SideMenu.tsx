@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import SidebarItemComponent, {
   type SidebarItem,
   type OpenMenusState,
@@ -12,6 +12,8 @@ interface SideMenuProps {
   menuItems: SidebarItem[];
   collapsed: boolean;
 }
+
+const EMPTY_OPEN_MENUS: OpenMenusState = {};
 
 export default function SideMenu({ menuItems, collapsed }: SideMenuProps) {
   const { user } = useAuthStore();
@@ -41,9 +43,7 @@ export default function SideMenu({ menuItems, collapsed }: SideMenuProps) {
     });
   };
 
-  useEffect(() => {
-    if (collapsed) setOpenMenus({});
-  }, [collapsed]);
+  const effectiveOpenMenus = collapsed ? EMPTY_OPEN_MENUS : openMenus;
 
   const isPathActive = (item: SidebarItem): boolean => {
     if (item.to && location.pathname.startsWith(item.to)) return true;
@@ -99,7 +99,7 @@ export default function SideMenu({ menuItems, collapsed }: SideMenuProps) {
           item={item}
           collapsed={collapsed}
           isPathActive={isPathActive}
-          openMenus={openMenus}
+          openMenus={effectiveOpenMenus}
           toggleMenu={toggleMenu}
         />
       ))}

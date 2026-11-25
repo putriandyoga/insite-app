@@ -1,7 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import Card from "@/components/Card";
 import { PageMiddle, PageTop } from "@/components/PageLayout";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePanelMe } from "@iptv/hooks/panel/use-panel-me";
 import { usePanelActiveCalls } from "@iptv/hooks/panel/use-panel-active-call";
 import { usePanelStbs } from "@iptv/hooks/panel/use-panel-stb";
@@ -12,8 +12,22 @@ import { AudioAlertBanner } from "@iptv/components/AudioAlertBanner";
 import { CallItemCard } from "@iptv/components/CallItemCard";
 import { StbDeviceCard } from "../../components/StbDeviceCard";
 
+function formatRelativeSeconds(iso: string, referenceNowMs: number): string {
+  const detik = Math.max(
+    0,
+    Math.round((referenceNowMs - new Date(iso).getTime()) / 1000),
+  );
+  if (detik < 60) return "Baru saja";
+  const menit = Math.round(detik / 60);
+  if (menit < 60) return `${menit}m lalu`;
+  const jam = Math.round(menit / 60);
+  if (jam < 24) return `${jam}j lalu`;
+  return `${Math.round(jam / 24)}h lalu`;
+}
+
 const DashboardPage = () => {
   const [status] = useState<string>("Terhubung");
+  const [nowMs, setNowMs] = useState<number>(() => Date.now());
 
   const { data: meData } = usePanelMe();
   const { data: activeData, refetch: refetchActive } = usePanelActiveCalls();
@@ -21,6 +35,13 @@ const DashboardPage = () => {
   const { acknowledgeCall, resolveCall, loadingId } = usePanelCallAction(() => {
     refetchActive();
   });
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNowMs(Date.now());
+    }, 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const resolvedMe = meData;
   const resolvedActive = activeData;
@@ -32,35 +53,31 @@ const DashboardPage = () => {
     "Memuat ward...";
   const namaStation =
     resolvedMe?.station?.name || resolvedActive?.station?.name || "";
-  const rawCalls = resolvedActive?.calls ?? [];
 
-  const calls = useMemo(
-    // () => rawCalls.filter((call: any) => call.status !== "ACKNOWLEDGED"),
-    () => rawCalls.filter((call: any) => call.status !== ""),
-    [rawCalls],
+  const calls = useMemo(() => {
+    const list = resolvedActive?.calls ?? [];
+    return list.filter((call: any) => call.status !== "");
+  }, [resolvedActive?.calls]);
+
+  const devices = useMemo(
+    () => resolvedStbs?.devices ?? [],
+    [resolvedStbs?.devices],
   );
-  const devices = resolvedStbs?.devices || [];
 
   const { tampilkanTombolSuara, bukaSuara } = useNurseAudio(calls);
   useNurseRealtime(refetchActive);
 
-  const sejakRelative = (iso: string) => {
-    const detik = Math.max(
-      0,
-      Math.round((Date.now() - new Date(iso).getTime()) / 1000),
-    );
-    if (detik < 60) return "Baru saja";
-    const menit = Math.round(detik / 60);
-    if (menit < 60) return `${menit}m lalu`;
-    const jam = Math.round(menit / 60);
-    if (jam < 24) return `${jam}j lalu`;
-    return `${Math.round(jam / 24)}h lalu`;
-  };
+  const sejakRelative = useCallback(
+    (iso: string) => formatRelativeSeconds(iso, nowMs),
+    [nowMs],
+  );
 
-  const sortedDevices = [...devices].sort((a: any, b: any) => {
-    if (a.online !== b.online) return a.online ? 1 : -1;
-    return (a.room_label || "").localeCompare(b.room_label || "");
-  });
+  const sortedDevices = useMemo(() => {
+    return [...devices].sort((a: any, b: any) => {
+      if (a.online !== b.online) return a.online ? 1 : -1;
+      return (a.room_label || "").localeCompare(b.room_label || "");
+    });
+  }, [devices]);
 
   return (
     <div className="flex flex-col h-full max-w-full gap-3 overflow-hidden bg-base-100/50">

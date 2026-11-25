@@ -15,8 +15,36 @@ export function useInstanceDetail(
     refetch: refetchStaff,
   } = useStaffMyDepartment();
 
-  const [selectedStaffId, setSelectedStaffId] = useState<string | number>("");
-  const [verificationNotes, setVerificationNotes] = useState("");
+  const [formState, setFormState] = useState<{
+    forId: string | number | undefined;
+    staffId: string | number;
+    notes: string;
+  }>({
+    forId: selectedId,
+    staffId: "",
+    notes: "",
+  });
+
+  const selectedStaffId =
+    formState.forId === selectedId ? formState.staffId : "";
+  const verificationNotes =
+    formState.forId === selectedId ? formState.notes : "";
+
+  const setSelectedStaffId = (staffId: string | number) => {
+    setFormState((prev) => ({
+      forId: selectedId,
+      staffId,
+      notes: prev.forId === selectedId ? prev.notes : "",
+    }));
+  };
+
+  const setVerificationNotes = (notes: string) => {
+    setFormState((prev) => ({
+      forId: selectedId,
+      staffId: prev.forId === selectedId ? prev.staffId : "",
+      notes,
+    }));
+  };
 
   const {
     data: selectedInstance,
@@ -28,15 +56,16 @@ export function useInstanceDetail(
   const { verifyNext, loading: verifying } = useInstanceVerifyNext(() => {
     onRefreshList();
     refetchDetail();
-    setVerificationNotes("");
-    setSelectedStaffId("");
+    setFormState({
+      forId: selectedId,
+      staffId: "",
+      notes: "",
+    });
   });
 
-  // Reset state verifikasi setiap ganti selectedId
+  // Refresh detail setiap ganti selectedId
   useEffect(() => {
     if (selectedId) {
-      setSelectedStaffId("");
-      setVerificationNotes("");
       refetchDetail();
     }
   }, [selectedId, refetchDetail]);

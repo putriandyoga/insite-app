@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import type { DaisyColor } from "@/utils/color";
 import { defaultCrudMessages, type CrudMessages } from "@/utils/crudMessages";
 import { handleApiError } from "@/utils/errorHandler";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 
 interface UseBaseDeleteProps {
   mutationFn: (id: string | number) => Promise<void>;

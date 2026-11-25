@@ -3,7 +3,7 @@ import { useState } from "react";
 import { instancesService } from "@patient-verification/services/instancesService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { handleApiError } from "@/utils/errorHandler";
 
 interface UpdateContextParams {

@@ -1,27 +1,10 @@
-import { ModuleLogoutSync } from "@/components/ModuleLogoutSync";
-import { lazy } from "react";
+import { createElement, lazy } from "react";
 import { Outlet, type RouteObject } from "react-router-dom";
-import { useIptvLogout } from "./hooks/auth/use-logout";
-import { useIsAdmin } from "@/utils/authHelper";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import { DashboardRouter } from "@iptv/components/DashboardRouter";
+import { IptvSyncWrapper } from "@iptv/components/IptvSyncWrapper";
 
-function IptvSyncWrapper() {
-  const { logout } = useIptvLogout();
-  return (
-    <>
-      <ModuleLogoutSync moduleName="iptv" logoutFn={logout} />
-      <Outlet />
-    </>
-  );
-}
-
-const AdminDashboardPage = lazy(() => import("@iptv/pages/call/CallPage"));
 const PanelPage = lazy(() => import("@iptv/pages/dashboard/DashboardPage"));
-
-export const DashboardRouter = () => {
-  const isAdmin = useIsAdmin();
-  return isAdmin ? <AdminDashboardPage /> : <PanelPage />;
-};
 
 const StationPage = lazy(() => import("@iptv/pages/station/StationPage"));
 const StationFormPage = lazy(
@@ -50,73 +33,73 @@ const CallPage = lazy(() => import("@iptv/pages/call/CallPage"));
 
 export const iptvRoutes: RouteObject = {
   path: "iptv",
-  element: <IptvSyncWrapper />,
+  element: createElement(IptvSyncWrapper),
   children: [
     // Dashboard dapat diakses semua user yang login (tampilannya otomatis menyesuaikan Admin/Nurse)
-    { path: "dashboard", element: <DashboardRouter /> },
+    { path: "dashboard", element: createElement(DashboardRouter) },
 
     // Rute di bawah ini dibungkus ProtectedRoute khusus admin
     {
-      element: (
-        <ProtectedRoute requiredRole="admin">
-          <Outlet />
-        </ProtectedRoute>
+      element: createElement(
+        ProtectedRoute,
+        { requiredRole: "admin" },
+        createElement(Outlet),
       ),
       children: [
         {
           path: "station",
           children: [
-            { index: true, element: <StationPage /> },
-            { path: "create", element: <StationFormPage /> },
+            { index: true, element: createElement(StationPage) },
+            { path: "create", element: createElement(StationFormPage) },
           ],
         },
         {
           path: "ward",
           children: [
-            { index: true, element: <WardPage /> },
-            { path: "create", element: <WardFormPage /> },
+            { index: true, element: createElement(WardPage) },
+            { path: "create", element: createElement(WardFormPage) },
           ],
         },
         {
           path: "room",
           children: [
-            { index: true, element: <RoomPage /> },
-            { path: "create", element: <RoomFormPage /> },
+            { index: true, element: createElement(RoomPage) },
+            { path: "create", element: createElement(RoomFormPage) },
           ],
         },
         {
           path: "bed",
-          children: [{ index: true, element: <BedPage /> }],
+          children: [{ index: true, element: createElement(BedPage) }],
         },
         {
           path: "user",
           children: [
-            { index: true, element: <UserPage /> },
-            { path: "create", element: <UserFormPage /> },
-            { path: ":userId", element: <UserDetailPage /> },
-            { path: ":userId/edit", element: <UserFormPage /> },
+            { index: true, element: createElement(UserPage) },
+            { path: "create", element: createElement(UserFormPage) },
+            { path: ":userId", element: createElement(UserDetailPage) },
+            { path: ":userId/edit", element: createElement(UserFormPage) },
             {
               path: ":userId/reset-password",
-              element: <UserResetPasswordPage />,
+              element: createElement(UserResetPasswordPage),
             },
           ],
         },
         {
           path: "stb",
           children: [
-            { index: true, element: <StbPage /> },
-            { path: "create", element: <StbFormPage /> },
-            { path: ":stbId", element: <StbDetailPage /> },
-            { path: ":stbId/bind", element: <StbBindPage /> },
+            { index: true, element: createElement(StbPage) },
+            { path: "create", element: createElement(StbFormPage) },
+            { path: ":stbId", element: createElement(StbDetailPage) },
+            { path: ":stbId/bind", element: createElement(StbBindPage) },
           ],
         },
         {
           path: "panel",
-          children: [{ index: true, element: <PanelPage /> }],
+          children: [{ index: true, element: createElement(PanelPage) }],
         },
         {
           path: "call",
-          children: [{ index: true, element: <CallPage /> }],
+          children: [{ index: true, element: createElement(CallPage) }],
         },
       ],
     },

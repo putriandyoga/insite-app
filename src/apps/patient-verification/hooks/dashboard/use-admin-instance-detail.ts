@@ -1,9 +1,9 @@
-// hooks/instances/use-admin-instance-detail.ts
 import { useState, useEffect, useCallback } from "react";
 import { instancesService } from "@patient-verification/services/instancesService";
 import { handleApiError } from "@/utils/errorHandler";
-import { showAlert } from "@/components/Alert";
+
 import type { DaisyColor } from "@/utils/color";
+import { showAlert } from "@/utils/showAlert";
 
 export function useAdminInstanceDetail(
   selectedId: string | number | undefined,
@@ -17,8 +17,24 @@ export function useAdminInstanceDetail(
   const [cancelling, setCancelling] = useState(false);
   const [updatingContext, setUpdatingContext] = useState(false);
 
-  // State tab dipindah ke sini agar terpusat dengan data detail instance
-  const [activeTab, setActiveTab] = useState<"audit" | "logs">("audit");
+  // Pasangkan activeTab dengan selectedId agar otomatis reset ke "audit" tiap ganti pasien
+  const [tabState, setTabState] = useState<{
+    forId: string | number | undefined;
+    tab: "audit" | "logs";
+  }>({
+    forId: selectedId,
+    tab: "audit",
+  });
+
+  const activeTab: "audit" | "logs" =
+    tabState.forId === selectedId ? tabState.tab : "audit";
+
+  const setActiveTab = useCallback(
+    (tab: "audit" | "logs") => {
+      setTabState({ forId: selectedId, tab });
+    },
+    [selectedId],
+  );
 
   const fetchDetail = useCallback(async (id: string | number) => {
     try {
@@ -47,15 +63,37 @@ export function useAdminInstanceDetail(
   }, []);
 
   useEffect(() => {
-    if (selectedId) {
-      fetchDetail(selectedId);
-      setActiveTab("audit"); // Reset ke tab audit setiap ganti pasien
-    } else {
-      setSelectedInstance(null);
-      setContextLogs([]);
-      setInstanceDetail(null);
-    }
-  }, [selectedId, fetchDetail]);
+    if (!selectedId) return;
+
+    let cancelled = false;
+
+    Promise.all([
+      instancesService.history(selectedId),
+      instancesService.contextLogs(selectedId),
+      instancesService.getDetail(selectedId),
+    ])
+      .then(([historyData, logsData, detailData]) => {
+        if (cancelled) return;
+        setSelectedInstance(historyData);
+        setContextLogs(Array.isArray(logsData) ? logsData : []);
+        setInstanceDetail(detailData);
+      })
+      .catch(async (err) => {
+        if (cancelled) return;
+        await handleApiError(
+          err,
+          "Gagal memuat detail dan history instance pasien",
+        );
+        if (cancelled) return;
+        setSelectedInstance(null);
+        setContextLogs([]);
+        setInstanceDetail(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId]);
 
   const handleCancelInstance = async () => {
     if (!selectedId) return;
@@ -89,7 +127,7 @@ export function useAdminInstanceDetail(
         showConfirmButton: false,
       });
 
-      fetchDetail(selectedId);
+      await fetchDetail(selectedId);
       onRefreshList();
     } catch (err) {
       await handleApiError(err, "Gagal membatalkan instance");
@@ -120,7 +158,7 @@ export function useAdminInstanceDetail(
       });
 
       onSuccessModal();
-      fetchDetail(selectedId);
+      await fetchDetail(selectedId);
       onRefreshList();
     } catch (err) {
       await handleApiError(err, "Gagal memperbarui context data");
@@ -130,16 +168,17 @@ export function useAdminInstanceDetail(
   };
 
   return {
-    selectedInstance,
-    instanceDetail,
-    contextLogs,
-    loadingDetail,
+    selectedInstance: selectedId ? selectedInstance : null,
+    instanceDetail: selectedId ? instanceDetail : null,
+    contextLogs: selectedId ? contextLogs : [],
+    loadingDetail: selectedId ? loadingDetail : false,
     cancelling,
     updatingContext,
     activeTab,
     setActiveTab,
     handleCancelInstance,
     handleUpdateContext,
-    refetchDetail: () => selectedId && fetchDetail(selectedId),
+    refetchDetail: () =>
+      selectedId ? fetchDetail(selectedId) : Promise.resolve(),
   };
 }

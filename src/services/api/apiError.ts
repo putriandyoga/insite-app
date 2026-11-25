@@ -76,7 +76,7 @@ export function normalizeApiError(error: unknown): ApiError {
       } else {
         // Penanganan umum untuk objek data lainnya (jika ada)
         const detailedMessages: string[] = [];
-        for (const [_key, val] of Object.entries(errorData)) {
+        for (const [, val] of Object.entries(errorData)) {
           if (Array.isArray(val)) {
             detailedMessages.push(`${val.join(", ")}`);
           } else if (typeof val === "string") {

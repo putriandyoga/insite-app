@@ -33,7 +33,22 @@ const createTableStore = <TFilters extends Record<string, any>>(
   }));
 };
 
-const storeRegistry: Record<string, ReturnType<typeof createTableStore>> = {};
+type TableStoreHook = ReturnType<typeof createTableStore>;
+
+const storeRegistry = new Map<string, TableStoreHook>();
+
+function getOrCreateTableStore<TFilters extends Record<string, any>>(
+  storeKey: string,
+  initialFilters: TFilters,
+): TableStoreHook {
+  const existing = storeRegistry.get(storeKey);
+  if (existing) {
+    return existing;
+  }
+  const created = createTableStore(initialFilters);
+  storeRegistry.set(storeKey, created);
+  return created;
+}
 
 export function useTableFilters<TFilters extends Record<string, any>>(
   initialFilters: TFilters,
@@ -45,11 +60,7 @@ export function useTableFilters<TFilters extends Record<string, any>>(
     storeKey = "default_table",
   } = options;
 
-  if (!storeRegistry[storeKey]) {
-    storeRegistry[storeKey] = createTableStore(initialFilters);
-  }
-
-  const useStore = storeRegistry[storeKey];
+  const useStore = getOrCreateTableStore(storeKey, initialFilters);
   const { page, search, filters, setPage, setSearch, setFilter, resetTable } =
     useStore();
 
@@ -64,7 +75,7 @@ export function useTableFilters<TFilters extends Record<string, any>>(
   // 2. Bersihkan otomatis parameter yang kosong, null, atau undefined SEKALI SAJA DI SINI
   const activeFilters = Object.fromEntries(
     Object.entries(rawActiveFilters).filter(
-      ([_, value]) => value !== "" && value !== null && value !== undefined,
+      ([, value]) => value !== "" && value !== null && value !== undefined,
     ),
   );
 

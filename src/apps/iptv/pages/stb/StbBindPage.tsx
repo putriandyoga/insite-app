@@ -9,7 +9,7 @@ import { IndicatorLoading } from "@/components/IndicatorLoading";
 import { useStbBindBed } from "@iptv/hooks/stb/use-stb-bind-bed";
 import { useBedList } from "@iptv/hooks/master/bed/use-bed-list";
 import { useWardList } from "@iptv/hooks/master/ward/use-ward-list";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { useStbDetail } from "@iptv/hooks/stb/use-stb-detail";
 import DataSection from "@/components/DataSection";
 import { PageBottom, PageMiddle, PageTop } from "@/components/PageLayout";

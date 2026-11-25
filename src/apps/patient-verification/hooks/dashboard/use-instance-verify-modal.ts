@@ -37,8 +37,10 @@ export function useInstanceVerifyModal(onSuccess: () => void) {
   }, [dataProcess, firstVerifyProcessId]);
 
   // Ambil daftar schema field dari context_template proses tersebut
-  const contextFields =
-    selectedProcessObj?.context_template?.fields_schema?.fields || [];
+  const contextFields = useMemo(
+    () => selectedProcessObj?.context_template?.fields_schema?.fields ?? [],
+    [selectedProcessObj],
+  );
 
   // Validasi apakah ada field required yang kosong
   const hasMissingRequiredContext = useMemo(() => {

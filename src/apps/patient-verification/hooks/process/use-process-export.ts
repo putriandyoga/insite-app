@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { handleApiError } from "@/utils/errorHandler";
 import { processService } from "@patient-verification/services/processService";
 

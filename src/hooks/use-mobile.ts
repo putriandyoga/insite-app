@@ -19,9 +19,6 @@ export function useIsMobile() {
     // Gunakan event listener modern
     mql.addEventListener("change", onChange);
 
-    // Sinkronisasi nilai terkini
-    setIsMobile(mql.matches);
-
     return () => mql.removeEventListener("change", onChange);
   }, []);
 

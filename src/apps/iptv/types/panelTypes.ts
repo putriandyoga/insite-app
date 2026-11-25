@@ -16,22 +16,6 @@ export const defaultPanel: PanelItem = {
   calls: null,
 };
 
-export const validatePanel = (_payload: PanelItem): string[] => {
-  const errors: string[] = [];
-
-  //   if (!payload.name || payload.name.trim() === "") {
-  //     errors.push("Panel name is required.");
-  //   }
-  //   if (!payload.ward_id || payload.ward_id.trim() === "") {
-  //     errors.push("Ward is required.");
-  //   }
-  //   if (!payload.status || payload.status.trim() === "") {
-  //     errors.push("Status is required.");
-  //   }
-
-  return errors;
-};
-
 export interface PanelStbItem {
   devices: [];
   offline: boolean;

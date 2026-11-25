@@ -1,9 +1,9 @@
 import { useBaseLogout } from "@/hooks/core/use-base-logout";
-import { iptvAuthService } from "@iptv/services/iptvAuthService";
+import { patientAuthService } from "@patient-verification/services/patientVerificationAuthService";
 
-export function useIptvLogout() {
+export function usePatientVerificationLogout() {
   return useBaseLogout({
-    logoutFn: () => iptvAuthService.logout(),
+    logoutFn: () => patientAuthService.logout(),
     redirectTo: "/",
   });
 }

@@ -7,7 +7,7 @@ import {
 } from "@patient-verification/types/contextTypes";
 import { useBaseForm } from "@/hooks/core/use-base-form";
 import { queryKeys } from "@/utils/queryKeys";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 
 export function useContextForm(contextId?: string) {
   const [validating, setValidating] = useState(false);

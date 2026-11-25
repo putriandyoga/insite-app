@@ -1,13 +1,26 @@
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 
 export async function handleApiError(
-  err: any,
+  err: unknown,
   fallbackMessage = "Terjadi kesalahan yang tidak diketahui.",
 ) {
   let message = fallbackMessage;
 
   try {
-    const data = err.response?.data || err;
+    const errorObj = err as {
+      response?: {
+        data?: {
+          errors?: Record<string, string[] | string>;
+          meta?: { message?: string };
+          message?: string;
+        };
+      };
+      errors?: Record<string, string[] | string>;
+      meta?: { message?: string };
+      message?: string;
+    };
+
+    const data = errorObj?.response?.data ?? errorObj;
 
     if (data?.errors && typeof data.errors === "object") {
       const errorMessages = Object.values(data.errors).flat().join("\n");
@@ -19,7 +32,10 @@ export async function handleApiError(
     } else if (data?.message) {
       message = data.message;
     }
-  } catch {}
+  } catch (parseError) {
+    // Tetap gunakan fallbackMessage jika struktur error tidak sesuai ekspektasi.
+    console.warn("Gagal mengekstrak pesan error API:", parseError);
+  }
 
   await showAlert({
     title: "Gagal",

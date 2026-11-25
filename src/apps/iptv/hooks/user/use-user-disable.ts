@@ -3,7 +3,7 @@ import { userService } from "@iptv/services/userService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys";
 import type { DaisyColor } from "@/utils/color";
-import { showAlert } from "@/components/Alert";
+import { showAlert } from "@/utils/showAlert";
 import { handleApiError } from "@/utils/errorHandler";
 
 export function useUserDisable(onSuccess?: () => void) {

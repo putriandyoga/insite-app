@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
-import { createRoot, type Root } from "react-dom/client";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle,
@@ -8,51 +7,11 @@ import {
   Info,
   HelpCircle,
 } from "lucide-react";
-import { getButtonColorClass, type DaisyColor } from "@/utils/color";
+import { getButtonColorClass } from "@/utils/color";
 import { CopyButton } from "@/components/CopyButton";
+import type { AlertOptions } from "@/utils/showAlert";
 
-export interface AlertOptions {
-  title?: string;
-  text?: string;
-  html?: string;
-  footer?: string;
-  icon?: "success" | "error" | "warning" | "info" | "question";
-  position?:
-    | "top"
-    | "top-start"
-    | "top-end"
-    | "center"
-    | "center-start"
-    | "center-end"
-    | "bottom"
-    | "bottom-start"
-    | "bottom-end";
-  showConfirmButton?: boolean;
-  showCancelButton?: boolean;
-  confirmButtonText?: string;
-  cancelButtonText?: string;
-  confirmButtonColor?: DaisyColor;
-  cancelButtonColor?: DaisyColor;
-  timer?: number;
-  timerProgressBar?: boolean;
-  reverseButtons?: boolean;
-  redirectUrl?: string;
-  onClose?: () => void;
-  verifyText?: string;
-
-  input?: "text";
-  inputPlaceholder?: string;
-  inputValidator?: (value: string) => string | void;
-
-  extraButtonPath?: string;
-  extraButtonText?: string;
-  extraButtonOnClick?: () => void;
-
-  copyableText?: string;
-  copyLabel?: string;
-}
-
-interface AlertProps extends AlertOptions {
+export interface AlertProps extends AlertOptions {
   onResolve: (result: boolean | string) => void;
 }
 
@@ -84,6 +43,35 @@ const Alert = ({
   const [inputError, setInputError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(true);
 
+  const handleClose = useCallback(
+    (result: boolean) => {
+      if (result && input === "text") {
+        if (inputValidator) {
+          const error = inputValidator(inputValue);
+          if (error) {
+            setInputError(error);
+            return;
+          }
+        }
+      }
+
+      setIsOpen(false);
+      setTimeout(() => {
+        if (result && input === "text") {
+          onResolve(inputValue);
+        } else {
+          onResolve(result);
+        }
+      }, 200);
+    },
+    [input, inputValidator, inputValue, onResolve],
+  );
+
+  const handleCloseRef = useRef(handleClose);
+  useEffect(() => {
+    handleCloseRef.current = handleClose;
+  }, [handleClose]);
+
   // Handle timer & progress bar
   useEffect(() => {
     if (!timer) return;
@@ -97,34 +85,13 @@ const Alert = ({
       if (elapsed < timer) {
         rafId = requestAnimationFrame(update);
       } else {
-        handleClose(true);
+        handleCloseRef.current(true);
       }
     };
 
     rafId = requestAnimationFrame(update);
     return () => cancelAnimationFrame(rafId);
   }, [timer]);
-
-  const handleClose = (result: boolean) => {
-    if (result && input === "text") {
-      if (inputValidator) {
-        const error = inputValidator(inputValue);
-        if (error) {
-          setInputError(error);
-          return;
-        }
-      }
-    }
-
-    setIsOpen(false);
-    setTimeout(() => {
-      if (result && input === "text") {
-        onResolve(inputValue);
-      } else {
-        onResolve(result);
-      }
-    }, 200);
-  };
 
   const IconComponent = icon ? ICON_MAP[icon] : null;
   const confirmDisabled = verifyText ? inputValue !== verifyText : false;
@@ -204,6 +171,7 @@ const Alert = ({
     cancelButtonColor,
     confirmDisabled,
     reverseButtons,
+    handleClose,
   ]);
 
   return (
@@ -312,29 +280,4 @@ const Alert = ({
   );
 };
 
-export function showAlert(options: AlertOptions): Promise<string | boolean> {
-  return new Promise((resolve) => {
-    const container = document.createElement("div");
-    document.body.appendChild(container);
-    const root: Root = createRoot(container);
-
-    const cleanup = () => {
-      root.unmount();
-      container.remove();
-      options.onClose?.();
-      if (options.redirectUrl) {
-        window.location.href = options.redirectUrl;
-      }
-    };
-
-    root.render(
-      <Alert
-        {...options}
-        onResolve={(result) => {
-          resolve(result);
-          cleanup();
-        }}
-      />,
-    );
-  });
-}
+export default Alert;

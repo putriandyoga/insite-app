@@ -1,0 +1,1 @@
+import{c as e}from"./Card-BPhMROMQ.js";import{t}from"./use-base-list-KKrykumj.js";import{t as n}from"./wardService-DooOy5Oy.js";function r(r=1,i={},a=20){let o={page:r,per_page:a,...i};return t({queryKey:e.ward.list(o),fetcher:e=>n.getPaginated(e),params:o})}export{r as t};

@@ -77,6 +77,32 @@ const FormInput = ({
   showEmptyOption = true,
   showSearch = true,
 }: FormInputProps) => {
+  const [selectOpen, setSelectOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [query, setQuery] = useState(value || "");
+  const [open, setOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const selectRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        selectRef.current &&
+        !selectRef.current.contains(event.target as Node)
+      ) {
+        setSelectOpen(false);
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const normalizeOptions = () => {
     if (!options) return [];
 
@@ -98,9 +124,6 @@ const FormInput = ({
 
   const normalizedOptions = normalizeOptions();
 
-  const [selectOpen, setSelectOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-
   // FIX 1: Bungkus dengan String() agar aman dari number/undefined
   const filteredSelectOptions = searchText
     ? normalizedOptions.filter((o) =>
@@ -116,13 +139,9 @@ const FormInput = ({
       ? " bg-base-200 cursor-not-allowed"
       : " bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent");
 
-  const [query, setQuery] = useState(value || "");
-  const [open, setOpen] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
   const flattenOptions = (): string[] => {
     if (!options) return [];
-    let list: string[] = [];
+    const list: string[] = [];
 
     options.forEach((opt) => {
       if (typeof opt === "string") list.push(opt);
@@ -136,12 +155,13 @@ const FormInput = ({
 
   const flatOptions = flattenOptions();
 
-  // FIX 2: Baris 46 error aslinya ada di sini, bungkus juga dengan String()
+  // FIX 2: Bungkus dengan String() agar aman dari tipe non-string
   const filtered = flatOptions.filter((o) =>
     String(o || "")
       .toLowerCase()
       .includes(String(query || "").toLowerCase()),
   );
+
   if (type === "switch") {
     const isOn = value === true || value === "1" || value === 1;
 
@@ -280,25 +300,7 @@ const FormInput = ({
       </div>
     );
   }
-  const selectRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        selectRef.current &&
-        !selectRef.current.contains(event.target as Node)
-      ) {
-        setSelectOpen(false);
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
   return (
     <div className={`relative ${className} space-y-2`}>
       <label className="block text-body font-medium text-base-content mb-2">

@@ -22,7 +22,9 @@ export function useNurseAudio(calls: NurseCall[]) {
   const previousPendingRef = useRef(new Set<string>());
 
   // Selalu gunakan data panggilan paling baru.
-  callsRef.current = calls;
+  useEffect(() => {
+    callsRef.current = calls;
+  }, [calls]);
 
   // Siapkan audio satu kali.
   useEffect(() => {
@@ -32,12 +34,23 @@ export function useNurseAudio(calls: NurseCall[]) {
     audioRef.current = audio;
 
     const unlocked = localStorage.getItem(AUDIO_STORAGE_KEY) === "true";
-
     unlockedRef.current = unlocked;
-    setSuaraTersedia(unlocked);
-    setTampilkanTombolSuara(!unlocked);
+
+    const syncUnlockState = () => {
+      if (unlockedRef.current) {
+        setSuaraTersedia(true);
+        setTampilkanTombolSuara(false);
+      }
+    };
+
+    if (unlocked) {
+      audio.addEventListener("canplaythrough", syncUnlockState, { once: true });
+      audio.addEventListener("loadeddata", syncUnlockState, { once: true });
+    }
 
     return () => {
+      audio.removeEventListener("canplaythrough", syncUnlockState);
+      audio.removeEventListener("loadeddata", syncUnlockState);
       audio.pause();
       audio.currentTime = 0;
       audioRef.current = null;
@@ -88,7 +101,6 @@ export function useNurseAudio(calls: NurseCall[]) {
     if (!audio) return;
 
     let aktif = true;
-    let retryTimer: number | undefined;
 
     const getPendingCalls = () =>
       callsRef.current.filter((call) => call.status === "PENDING");
@@ -198,7 +210,7 @@ export function useNurseAudio(calls: NurseCall[]) {
     window.addEventListener("pageshow", pulihkanAudio);
 
     // SSE mengubah calls; timer ini hanya mencoba memulihkan audio.
-    retryTimer = window.setInterval(() => {
+    const retryTimer = window.setInterval(() => {
       periksaPanggilan();
     }, 2000);
 
@@ -207,9 +219,7 @@ export function useNurseAudio(calls: NurseCall[]) {
     return () => {
       aktif = false;
 
-      if (retryTimer !== undefined) {
-        window.clearInterval(retryTimer);
-      }
+      window.clearInterval(retryTimer);
 
       audio.removeEventListener("pause", handleAudioPause);
       audio.removeEventListener("ended", handleAudioEnded);

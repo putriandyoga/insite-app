@@ -1,0 +1,1 @@
+import{o as e}from"./Card-BPhMROMQ.js";import{o as t,r as n}from"./index-Br10peio.js";import{t as r}from"./patientVerificationAdapter-BQpgvd_D.js";var i={...e(`/context-templates`,{api:t,adapter:r}),async validateSchema(e){let r=await t.apiRequest(`POST`,`/context-templates/validate-schema`,{fields_schema:e});return n(r)}};export{i as t};
